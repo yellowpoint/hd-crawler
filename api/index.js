@@ -4,7 +4,7 @@ import { readFile } from "fs/promises";
 import { configDotenv } from "dotenv";
 import { crawlStart } from "../src/core.js";
 import { defaultConfig } from '../src/config.js'
-import { crawlStartPup } from "./puppeteer.js";
+import crawlStartPup from "./puppeteer.js";
 
 configDotenv();
 

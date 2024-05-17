@@ -12,10 +12,10 @@ const remoteExecutablePath =
 
 // 运行环境
 const isDev = process.env.NODE_ENV === "development";
-console.log('localExecutablePath', localExecutablePath);
+console.log('localExecutablePath', isDev);
 
 
-export async function crawlStartPup() {
+async function crawlStartPup() {
   let browser = null;
   console.log('crawlStartPup', isDev);
   try {
@@ -55,3 +55,4 @@ export async function crawlStartPup() {
     await browser.close();
   }
 }
+export default crawlStartPup
