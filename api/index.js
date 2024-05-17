@@ -4,6 +4,7 @@ import { readFile } from "fs/promises";
 import { configDotenv } from "dotenv";
 import { crawlStart } from "../src/core.js";
 import { defaultConfig } from '../src/config.js'
+import { crawlStartPup } from "./puppeteer.js";
 
 configDotenv();
 
@@ -26,6 +27,18 @@ app.post("/crawl", async (req, res) => {
     const outputFileContent = await readFile(`./storage/key_value_stores/default/OUTPUT.json`, "utf-8");
     res.contentType("application/json");
     return res.send(outputFileContent);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error occurred during crawling", error });
+  }
+});
+app.post("/pup", async (req, res) => {
+
+  try {
+    const result = await crawlStartPup();
+    res.contentType("application/json");
+    return res.send(result);
   } catch (error) {
     return res
       .status(500)
