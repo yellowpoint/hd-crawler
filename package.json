@@ -2,6 +2,9 @@
   "name": "hd-crawler",
   "version": "0.0.1",
   "type": "module",
+  "engines": {
+    "node": "14.x"
+  },
   "description": "This is an example of a Crawlee project.",
   "dependencies": {
     "chrome-aws-lambda": "^10.1.0",
