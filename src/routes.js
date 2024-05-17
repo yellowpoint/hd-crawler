@@ -55,10 +55,10 @@ const saveData = async (props) => {
     await pushData(results);
     await Dataset.exportToJSON('OUTPUT');
 
-    const screenshot = await page.screenshot();
-    const key = url.replace(/[:/]/g, '_');
-    // Save the screenshot to the default key-value store
-    await KeyValueStore.setValue(key, screenshot, { contentType: 'image/png' });
+    // const screenshot = await page.screenshot();
+    // const key = url.replace(/[:/]/g, '_');
+    // // Save the screenshot to the default key-value store
+    // await KeyValueStore.setValue(key, screenshot, { contentType: 'image/png' });
 
 }
 

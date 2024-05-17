@@ -2,8 +2,8 @@ import express from "express";
 import cors from "cors";
 import { readFile } from "fs/promises";
 import { configDotenv } from "dotenv";
-import { crawlStart } from "./core.js";
-import { defaultConfig } from './config.js'
+import { crawlStart } from "../src/core.js";
+import { defaultConfig } from '../src/config.js'
 
 configDotenv();
 
