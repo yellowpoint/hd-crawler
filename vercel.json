@@ -3,7 +3,6 @@
   "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
   "functions": {
     "*": {
-      "runtime": "@vercel/node",
       "maxDuration": 60
     }
   }
