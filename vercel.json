@@ -4,7 +4,7 @@
   "functions": {
     "*": {
       "runtime": "@vercel/node",
-      "timeout": 60
+      "maxDuration": 60
     }
   }
 }
