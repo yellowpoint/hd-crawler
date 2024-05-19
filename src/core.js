@@ -1,18 +1,23 @@
 // For more information, see https://crawlee.dev/
 import { PlaywrightCrawler, Configuration } from 'crawlee';
 import { router } from './routes.js';
-// import aws_chromium from '@sparticuz/chromium';
+import chromium from "@sparticuz/chromium-min";
 
 export const crawlStart = async (config) => {
   const startUrls = config.url;
   console.log('startUrls', startUrls);
-  // const launchOptions = process.env.NODE_ENV === 'production'
-  //   ? {
-  //     args: aws_chromium.args,
-  //     executablePath: await aws_chromium.executablePath(),
-  //     headless: aws_chromium.headless,
-  //   }
-  //   : undefined
+  const remoteExecutablePath =
+    "https://github.com/Sparticuz/chromium/releases/download/v119.0.2/chromium-v119.0.2-pack.tar";
+
+  // 运行环境
+  const isDev = process.env.NODE_ENV === "development";
+  const launchOptions = isDev
+    ? undefined
+    : {
+      args: chromium.args,
+      executablePath: await chromium.executablePath(remoteExecutablePath),
+      headless: chromium.headless,
+    }
   const crawler = new PlaywrightCrawler({
 
     // proxyConfiguration: new ProxyConfiguration({ proxyUrls: ['...'] }),
@@ -21,9 +26,9 @@ export const crawlStart = async (config) => {
     // Comment this option to scrape the full website.
     maxRequestsPerCrawl: config.maxRequestsPerCrawl,
     // headless: false
-    // launchContext: {
-    //   launchOptions
-    // }
+    launchContext: {
+      launchOptions
+    }
   },
     // 启动时清除所有之前会话的数据
     new Configuration({
