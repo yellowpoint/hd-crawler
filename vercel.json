@@ -1,12 +1,10 @@
 {
   "version": 2,
   "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
-  "config": {
-    "functions": {
-      "*": {
-        "runtime": "@vercel/node",
-        "timeout": 60
-      }
+  "functions": {
+    "*": {
+      "runtime": "@vercel/node",
+      "timeout": 60
     }
   }
 }
