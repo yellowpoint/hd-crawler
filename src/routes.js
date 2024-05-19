@@ -52,7 +52,7 @@ const saveData = async (props) => {
         urls,
     };
 
-    // await pushData(results);
+    await pushData(results); // 有这个下面才有数据
     await Dataset.exportToJSON('OUTPUT');
 
     // const screenshot = await page.screenshot();
@@ -68,7 +68,7 @@ router.addDefaultHandler(async (props) => {
     log.info(`开始获取`);
 
     let urls = await getAhref(page);
-
+    // console.log('urls', urls);
     await saveData({ ...props, urls })
 
 

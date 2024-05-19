@@ -25,6 +25,7 @@ app.post("/crawl", async (req, res) => {
     await crawlStart(config);
 
     const outputFileContent = await readFile(TempDir + `/key_value_stores/default/OUTPUT.json`, "utf-8");
+    // console.log('outputFileContent', outputFileContent);
     res.contentType("application/json");
     return res.send(outputFileContent);
   } catch (error) {
