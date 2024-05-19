@@ -4,11 +4,12 @@ import { router } from './routes.js';
 import puppeteer from 'puppeteer-core';
 import chromium from "@sparticuz/chromium-min";
 import { configDotenv } from "dotenv";
+import path from 'path';
 import { localExecutablePath, remoteExecutablePath } from '../api/puppeteer.js';
 configDotenv();
 const isDev = process.env.NODE_ENV === "development";
 
-export const TempDir = isDev ? './storage' : '/tmp/storage';
+export const TempDir = isDev ? './storage' : path.join(process.cwd(), '/tmp/storage');
 export const crawlStart = async (config) => {
   const startUrls = config.url;
   console.log('startUrls', startUrls);
