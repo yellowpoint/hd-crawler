@@ -4,21 +4,27 @@ import { router } from './routes.js';
 import puppeteer from 'puppeteer-core';
 import chromium from "@sparticuz/chromium-min";
 import { configDotenv } from "dotenv";
+import { localExecutablePath, remoteExecutablePath } from '../api/puppeteer.js';
 configDotenv();
+const isDev = process.env.NODE_ENV === "development";
+
+export const TempDir = isDev ? './storage' : '/tmp/storage';
 export const crawlStart = async (config) => {
   const startUrls = config.url;
   console.log('startUrls', startUrls);
-  const remoteExecutablePath =
-    "https://github.com/Sparticuz/chromium/releases/download/v119.0.2/chromium-v119.0.2-pack.tar";
+
 
   // 运行环境
-  const isDev = process.env.NODE_ENV === "development";
   const launchOptions = isDev
-    ? undefined
+    ? {
+      executablePath: localExecutablePath,
+      userDataDir: TempDir
+    }
     : {
       args: chromium.args,
       executablePath: await chromium.executablePath(remoteExecutablePath),
-      headless: true
+      headless: true,
+      userDataDir: TempDir
     }
   console.log('launchOptions', launchOptions);
   const crawler = new PuppeteerCrawler({
@@ -41,6 +47,10 @@ export const crawlStart = async (config) => {
     })
   );
   await crawler.run(startUrls);
+
+
+
   console.log('结束了', startUrls);
 }
+
 

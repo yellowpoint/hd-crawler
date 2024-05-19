@@ -5,9 +5,9 @@ import puppeteer from "puppeteer-core";
 import { configDotenv } from "dotenv";
 configDotenv();
 // 本地 Chrome 执行包路径
-const localExecutablePath = "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
+export const localExecutablePath = "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
 // 远程执行包
-const remoteExecutablePath =
+export const remoteExecutablePath =
   "https://github.com/Sparticuz/chromium/releases/download/v119.0.2/chromium-v119.0.2-pack.tar";
 
 // 运行环境

@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import { readFile } from "fs/promises";
 import { configDotenv } from "dotenv";
-import { crawlStart } from "../src/core.js";
+import { TempDir, crawlStart } from "../src/core.js";
 import { defaultConfig } from '../src/config.js'
 import crawlStartPup from "./puppeteer.js";
 
@@ -24,7 +24,7 @@ app.post("/crawl", async (req, res) => {
   try {
     await crawlStart(config);
 
-    const outputFileContent = await readFile(`./storage/key_value_stores/default/OUTPUT.json`, "utf-8");
+    const outputFileContent = await readFile(TempDir + `/key_value_stores/default/OUTPUT.json`, "utf-8");
     res.contentType("application/json");
     return res.send(outputFileContent);
   } catch (error) {

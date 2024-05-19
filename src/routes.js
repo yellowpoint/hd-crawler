@@ -52,7 +52,7 @@ const saveData = async (props) => {
         urls,
     };
 
-    await pushData(results);
+    // await pushData(results);
     await Dataset.exportToJSON('OUTPUT');
 
     // const screenshot = await page.screenshot();
