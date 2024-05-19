@@ -1,6 +1,7 @@
 // For more information, see https://crawlee.dev/
 import { PuppeteerCrawler, Configuration } from 'crawlee';
 import { router } from './routes.js';
+import puppeteer from 'puppeteer-core';
 import chromium from "@sparticuz/chromium-min";
 import { configDotenv } from "dotenv";
 configDotenv();
@@ -29,6 +30,7 @@ export const crawlStart = async (config) => {
     maxRequestsPerCrawl: config.maxRequestsPerCrawl,
     // headless: false
     launchContext: {
+      launcher: puppeteer,
       launchOptions
     }
   },
