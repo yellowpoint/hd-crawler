@@ -8,7 +8,7 @@ import path from 'path';
 import { localExecutablePath, remoteExecutablePath } from '../api/puppeteer.js';
 configDotenv();
 const isDev = process.env.NODE_ENV === "development";
-export const TempDir = isDev ? './storage' : path.join(process.cwd(), '/tmp/storage');
+export const TempDir = isDev ? './storage' : '/tmp/storage';
 export const crawlStart = async (config) => {
   console.log('CRAWLEE_STORAGE_DIR', process.env.CRAWLEE_STORAGE_DIR, TempDir);
 
@@ -20,13 +20,13 @@ export const crawlStart = async (config) => {
   const launchOptions = isDev
     ? {
       executablePath: localExecutablePath,
-      userDataDir: TempDir
+      // userDataDir: TempDir
     }
     : {
       args: chromium.args,
       executablePath: await chromium.executablePath(remoteExecutablePath),
       headless: true,
-      userDataDir: TempDir
+      // userDataDir: TempDir
     }
   console.log('launchOptions', launchOptions);
   const crawler = new PuppeteerCrawler({
