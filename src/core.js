@@ -8,9 +8,10 @@ import path from 'path';
 import { localExecutablePath, remoteExecutablePath } from '../api/puppeteer.js';
 configDotenv();
 const isDev = process.env.NODE_ENV === "development";
-
 export const TempDir = isDev ? './storage' : path.join(process.cwd(), '/tmp/storage');
 export const crawlStart = async (config) => {
+  console.log('CRAWLEE_STORAGE_DIR', process.env.CRAWLEE_STORAGE_DIR, TempDir);
+
   const startUrls = config.url;
   console.log('startUrls', startUrls);
 
