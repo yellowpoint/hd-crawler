@@ -49,7 +49,7 @@ const saveData = async (props) => {
         title,
         html,
         urlsCount: urls?.length,
-        urls,
+        // urls,
     };
 
     await pushData(results); // 有这个下面才有数据
