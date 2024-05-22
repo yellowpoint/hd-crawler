@@ -51,7 +51,7 @@ export function getPageHtml(page, selector = "body") {
 
 export async function write(config) {
   let nextFileNameString = "";
-  const jsonFiles = await glob("storage/datasets/default/*.json", {
+  const jsonFiles = await glob(TempDir + "/datasets/default/*.json", {
     absolute: true,
   });
 
