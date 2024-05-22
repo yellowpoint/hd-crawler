@@ -53,7 +53,7 @@ const saveData = async (props) => {
     };
 
     await pushData(results); // 有这个下面才有数据
-    await Dataset.exportToJSON('OUTPUT');
+    // await Dataset.exportToJSON('OUTPUT');
 
     // const screenshot = await page.screenshot();
     // const key = url.replace(/[:/]/g, '_');

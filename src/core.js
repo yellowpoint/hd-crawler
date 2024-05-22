@@ -4,19 +4,14 @@ import { router } from './routes.js';
 import puppeteer from 'puppeteer-core';
 import chromium from "@sparticuz/chromium-min";
 import { configDotenv } from "dotenv";
-import path from 'path';
+
 import { localExecutablePath, remoteExecutablePath } from '../api/puppeteer.js';
 configDotenv();
 const isDev = process.env.NODE_ENV === "development";
-export const TempDir = isDev ? './storage' : '/tmp/storage';
 
-const configuration = new Configuration({
-  // 启动时清除所有之前会话的数据
-  // purgeOnStart: true,
-  // persistStorage: false
-});
 export const crawlStart = async (config) => {
-  console.log('CRAWLEE_STORAGE_DIR', process.env.CRAWLEE_STORAGE_DIR, TempDir);
+  console.log('CRAWLEE_STORAGE_DIR', process.env.CRAWLEE_STORAGE_DIR);
+
 
   const startUrls = config.url;
   console.log('startUrls', startUrls);
@@ -26,13 +21,11 @@ export const crawlStart = async (config) => {
   const launchOptions = isDev
     ? {
       executablePath: localExecutablePath,
-      // userDataDir: TempDir
     }
     : {
       args: chromium.args,
       executablePath: await chromium.executablePath(remoteExecutablePath),
       headless: true,
-      // userDataDir: TempDir
     }
   console.log('launchOptions', launchOptions);
   const crawler = new PuppeteerCrawler({
@@ -48,10 +41,15 @@ export const crawlStart = async (config) => {
       launchOptions
     }
   },
-    // configuration
+    new Configuration({
+      // 启动时清除所有之前会话的数据，加上这个就导致输出的json不全，不加的话新的请求又不发起爬取
+      purgeOnStart: true,
+      // persistStorage: false
+    })
   );
-  await crawler.run(startUrls);
 
+
+  await crawler.run(startUrls);
 
 
   console.log('结束了', startUrls);

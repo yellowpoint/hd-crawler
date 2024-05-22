@@ -6,9 +6,11 @@
   "dependencies": {
     "@sparticuz/chromium-min": "^119.0.2",
     "cors": "^2.8.5",
-    "crawlee": "^3.0.0",
+    "crawlee": "3.9.2",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "glob": "^10.3.16",
+    "gpt-tokenizer": "^2.1.2",
     "puppeteer": "^22.9.0",
     "puppeteer-core": "^21.6.1"
   },
