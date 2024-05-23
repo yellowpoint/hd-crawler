@@ -29,9 +29,6 @@ importers:
       gpt-tokenizer:
         specifier: ^2.1.2
         version: 2.1.2
-      puppeteer:
-        specifier: ^22.9.0
-        version: 22.9.0
       puppeteer-core:
         specifier: ^21.6.1
         version: 21.11.0
@@ -1801,8 +1798,10 @@ snapshots:
     dependencies:
       '@babel/highlight': 7.24.5
       picocolors: 1.0.1
+    optional: true
 
-  '@babel/helper-validator-identifier@7.24.5': {}
+  '@babel/helper-validator-identifier@7.24.5':
+    optional: true
 
   '@babel/highlight@7.24.5':
     dependencies:
@@ -1810,6 +1809,7 @@ snapshots:
       chalk: 2.4.2
       js-tokens: 4.0.0
       picocolors: 1.0.1
+    optional: true
 
   '@crawlee/basic@3.9.2':
     dependencies:
@@ -2073,6 +2073,7 @@ snapshots:
       yargs: 17.7.2
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   '@sapphire/async-queue@1.5.2': {}
 
@@ -2155,6 +2156,7 @@ snapshots:
   ansi-styles@3.2.1:
     dependencies:
       color-convert: 1.9.3
+    optional: true
 
   ansi-styles@4.3.0:
     dependencies:
@@ -2162,7 +2164,8 @@ snapshots:
 
   ansi-styles@6.2.1: {}
 
-  argparse@2.0.1: {}
+  argparse@2.0.1:
+    optional: true
 
   array-flatten@1.1.1: {}
 
@@ -2287,6 +2290,7 @@ snapshots:
       ansi-styles: 3.2.1
       escape-string-regexp: 1.0.5
       supports-color: 5.5.0
+    optional: true
 
   chalk@4.1.2:
     dependencies:
@@ -2322,6 +2326,7 @@ snapshots:
       mitt: 3.0.1
       urlpattern-polyfill: 10.0.0
       zod: 3.22.4
+    optional: true
 
   chromium-bidi@0.5.8(devtools-protocol@0.0.1232444):
     dependencies:
@@ -2350,12 +2355,14 @@ snapshots:
   color-convert@1.9.3:
     dependencies:
       color-name: 1.1.3
+    optional: true
 
   color-convert@2.0.1:
     dependencies:
       color-name: 1.1.4
 
-  color-name@1.1.3: {}
+  color-name@1.1.3:
+    optional: true
 
   color-name@1.1.4: {}
 
@@ -2384,6 +2391,7 @@ snapshots:
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
+    optional: true
 
   crawlee@3.9.2(playwright@1.44.0)(puppeteer@22.9.0):
     dependencies:
@@ -2487,7 +2495,8 @@ snapshots:
 
   devtools-protocol@0.0.1232444: {}
 
-  devtools-protocol@0.0.1286932: {}
+  devtools-protocol@0.0.1286932:
+    optional: true
 
   devtools-protocol@0.0.1302984: {}
 
@@ -2539,11 +2548,13 @@ snapshots:
 
   entities@4.5.0: {}
 
-  env-paths@2.2.1: {}
+  env-paths@2.2.1:
+    optional: true
 
   error-ex@1.3.2:
     dependencies:
       is-arrayish: 0.2.1
+    optional: true
 
   es-define-property@1.0.0:
     dependencies:
@@ -2788,7 +2799,8 @@ snapshots:
     dependencies:
       ansi-regex: 2.1.1
 
-  has-flag@3.0.0: {}
+  has-flag@3.0.0:
+    optional: true
 
   has-flag@4.0.0: {}
 
@@ -2876,6 +2888,7 @@ snapshots:
     dependencies:
       parent-module: 1.0.1
       resolve-from: 4.0.0
+    optional: true
 
   import-local@3.1.0:
     dependencies:
@@ -2929,7 +2942,8 @@ snapshots:
 
   is-any-array@2.0.1: {}
 
-  is-arrayish@0.2.1: {}
+  is-arrayish@0.2.1:
+    optional: true
 
   is-fullwidth-code-point@3.0.0: {}
 
@@ -2951,11 +2965,13 @@ snapshots:
 
   jquery@3.7.1: {}
 
-  js-tokens@4.0.0: {}
+  js-tokens@4.0.0:
+    optional: true
 
   js-yaml@4.1.0:
     dependencies:
       argparse: 2.0.1
+    optional: true
 
   jsbn@1.1.0: {}
 
@@ -2989,7 +3005,8 @@ snapshots:
 
   json-buffer@3.0.1: {}
 
-  json-parse-even-better-errors@2.3.1: {}
+  json-parse-even-better-errors@2.3.1:
+    optional: true
 
   json5@2.2.3: {}
 
@@ -3003,7 +3020,8 @@ snapshots:
     dependencies:
       json-buffer: 3.0.1
 
-  lines-and-columns@1.2.4: {}
+  lines-and-columns@1.2.4:
+    optional: true
 
   linkedom@0.16.11:
     dependencies:
@@ -3035,6 +3053,7 @@ snapshots:
   lru-cache@6.0.0:
     dependencies:
       yallist: 4.0.0
+    optional: true
 
   lru-cache@7.18.3: {}
 
@@ -3206,6 +3225,7 @@ snapshots:
   parent-module@1.0.1:
     dependencies:
       callsites: 3.1.0
+    optional: true
 
   parent-require@1.0.0: {}
 
@@ -3215,6 +3235,7 @@ snapshots:
       error-ex: 1.3.2
       json-parse-even-better-errors: 2.3.1
       lines-and-columns: 1.2.4
+    optional: true
 
   parse5-htmlparser2-tree-adapter@7.0.0:
     dependencies:
@@ -3298,6 +3319,7 @@ snapshots:
       socks-proxy-agent: 8.0.3
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   proxy-chain@2.4.0:
     dependencies:
@@ -3339,6 +3361,7 @@ snapshots:
       - bufferutil
       - supports-color
       - utf-8-validate
+    optional: true
 
   puppeteer@22.9.0:
     dependencies:
@@ -3351,6 +3374,7 @@ snapshots:
       - supports-color
       - typescript
       - utf-8-validate
+    optional: true
 
   qs@6.11.0:
     dependencies:
@@ -3389,7 +3413,8 @@ snapshots:
     dependencies:
       resolve-from: 5.0.0
 
-  resolve-from@4.0.0: {}
+  resolve-from@4.0.0:
+    optional: true
 
   resolve-from@5.0.0: {}
 
@@ -3431,6 +3456,7 @@ snapshots:
   semver@7.6.0:
     dependencies:
       lru-cache: 6.0.0
+    optional: true
 
   send@0.18.0:
     dependencies:
@@ -3565,6 +3591,7 @@ snapshots:
   supports-color@5.5.0:
     dependencies:
       has-flag: 3.0.0
+    optional: true
 
   supports-color@7.2.0:
     dependencies:
@@ -3585,6 +3612,7 @@ snapshots:
     optionalDependencies:
       bare-fs: 2.3.0
       bare-path: 2.1.2
+    optional: true
 
   tar-fs@3.0.6:
     dependencies:
@@ -3740,7 +3768,8 @@ snapshots:
 
   y18n@5.0.8: {}
 
-  yallist@4.0.0: {}
+  yallist@4.0.0:
+    optional: true
 
   yargonaut@1.1.4:
     dependencies:
@@ -3767,4 +3796,5 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod@3.22.4: {}
+  zod@3.22.4:
+    optional: true

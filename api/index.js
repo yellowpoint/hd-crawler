@@ -2,10 +2,10 @@ import express from "express";
 import cors from "cors";
 import { readFile } from "fs/promises";
 import { configDotenv } from "dotenv";
-import { crawlStart } from "../src/core.js";
-import { defaultConfig } from '../src/config.js'
+import { crawlStart } from "./lib/core.js";
+import { defaultConfig } from './lib/config.js'
 import crawlStartPup from "./puppeteer.js";
-import { write } from "../src/utils.js";
+import { write } from "./lib/utils.js";
 configDotenv();
 
 const app = express();

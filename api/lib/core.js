@@ -5,7 +5,7 @@ import puppeteer from 'puppeteer-core';
 import chromium from "@sparticuz/chromium-min";
 import { configDotenv } from "dotenv";
 
-import { localExecutablePath, remoteExecutablePath } from '../api/puppeteer.js';
+import { localExecutablePath, remoteExecutablePath } from '../puppeteer.js';
 configDotenv();
 const isDev = process.env.NODE_ENV === "development";
 
