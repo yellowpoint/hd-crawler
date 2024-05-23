@@ -1,6 +1,5 @@
 import express from "express";
 import cors from "cors";
-import { readFile } from "fs/promises";
 import { configDotenv } from "dotenv";
 import { crawlStart } from "./lib/core.js";
 import { defaultConfig } from './lib/config.js'
@@ -15,8 +14,11 @@ const hostname = process.env.API_HOST || "localhost";
 app.use(cors());
 app.use(express.json());
 
-// Define a POST route to accept config and run the crawler
-app.post("/crawl", async (req, res) => {
+// 添加统一的/api路由
+const api = express.Router();
+app.use("/api", api);
+
+api.post("/crawl", async (req, res) => {
   let config = req.body;
   config = config?.url ? config : defaultConfig
   console.log("config", config);
@@ -36,7 +38,7 @@ app.post("/crawl", async (req, res) => {
       .json({ message: "Error occurred during crawling", error });
   }
 });
-app.post("/pup", async (req, res) => {
+api.post("/pup", async (req, res) => {
 
   try {
     const result = await crawlStartPup();
@@ -54,3 +56,4 @@ app.listen(port, hostname, () => {
 });
 
 export default app;
+
