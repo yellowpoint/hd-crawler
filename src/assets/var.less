@@ -1,0 +1,44 @@
+.create-text-shadow(@color: #fff, @width: 1px) {
+  text-shadow: 0 @width @color, @width 0 @color, -@width 0 @color, 0 -@width @color;
+}
+
+.table-border-1px(@color: #000) {
+  table {
+    position: relative;
+
+    &::after {
+      position: absolute;
+      top: 0%;
+      left: 0%;
+      display: block;
+      width: 200%;
+      height: 200%;
+      content: "";
+      border: 1px solid @color;
+      border-bottom: none;
+      border-left: none;
+      transform: scale(0.5);
+      transform-origin: 0 0;
+    }
+  }
+
+  th,
+  td {
+    position: relative;
+
+    &::after {
+      position: absolute;
+      top: 0%;
+      left: 0%;
+      display: block;
+      width: 200%;
+      height: 200%;
+      content: "";
+      border: 1px solid @color;
+      border-top: none;
+      border-right: none;
+      transform: scale(0.5);
+      transform-origin: 0 0;
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "editor.tabSize": 2,
+  // 关闭 vscode 保存自动格式化
+  "editor.formatOnSave": false,
+  "stylelint.enable": true,
+  // 关闭VS Code内置的样式规则检测规范，避免与Stylelint的检测规范重复|冲突
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false,
+  "prettier.enable": true,
+  "eslint.enable": true,
+  "eslint.alwaysShowStatus": true,
+  "eslint.run": "onType",
+  // 保存时自动修复以下 lint
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit"
+  },
+  "eslint.nodeEnv": "development",
+  "[nginx]": {
+    "editor.defaultFormatter": "raynigon.nginx-formatter",
+    "editor.formatOnSave": true
+  },
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+}

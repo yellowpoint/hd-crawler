@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family:
+    Urbanist,
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    "PingFang SC",
+    "Hiragino Sans GB",
+    "Heiti SC",
+    "Microsoft YaHei",
+    "WenQuanYi Micro Hei",
+    sans-serif;
+  font-size: 16px;
+  font-optical-sizing: auto;
+}
+
+img {
+  /* width: 100%; */
+}
+
+::-webkit-scrollbar-track-piece {
+  border-radius: 0;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  height: 50px;
+  background-color: #b8b8b883;
+  /* stylelint-disable-next-line function-no-unknown */
+  filter: alpha(opacity = 50);
+  border-radius: 6px;
+  outline-offset: -2px;
+  -moz-opacity: 0.5;
+  -khtml-opacity: 0.5;
+  opacity: 0.5;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  height: 50px;
+  background-color: #878987;
+  border-radius: 6px;
+}
+
+html.w-e-dark {
+  --w-e-textarea-bg-color: #1c1c1c;
+  --w-e-textarea-color: #fff;
+  --w-e-textarea-border-color: #0000;
+  --w-e-textarea-slight-border-color: #5550;
+  --w-e-textarea-slight-color: #aaa;
+  --w-e-textarea-slight-bg-color: #1c1c1c;
+  --w-e-textarea-selected-border-color: #fff0;
+  --w-e-textarea-handler-bg-color: #fff0;
+  --w-e-toolbar-color: #fff;
+  --w-e-toolbar-bg-color: #1c1c1c;
+  --w-e-toolbar-active-color: #fff;
+  --w-e-toolbar-active-bg-color: #000;
+  --w-e-toolbar-disabled-color: #666;
+  --w-e-toolbar-border-color: #1c1c1c;
+  --w-e-modal-button-bg-color: #333;
+  --w-e-modal-button-border-color: #1c1c1c;
+}
+
+@layer base {
+  .font-syne {
+    font-family: Syne, sans-serif;
+    font-weight: 700;
+  }
+
+  .font-urbanist {
+    font-family: Urbanist, sans-serif;
+  }
+
+  .hover-1 {
+    @apply transition-all hover:bg-tr-0.1 cursor-pointer;
+  }
+
+  .border-b1 {
+    @apply border-b border-tr-0.1 border-solid;
+  }
+
+  .border-t1 {
+    @apply border-t border-tr-0.1 border-solid;
+  }
+
+  .border-all {
+    @apply border border-tr-0.1 border-solid;
+  }
+
+  .border-2-black {
+    @apply border-2 border-black border-solid;
+  }
+
+  .all-center {
+    @apply flex justify-center items-center;
+  }
+
+  .text-sub {
+    @apply text-12 text-[rgba(255,255,255,0.5)] leading-18;
+  }
+}
+
+@layer components {
+  .tag {
+    @apply flex h-28 items-center justify-center rounded-14 border border-solid border-white px-8 text-16 text-white;
+  }
+
+  .task-card {
+    @apply w-500 rounded-32 bg-[#171717] p-24 h-full overflow-y-auto;
+  }
+
+  .btn {
+    @apply !h-40 !rounded-20 !px-24;
+  }
+
+  .scroll-box {
+    /* @apply overscroll-contain; */
+    @apply overflow-y-auto h-full;
+  }
+
+  .home-icon {
+    @apply all-center h-64 w-64 rounded-full bg-[#00000080] backdrop-blur-[10px];
+  }
+}
