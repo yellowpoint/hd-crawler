@@ -1,5 +1,7 @@
 import express from "express";
 import cors from "cors";
+import { readFile } from "fs/promises";
+
 import { configDotenv } from "dotenv";
 import { crawlStart } from "./lib/core.js";
 import { defaultConfig } from './lib/config.js'
