@@ -1,7 +1,7 @@
 {
   "editor.tabSize": 2,
   // 关闭 vscode 保存自动格式化
-  // "editor.formatOnSave": false,
+  "editor.formatOnSave": false,
   "stylelint.enable": true,
   // 关闭VS Code内置的样式规则检测规范，避免与Stylelint的检测规范重复|冲突
   "css.validate": false,
@@ -23,5 +23,5 @@
   },
   "editor.quickSuggestions": {
     "strings": "on"
-  },
+  }
 }

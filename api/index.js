@@ -1,5 +1,6 @@
 import { readFile } from 'fs/promises';
 
+import axios from 'axios';
 import cors from 'cors';
 import { configDotenv } from 'dotenv';
 import express from 'express';
@@ -8,6 +9,7 @@ import { defaultConfig } from './lib/config.js';
 import { crawlStart } from './lib/core.js';
 import { write } from './lib/utils.js';
 import crawlStartPup from './puppeteer.js';
+import dbRouter from './testdb.js';
 
 configDotenv();
 
@@ -21,6 +23,7 @@ app.use(express.json());
 // 添加统一的/api路由
 const api = express.Router();
 app.use('/api', api);
+app.use('/api', dbRouter);
 
 api.post('/crawl', async (req, res) => {
   let config = req.body;
@@ -31,10 +34,15 @@ api.post('/crawl', async (req, res) => {
     await crawlStart(config);
     const outputFileName = await write(config);
     console.log('outputFileName', outputFileName);
-    const outputFileContent = await readFile(outputFileName, 'utf-8');
+    let outputFileContent = await readFile(outputFileName, 'utf-8');
     // console.log('outputFileContent', outputFileContent);
+    outputFileContent = JSON.parse(outputFileContent);
+    const mainPage = outputFileContent[0];
+    console.log('mainPage', mainPage.url);
+    const res2 = await axios.post('http://localhost:4000/api/page', mainPage);
+    console.log('res2');
     res.contentType('application/json');
-    return res.send({ data: JSON.parse(outputFileContent), code: 0 });
+    return res.send({ data: outputFileContent, code: 0 });
   } catch (error) {
     return res
       .status(500)
