@@ -7,6 +7,7 @@ import express from 'express';
 
 import { defaultConfig } from './lib/config.js';
 import { crawlStart } from './lib/core.js';
+import googleCrawler from './lib/google.js';
 import { write } from './lib/utils.js';
 import crawlStartPup from './puppeteer.js';
 import dbRouter from './testdb.js';
@@ -54,6 +55,27 @@ api.post('/pup', async (req, res) => {
     const result = await crawlStartPup();
     res.contentType('application/json');
     return res.send(result);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: 'Error occurred during crawling', error });
+  }
+});
+api.post('/google', async (req, res) => {
+  try {
+    let config = req.body;
+    const key = config?.key;
+    console.log('key', key);
+    if (!key) return res.status(500).json({ message: 'key is required' });
+
+    await googleCrawler(key);
+    const outputFileName = await write(config);
+    console.log('outputFileName', outputFileName);
+    let outputFileContent = await readFile(outputFileName, 'utf-8');
+    // console.log('outputFileContent', outputFileContent);
+    outputFileContent = JSON.parse(outputFileContent);
+    res.contentType('application/json');
+    return res.send({ data: outputFileContent, code: 0 });
   } catch (error) {
     return res
       .status(500)

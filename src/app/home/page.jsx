@@ -4,6 +4,7 @@ import { useRequest } from 'ahooks';
 import { Button } from 'antd';
 
 import API from '../lib/api';
+import GoogleSuggest from '../lib/GoogleSuggest';
 
 const Home = () => {
   const [data, setData] = useState();
@@ -19,6 +20,7 @@ const Home = () => {
       home
       <Button onClick={onClick}>爬取</Button>
       结果：{data}
+      <GoogleSuggest />
     </div>
   );
 };

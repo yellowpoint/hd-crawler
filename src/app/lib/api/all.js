@@ -4,3 +4,4 @@ import axios, { baseImgURL, baseURL } from './axios';
 const post = axios.post;
 
 export const crawl = (e) => post(`/crawl`, e);
+export const google = (e) => post(`/google`, e);

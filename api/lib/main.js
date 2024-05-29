@@ -1,5 +1,5 @@
-import { crawlStart } from './core.js'
-import { defaultConfig } from './config.js'
+import { defaultConfig } from './config.js';
+import { crawlStart } from './core.js';
 import { write } from './utils.js';
 
 await crawlStart(defaultConfig);
