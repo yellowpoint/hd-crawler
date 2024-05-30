@@ -9,7 +9,7 @@ import GoogleSuggest from '../lib/GoogleSuggest';
 const Home = () => {
   const [data, setData] = useState();
   const onClick = async () => {
-    const res = await API.crawl({
+    const res = await API.wiki({
       url: ['https://en.wikipedia.org/wiki/D'],
       maxRequestsPerCrawl: 2,
     });

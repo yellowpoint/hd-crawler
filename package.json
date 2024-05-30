@@ -5,8 +5,7 @@
   "description": "This is an example of a Crawlee project.",
   "scripts": {
     "postinstall": "npx prisma generate",
-    "api": "node api/lib/main.js",
-    "server": "node api/index.js",
+    "api": "node api/index.js",
     "testdb": "nodemon api/testdb.js",
     "dev": "vite",
     "build": "vite build",

@@ -1,12 +1,14 @@
+import { readFile } from 'fs/promises';
+
 import { BasicCrawler, Dataset } from 'crawlee';
 
-import { crawlStart } from './core.js';
-import { savePageScreenshot } from './utils.js';
+import { crawlStart } from './lib/crawlerSetup.js';
+import { write, savePageScreenshot } from './lib/utils.js';
 
 const googleCrawler = async (key) => {
-  await crawlStart({
+  const crawlConfig = {
     url: ['https://www.google.com/search?q=' + encodeURIComponent(key)],
-    async requestHandler({ request, sendRequest, log, page }) {
+    requestHandler: async ({ request, sendRequest, log, page }) => {
       const { url } = request;
       log.info(`Processing ${url}...`);
 
@@ -33,7 +35,14 @@ const googleCrawler = async (key) => {
         );
         return text;
       });
+      // // 使用page.evaluate在页面上下文中执行滚动代码
+      // await page.evaluate(() => {
+      //   // 计算滚动的目标位置，这里是页面的总高度
+      //   const totalHeight = document.body.scrollHeight;
 
+      //   // 滚动到页面底部
+      //   window.scrollTo(0, totalHeight);
+      // });
       const related_searches = await page.evaluate(async () => {
         const elementHandle = document.querySelectorAll('#bres a');
         const text = Array.from(elementHandle).map((child) =>
@@ -52,7 +61,21 @@ const googleCrawler = async (key) => {
         // html: body,
       });
     },
-  });
+  };
+  await crawlStart(crawlConfig);
 };
 
-export default googleCrawler;
+export const crawlerGoogle = async (req) => {
+  let config = req.body;
+  const key = config?.key;
+  console.log('key', key);
+  if (!key) throw new Error('key is required');
+
+  await googleCrawler(key);
+  const outputFileName = await write(config);
+  console.log('outputFileName', outputFileName);
+  let outputFileContent = await readFile(outputFileName, 'utf-8');
+  // console.log('outputFileContent', outputFileContent);
+  outputFileContent = JSON.parse(outputFileContent);
+  return outputFileContent;
+};

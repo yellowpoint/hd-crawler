@@ -1,7 +1,8 @@
 import { createPlaywrightRouter, Dataset, KeyValueStore } from 'crawlee';
 
-import { defaultConfig } from './config.js';
 import { getPageHtml } from './utils.js';
+
+import { defaultConfig } from '../wiki.js';
 
 export const router = createPlaywrightRouter();
 
