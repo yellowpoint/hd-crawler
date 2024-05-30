@@ -1,13 +1,18 @@
 import { readFile } from 'fs/promises';
 
+import { PrismaClient } from '@prisma/client';
 import { BasicCrawler, Dataset } from 'crawlee';
+import express from 'express';
 
 import { crawlStart } from './lib/crawlerSetup.js';
 import { write, savePageScreenshot } from './lib/utils.js';
 
-const googleCrawler = async (key) => {
+const prisma = new PrismaClient();
+const api = express.Router();
+
+const googleCrawler = async (keyword) => {
   const crawlConfig = {
-    url: ['https://www.google.com/search?q=' + encodeURIComponent(key)],
+    url: ['https://www.google.com/search?q=' + encodeURIComponent(keyword)],
     requestHandler: async ({ request, sendRequest, log, page }) => {
       const { url } = request;
       log.info(`Processing ${url}...`);
@@ -53,7 +58,7 @@ const googleCrawler = async (key) => {
 
       // Store the HTML and URL to the default dataset.
       await Dataset.pushData({
-        key,
+        keyword,
         url,
         people_also_ask,
         presentation,
@@ -64,18 +69,63 @@ const googleCrawler = async (key) => {
   };
   await crawlStart(crawlConfig);
 };
+const addData = async (keyword, content) => {
+  const page = await prisma.google.findUnique({ where: { keyword } });
+  const dbData = {
+    keyword,
+    content,
+  };
+  if (page) {
+    const updatedPage = await prisma.google.update({
+      where: { id: page.id },
+      data: dbData,
+    });
+    return updatedPage;
+  } else {
+    const newPage = await prisma.google.create({
+      data: dbData,
+    });
+    return newPage;
+  }
+};
 
+const getData = async (keyword, content) => {
+  const res = await prisma.google.findUnique({ where: { keyword } });
+  if (res) {
+    return res;
+  } else {
+    return false;
+  }
+};
+const getDataAll = async (keyword, content) => {
+  const res = await prisma.google.findMany();
+  return res;
+};
 export const crawlerGoogle = async (req) => {
   let config = req.body;
-  const key = config?.key;
-  console.log('key', key);
-  if (!key) throw new Error('key is required');
+  const keyword = config?.keyword;
+  console.log('keyword', keyword);
+  if (!keyword) throw new Error('keyword is required');
 
-  await googleCrawler(key);
+  await googleCrawler(keyword);
   const outputFileName = await write(config);
   console.log('outputFileName', outputFileName);
   let outputFileContent = await readFile(outputFileName, 'utf-8');
-  // console.log('outputFileContent', outputFileContent);
   outputFileContent = JSON.parse(outputFileContent);
+  outputFileContent = outputFileContent[0];
+  await addData(keyword, JSON.stringify(outputFileContent));
+  // console.log('outputFileContent', outputFileContent);
   return outputFileContent;
 };
+
+api.post('/add', async (req, res) => {
+  const outputFileContent = await crawlerGoogle(req);
+  const dbres = await prisma.google.findMany();
+  return res.send({ data: dbres, code: 0 });
+});
+api.post('/all', async (req, res) => {
+  const dbres = await prisma.google.findMany();
+  return res.send({ data: dbres, code: 0 });
+});
+
+export default api;

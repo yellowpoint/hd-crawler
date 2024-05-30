@@ -10,7 +10,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "migrate": "npx prisma migrate dev",
+    "migrate": "npx prisma migrate dev --name update",
     "studio": "npx prisma studio"
   },
   "dependencies": {
@@ -26,12 +26,14 @@
     "crawlee": "3.9.2",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "express-async-errors": "^3.1.1",
     "glob": "^10.3.16",
     "gpt-tokenizer": "^2.1.2",
     "puppeteer-core": "^21.6.1",
     "react": "^18",
     "react-dom": "^18",
-    "react-router-dom": "^6.22.3"
+    "react-router-dom": "^6.22.3",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

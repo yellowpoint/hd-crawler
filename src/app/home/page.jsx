@@ -17,9 +17,9 @@ const Home = () => {
   };
   return (
     <div>
-      home
+      {/* home
       <Button onClick={onClick}>爬取</Button>
-      结果：{data}
+      结果：{data} */}
       <GoogleSuggest />
     </div>
   );
