@@ -38,6 +38,9 @@ importers:
       crawlee:
         specifier: 3.9.2
         version: 3.9.2(playwright@1.44.0)(puppeteer@22.9.0)
+      dayjs:
+        specifier: ^1.11.11
+        version: 1.11.11
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5

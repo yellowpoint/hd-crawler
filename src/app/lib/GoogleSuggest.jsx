@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { useRequest } from 'ahooks';
 import { Button, Input, Table } from 'antd';
+import dayjs from 'dayjs';
 
 import API from './api';
 
@@ -14,7 +15,10 @@ function renderArrayData(data, index) {
   ));
 }
 const format = (data) => {
-  return data.map((i) => JSON.parse(i.content));
+  return data.map(({ content, ...rest }) => ({
+    ...rest,
+    ...JSON.parse(content),
+  }));
 };
 export default function GoogleSuggest() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -39,12 +43,22 @@ export default function GoogleSuggest() {
 
   const columns = [
     {
+      title: 'id',
+      dataIndex: 'id',
+    },
+    {
       title: 'Keyword',
       dataIndex: 'keyword',
     },
+    // {
+    //   title: 'url',
+    //   dataIndex: 'url',
+    //   width: '100',
+    // },
     {
-      title: 'url',
-      dataIndex: 'url',
+      title: 'suggest',
+      dataIndex: 'presentation',
+      render: (suggestions) => renderArrayData(suggestions),
     },
     {
       title: 'people_also_ask',
@@ -52,14 +66,14 @@ export default function GoogleSuggest() {
       render: (suggestions) => renderArrayData(suggestions),
     },
     {
-      title: 'presentation',
-      dataIndex: 'presentation',
-      render: (suggestions) => renderArrayData(suggestions),
-    },
-    {
       title: 'related_searches',
       dataIndex: 'related_searches',
       render: (suggestions) => renderArrayData(suggestions),
+    },
+    {
+      title: 'createdAt',
+      dataIndex: 'createdAt',
+      render: (data) => dayjs(data).format('YYYY-MM-DD HH:mm:ss'),
     },
   ];
 

@@ -80,12 +80,12 @@ const addData = async (keyword, content) => {
       where: { id: page.id },
       data: dbData,
     });
-    return updatedPage;
+    return true;
   } else {
     const newPage = await prisma.google.create({
       data: dbData,
     });
-    return newPage;
+    return false;
   }
 };
 
@@ -98,8 +98,8 @@ const getData = async (keyword, content) => {
   }
 };
 const getDataAll = async (keyword, content) => {
-  const res = await prisma.google.findMany();
-  return res;
+  const dbres = await prisma.google.findMany({ orderBy: { id: 'desc' } });
+  return dbres;
 };
 export const crawlerGoogle = async (req) => {
   let config = req.body;
@@ -113,18 +113,18 @@ export const crawlerGoogle = async (req) => {
   let outputFileContent = await readFile(outputFileName, 'utf-8');
   outputFileContent = JSON.parse(outputFileContent);
   outputFileContent = outputFileContent[0];
-  await addData(keyword, JSON.stringify(outputFileContent));
+  const isExists = await addData(keyword, JSON.stringify(outputFileContent));
   // console.log('outputFileContent', outputFileContent);
   return outputFileContent;
 };
 
 api.post('/add', async (req, res) => {
   const outputFileContent = await crawlerGoogle(req);
-  const dbres = await prisma.google.findMany();
+  const dbres = getDataAll();
   return res.send({ data: dbres, code: 0 });
 });
 api.post('/all', async (req, res) => {
-  const dbres = await prisma.google.findMany();
+  const dbres = getDataAll();
   return res.send({ data: dbres, code: 0 });
 });
 
