@@ -7,6 +7,7 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 // datasource dev {
 //   provider = "sqlite"
 //   url      = "file:./dev.db"
@@ -25,6 +26,7 @@ datasource db {
   provider = "sqlite"
   url      = "file:./dev.db"
 }
+
 model Page {
   id        Int       @id @default(autoincrement())
   title     String
@@ -47,6 +49,13 @@ model SubLink {
 model google {
   id        Int      @id @default(autoincrement())
   keyword   String   @unique
+  content   String
+  createdAt DateTime @default(now())
+}
+
+model base {
+  id        Int      @id @default(autoincrement())
+  url       String   @unique
   content   String
   createdAt DateTime @default(now())
 }

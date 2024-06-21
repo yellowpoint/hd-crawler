@@ -2,6 +2,7 @@ import cors from 'cors';
 import { configDotenv } from 'dotenv';
 import express from 'express';
 
+import crawlerRouter from './crawler/crawler.js';
 import googleRouter from './crawler/google.js';
 import { crawlerWiki } from './crawler/wiki.js';
 import dbRouter from './db/testdb.js';
@@ -33,6 +34,7 @@ const api = express.Router();
 app.use('/api', api);
 app.use('/api', dbRouter);
 app.use('/api/google', googleRouter);
+app.use('/api/crawler', crawlerRouter);
 
 api.post('/wiki', async (req, res) => {
   const outputFileContent = await crawlerWiki(req);

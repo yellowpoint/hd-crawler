@@ -54,5 +54,5 @@ export const crawlStart = async (config) => {
   await crawler.addRequests(startUrls);
   const res = await crawler.run();
 
-  console.log('结束了', startUrls, res);
+  console.log('结束了', startUrls);
 };

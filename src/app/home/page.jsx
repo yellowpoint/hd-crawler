@@ -4,6 +4,7 @@ import { useRequest } from 'ahooks';
 import { Button } from 'antd';
 
 import API from '../lib/api';
+import BaseCrawler from '../lib/BaseCrawler';
 import GoogleSuggest from '../lib/GoogleSuggest';
 
 const Home = () => {
@@ -20,7 +21,8 @@ const Home = () => {
       {/* home
       <Button onClick={onClick}>爬取</Button>
       结果：{data} */}
-      <GoogleSuggest />
+      {/* <GoogleSuggest /> */}
+      <BaseCrawler />
     </div>
   );
 };

@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.4",
+    "@google/generative-ai": "^0.13.0",
     "@prisma/client": "^5.14.0",
     "@sparticuz/chromium-min": "^119.0.2",
     "ahooks": "^3.7.11",
@@ -30,6 +31,7 @@
     "express-async-errors": "^3.1.1",
     "glob": "^10.3.16",
     "gpt-tokenizer": "^2.1.2",
+    "openai": "^4.52.0",
     "puppeteer-core": "^21.6.1",
     "react": "^18",
     "react-dom": "^18",
