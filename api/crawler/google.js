@@ -10,7 +10,7 @@ import { write, savePageScreenshot } from './lib/utils.js';
 const prisma = new PrismaClient();
 const api = express.Router();
 
-const googleCrawler = async (keyword) => {
+const googleCrawler = async (keyword, level = 1) => {
   const crawlConfig = {
     url: ['https://www.google.com/search?q=' + encodeURIComponent(keyword)],
     requestHandler: async ({ request, sendRequest, log, page }) => {
@@ -29,7 +29,7 @@ const googleCrawler = async (keyword) => {
       });
 
       await page.click('textarea');
-      // await page.waitForSelector('#Alh6id');
+      await page.waitForSelector('#Alh6id');
       const presentation = await page.evaluate(async () => {
         // await new Promise((resolve) => setTimeout(resolve, 1000));
         const elementHandle = document.querySelectorAll(
@@ -56,18 +56,38 @@ const googleCrawler = async (keyword) => {
         return text;
       });
 
-      // Store the HTML and URL to the default dataset.
-      await Dataset.pushData({
+      console.log('presentation', presentation);
+      console.log('level', level);
+      let suggestArr = [];
+      if (level < 2) {
+        const suggestArrPromise = presentation.slice(0, 2).map((i) => {
+          return googleCrawler(i, level + 1).catch((error) => {
+            // 这里可以处理错误，例如打印日志、记录错误等
+            console.error('Error in processing item:', error);
+            // 返回一个特定的值或者null，表示这个操作失败了
+            // 但是Promise.all会继续等待其他Promise的结果
+            return i + ',报错了'; // 或者其他你希望在出错时返回的值
+          });
+        });
+        suggestArr = await Promise.all(suggestArrPromise);
+      }
+
+      // console.log('suggestArr', suggestArr);
+      const result = {
         keyword,
         url,
         people_also_ask,
         presentation,
         related_searches,
+        // suggestArr,
         // html: body,
-      });
+      };
+
+      await Dataset.pushData(result);
+      return result;
     },
   };
-  await crawlStart(crawlConfig);
+  return await crawlStart(crawlConfig);
 };
 const addData = async (keyword, content) => {
   const page = await prisma.google.findUnique({ where: { keyword } });
@@ -112,7 +132,7 @@ export const crawlerGoogle = async (req) => {
   console.log('outputFileName', outputFileName);
   let outputFileContent = await readFile(outputFileName, 'utf-8');
   outputFileContent = JSON.parse(outputFileContent);
-  outputFileContent = outputFileContent[0];
+  outputFileContent.reverse();
   const isExists = await addData(keyword, JSON.stringify(outputFileContent));
   // console.log('outputFileContent', outputFileContent);
   return outputFileContent;
@@ -120,11 +140,11 @@ export const crawlerGoogle = async (req) => {
 
 api.post('/add', async (req, res) => {
   const outputFileContent = await crawlerGoogle(req);
-  const dbres = getDataAll();
-  return res.send({ data: dbres, code: 0 });
+  // const dbres = await getDataAll();
+  return res.send({ data: outputFileContent, code: 0 });
 });
 api.post('/all', async (req, res) => {
-  const dbres = getDataAll();
+  const dbres = await getDataAll();
   return res.send({ data: dbres, code: 0 });
 });
 

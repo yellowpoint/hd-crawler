@@ -1,42 +1,43 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import { useRequest } from 'ahooks';
-import { Button, Input, Table } from 'antd';
+import { Table, Button, Input } from 'antd';
 import dayjs from 'dayjs';
 
 import API from './api';
 
-function renderArrayData(data, index) {
+const renderArrayData = (data, index) => {
   if (!data || data.length === 0) return null;
   return data.map((suggestion, index) => (
     <div key={index}>
       {index + 1}. {suggestion}
     </div>
   ));
-}
+};
+
 const format = (data) => {
   return data.map(({ content, ...rest }) => ({
     ...rest,
-    ...JSON.parse(content),
+    content: JSON.parse(content),
   }));
 };
-export default function GoogleSuggest() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
-  const { data: allData } = useRequest(API.googleAll, {
-    // refreshDeps: [searchTerm],
-    onSuccess: (data) => {
-      if (!data) return;
-      const data1 = format(data);
+
+const GoogleSuggest = () => {
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const [suggestions, setSuggestions] = React.useState([]);
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const res = await API.googleAll();
+      if (!res) return;
+      const data1 = format(res);
       setSuggestions(data1);
-    },
-  });
+    };
+    fetchData();
+  }, []);
 
   const handleSearch = async () => {
     const res = await API.googleAdd({
       keyword: searchTerm,
     });
-    console.log('res', res);
     const data1 = format(res);
     setSuggestions(data1);
   };
@@ -50,32 +51,48 @@ export default function GoogleSuggest() {
       title: 'Keyword',
       dataIndex: 'keyword',
     },
-    // {
-    //   title: 'url',
-    //   dataIndex: 'url',
-    //   width: '100',
-    // },
-    {
-      title: 'suggest',
-      dataIndex: 'presentation',
-      render: (suggestions) => renderArrayData(suggestions),
-    },
-    {
-      title: 'people_also_ask',
-      dataIndex: 'people_also_ask',
-      render: (suggestions) => renderArrayData(suggestions),
-    },
-    {
-      title: 'related_searches',
-      dataIndex: 'related_searches',
-      render: (suggestions) => renderArrayData(suggestions),
-    },
     {
       title: 'createdAt',
       dataIndex: 'createdAt',
       render: (data) => dayjs(data).format('YYYY-MM-DD HH:mm:ss'),
     },
   ];
+
+  const expandedRowRender = (record) => {
+    const { content } = record;
+    return (
+      <Table
+        pagination={false}
+        rowKey="keyword"
+        dataSource={content}
+        columns={[
+          {
+            title: 'keyword',
+            dataIndex: 'keyword',
+          },
+          // {
+          //   title: 'url',
+          //   dataIndex: 'url',
+          // },
+          {
+            title: 'suggest',
+            dataIndex: 'presentation',
+            render: (suggestions) => renderArrayData(suggestions),
+          },
+          {
+            title: 'people_also_ask',
+            dataIndex: 'people_also_ask',
+            render: (suggestions) => renderArrayData(suggestions),
+          },
+          {
+            title: 'related_searches',
+            dataIndex: 'related_searches',
+            render: (suggestions) => renderArrayData(suggestions),
+          },
+        ]}
+      />
+    );
+  };
 
   return (
     <div className="p-24">
@@ -96,8 +113,11 @@ export default function GoogleSuggest() {
         dataSource={suggestions}
         columns={columns}
         pagination={false}
+        expandable={{ expandedRowRender }}
         style={{ marginTop: '16px' }}
       />
     </div>
   );
-}
+};
+
+export default GoogleSuggest;

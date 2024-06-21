@@ -50,7 +50,9 @@ export const crawlStart = async (config) => {
     }),
   );
 
-  await crawler.run(startUrls);
+  // 使用 run 方法时，无法获取到 requestHandler 返回的值，所以需要使用 addRequests 和 run 的组合方式。
+  await crawler.addRequests(startUrls);
+  const res = await crawler.run();
 
-  console.log('结束了', startUrls);
+  console.log('结束了', startUrls, res);
 };
