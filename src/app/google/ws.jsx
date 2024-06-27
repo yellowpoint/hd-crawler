@@ -1,12 +1,10 @@
 import { useEffect } from 'react';
 
-// import io from 'socket.io-client';
-// import WebSocket from 'websocket';
+import { baseURL } from '@/lib/api/axios';
 
 const Ws = () => {
   useEffect(() => {
-    // const socket = io('ws://localhost:4000/ws/test');
-    const ws = new WebSocket('ws://localhost:4000/api/ws/test');
+    const ws = new WebSocket(baseURL + '/ws/test');
     ws.onopen = () => {
       console.log('Connected to the server');
     };

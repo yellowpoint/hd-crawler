@@ -3,93 +3,74 @@ import { readFile } from 'fs/promises';
 import { PrismaClient } from '@prisma/client';
 import { BasicCrawler, Dataset } from 'crawlee';
 import express from 'express';
+import expressWs from 'express-ws';
 
+import { getRelatedSearchesAndAlsoAsks } from './googleUtils.js';
 import { crawlStart } from './lib/crawlerSetup.js';
 import { write, savePageScreenshot } from './lib/utils.js';
 
 const prisma = new PrismaClient();
-const api = express.Router();
-
-const googleCrawler = async (keyword, level = 1) => {
-  const crawlConfig = {
-    url: ['https://www.google.com/search?q=' + encodeURIComponent(keyword)],
-    requestHandler: async ({ request, sendRequest, log, page }) => {
-      const { url } = request;
-      log.info(`Processing ${url}...`);
-
-      // await savePageScreenshot(page);
-      const people_also_ask = await page.evaluate(() => {
-        const elementHandle = document.querySelectorAll(
-          '.related-question-pair',
-        );
-        const text = Array.from(elementHandle).map((child) =>
-          child.getAttribute('data-q'),
-        );
-        return text;
-      });
-
-      await page.click('textarea');
-      await page.waitForSelector('#Alh6id');
-      let presentation = await page.evaluate(async () => {
-        // await new Promise((resolve) => setTimeout(resolve, 1000));
-        const elementHandle = document.querySelectorAll(
-          '#Alh6id li.PZPZlf .wM6W7d',
-        );
-        const text = Array.from(elementHandle).map(
-          (child) => child.textContent,
-        );
-        return text;
-      });
-      // // 使用page.evaluate在页面上下文中执行滚动代码
-      // await page.evaluate(() => {
-      //   // 计算滚动的目标位置，这里是页面的总高度
-      //   const totalHeight = document.body.scrollHeight;
-
-      //   // 滚动到页面底部
-      //   window.scrollTo(0, totalHeight);
-      // });
-      const related_searches = await page.evaluate(async () => {
-        const elementHandle = document.querySelectorAll('#bres a');
-        const text = Array.from(elementHandle).map((child) =>
-          child.textContent.trim(),
-        );
-        return text;
-      });
-      const keywordAndxing = ['*' + keyword, keyword + '*'];
-
-      console.log('加上星号', keywordAndxing);
-      console.log('presentation', presentation);
-      console.log('level', level);
-      if (level < 2) {
-        const suggestArrPromise = [...keywordAndxing, ...presentation].map(
-          (i) => {
-            return googleCrawler(i, level + 1).catch((error) => {
-              // 这里可以处理错误，例如打印日志、记录错误等
-              console.error('Error in processing item:', error);
-              // 返回一个特定的值或者null，表示这个操作失败了
-              // 但是Promise.all会继续等待其他Promise的结果
-              return i + ',报错了'; // 或者其他你希望在出错时返回的值
-            });
-          },
-        );
-        await Promise.all(suggestArrPromise);
-      }
-
-      const result = {
-        keyword,
-        url,
-        people_also_ask,
-        presentation,
-        related_searches,
-        // html: body,
-      };
-
-      await Dataset.pushData(result);
-      return result;
-    },
-  };
-  return await crawlStart(crawlConfig);
+const router = express.Router();
+expressWs(router);
+const logAndWsSend = (log, ws) => {
+  console.log(log);
+  ws?.send?.(log);
 };
+const googleCrawler = async (keyword, level = 1, ws) => {
+  const requestHandler = async ({ request, sendRequest, log, page }) => {
+    const { url } = request;
+
+    logAndWsSend(keyword + '，开始获取', ws);
+    const { people_also_ask, presentation, related_searches } =
+      await getRelatedSearchesAndAlsoAsks(page, keyword);
+
+    const result = {
+      keyword,
+      url,
+      people_also_ask,
+      presentation,
+      related_searches,
+    };
+
+    try {
+      logAndWsSend(keyword + '，获取数据完成：' + JSON.stringify(result), ws);
+
+      logAndWsSend(keyword + '开始存储', ws);
+      await Dataset.pushData(result);
+      await addData(keyword, JSON.stringify(result));
+      logAndWsSend(keyword + '，存储成功', ws);
+    } catch (error) {
+      logAndWsSend(keyword + '，存储失败：' + error, ws);
+    }
+
+    if (level < 2) {
+      // 添加通配符搜索
+      const keywordAndxing = ['*' + keyword, keyword + '*'];
+      logAndWsSend(
+        keyword + '，添加通配符搜索：' + JSON.stringify(keywordAndxing),
+        ws,
+      );
+      logAndWsSend(
+        keyword + '，添加搜索框提示词搜索' + JSON.stringify(presentation),
+        ws,
+      );
+
+      // const suggestArrPromise = [...keywordAndxing, ...presentation].map(
+      const suggestArrPromise = [...keywordAndxing].map((i) => {
+        return googleCrawler(i, level + 1, ws).catch((error) => {
+          console.error('Error in processing item:', error);
+          return i + ',报错了';
+        });
+      });
+      await Promise.all(suggestArrPromise);
+    }
+  };
+  return await crawlStart({
+    url: ['https://www.google.com/search?q=' + encodeURIComponent(keyword)],
+    requestHandler,
+  });
+};
+
 const addData = async (keyword, content) => {
   const page = await prisma.google.findUnique({ where: { keyword } });
   const dbData = {
@@ -122,14 +103,15 @@ const getDataAll = async (keyword, content) => {
   const dbres = await prisma.google.findMany({ orderBy: { id: 'desc' } });
   return dbres;
 };
-export const crawlerGoogle = async (req) => {
+export const crawlerGoogle = async (req, ws) => {
   let config = req.body;
   const keyword = config?.keyword;
   console.log('keyword', keyword);
   if (!keyword) throw new Error('keyword is required');
 
-  await googleCrawler(keyword);
+  await googleCrawler(keyword, 1, ws);
   const outputFileName = await write(config);
+
   console.log('outputFileName', outputFileName);
   let outputFileContent = await readFile(outputFileName, 'utf-8');
   outputFileContent = JSON.parse(outputFileContent);
@@ -138,15 +120,36 @@ export const crawlerGoogle = async (req) => {
   // console.log('outputFileContent', outputFileContent);
   return outputFileContent;
 };
+export const crawlerGoogleWs = async (keyword, ws) => {
+  console.log('keyword', keyword);
+  if (!keyword) throw new Error('keyword is required');
 
-api.post('/add', async (req, res) => {
+  await googleCrawler(keyword, 1, ws);
+};
+
+router.post('/add', async (req, res) => {
   const outputFileContent = await crawlerGoogle(req);
   // const dbres = await getDataAll();
   return res.send({ data: outputFileContent, code: 0 });
 });
-api.post('/all', async (req, res) => {
+router.ws('/addws', async (ws, req) => {
+  // console.log('addws', req);
+  ws.send('来自服务端推送的消息');
+  ws.on('message', async (msg) => {
+    ws.send(`收到客户端的消息为：${msg}`);
+    try {
+      const outputFileContent = await crawlerGoogleWs(msg, ws);
+    } catch (error) {
+      ws.send('报错了' + error);
+    }
+  });
+
+  // return res.send({ data: outputFileContent, code: 0 });
+});
+
+router.post('/all', async (req, res) => {
   const dbres = await getDataAll();
   return res.send({ data: dbres, code: 0 });
 });
 
-export default api;
+export default router;

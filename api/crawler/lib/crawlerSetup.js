@@ -14,7 +14,7 @@ configDotenv();
 const isDev = process.env.NODE_ENV === 'development';
 
 export const crawlStart = async (config) => {
-  console.log('CRAWLEE_STORAGE_DIR', process.env.CRAWLEE_STORAGE_DIR);
+  // console.log('CRAWLEE_STORAGE_DIR', process.env.CRAWLEE_STORAGE_DIR);
 
   const startUrls = config.url;
   console.log('startUrls', startUrls);
@@ -29,7 +29,7 @@ export const crawlStart = async (config) => {
         executablePath: await chromium.executablePath(remoteExecutablePath),
         headless: true,
       };
-  console.log('launchOptions', launchOptions);
+  // console.log('launchOptions', launchOptions);
   const crawler = new PuppeteerCrawler(
     {
       // proxyConfiguration: new ProxyConfiguration({ proxyUrls: ['...'] }),
