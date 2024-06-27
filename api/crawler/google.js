@@ -30,7 +30,7 @@ const googleCrawler = async (keyword, level = 1) => {
 
       await page.click('textarea');
       await page.waitForSelector('#Alh6id');
-      const presentation = await page.evaluate(async () => {
+      let presentation = await page.evaluate(async () => {
         // await new Promise((resolve) => setTimeout(resolve, 1000));
         const elementHandle = document.querySelectorAll(
           '#Alh6id li.PZPZlf .wM6W7d',
@@ -55,31 +55,32 @@ const googleCrawler = async (keyword, level = 1) => {
         );
         return text;
       });
+      const keywordAndxing = ['*' + keyword, keyword + '*'];
 
+      console.log('加上星号', keywordAndxing);
       console.log('presentation', presentation);
       console.log('level', level);
-      let suggestArr = [];
       if (level < 2) {
-        const suggestArrPromise = presentation.slice(0, 2).map((i) => {
-          return googleCrawler(i, level + 1).catch((error) => {
-            // 这里可以处理错误，例如打印日志、记录错误等
-            console.error('Error in processing item:', error);
-            // 返回一个特定的值或者null，表示这个操作失败了
-            // 但是Promise.all会继续等待其他Promise的结果
-            return i + ',报错了'; // 或者其他你希望在出错时返回的值
-          });
-        });
-        suggestArr = await Promise.all(suggestArrPromise);
+        const suggestArrPromise = [...keywordAndxing, ...presentation].map(
+          (i) => {
+            return googleCrawler(i, level + 1).catch((error) => {
+              // 这里可以处理错误，例如打印日志、记录错误等
+              console.error('Error in processing item:', error);
+              // 返回一个特定的值或者null，表示这个操作失败了
+              // 但是Promise.all会继续等待其他Promise的结果
+              return i + ',报错了'; // 或者其他你希望在出错时返回的值
+            });
+          },
+        );
+        await Promise.all(suggestArrPromise);
       }
 
-      // console.log('suggestArr', suggestArr);
       const result = {
         keyword,
         url,
         people_also_ask,
         presentation,
         related_searches,
-        // suggestArr,
         // html: body,
       };
 

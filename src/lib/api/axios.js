@@ -7,7 +7,7 @@ const proUrl = 'https://api.kolink.io/api';
 export const isTest = isDev && false;
 const devUrl = isTest
   ? 'https://120.46.191.217/api'
-  : 'https://api.kolink.io/api';
+  : 'http://localhost:4000/api';
 
 export const baseURL = isDev ? devUrl : proUrl;
 export const baseImgURL = proUrl;
