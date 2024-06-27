@@ -3,7 +3,7 @@ import React from 'react';
 import { Table, Button, Input } from 'antd';
 import dayjs from 'dayjs';
 
-import API from './api';
+import API from '@/lib/api';
 
 const renderArrayData = (data, index) => {
   if (!data || data.length === 0) return null;

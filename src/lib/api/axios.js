@@ -2,9 +2,12 @@ import { message } from 'antd';
 import axios from 'axios';
 
 const isDev = process.env.NODE_ENV === 'development';
-const proUrl = '/api';
-// const devUrl = 'https://120.46.191.217/api';
-const devUrl = 'http://localhost:4000/api';
+const proUrl = 'https://api.kolink.io/api';
+
+export const isTest = isDev && false;
+const devUrl = isTest
+  ? 'https://120.46.191.217/api'
+  : 'https://api.kolink.io/api';
 
 export const baseURL = isDev ? devUrl : proUrl;
 export const baseImgURL = proUrl;

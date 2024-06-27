@@ -1,30 +1,14 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-import { useRequest } from 'ahooks';
-import { Button } from 'antd';
+export default function Home() {
+  const navigate = useNavigate();
 
-import API from '../lib/api';
-import BaseCrawler from '../lib/BaseCrawler';
-import GoogleSuggest from '../lib/GoogleSuggest';
+  useEffect(() => {
+    navigate('/google', { replace: true });
+  }, []);
 
-const Home = () => {
-  const [data, setData] = useState();
-  const onClick = async () => {
-    const res = await API.wiki({
-      url: ['https://en.wikipedia.org/wiki/D'],
-      maxRequestsPerCrawl: 2,
-    });
-    setData(JSON.stringify(res));
-  };
   return (
-    <div>
-      {/* home
-      <Button onClick={onClick}>爬取</Button>
-      结果：{data} */}
-      {/* <GoogleSuggest /> */}
-      <BaseCrawler />
-    </div>
+    <main className="relative flex h-full flex-col items-center justify-center"></main>
   );
-};
-
-export default Home;
+}

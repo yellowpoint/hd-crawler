@@ -14,6 +14,7 @@
     "studio": "npx prisma studio"
   },
   "dependencies": {
+    "@ant-design/cssinjs": "^1.21.0",
     "@ant-design/icons": "^5.3.4",
     "@google/generative-ai": "^0.13.0",
     "@prisma/client": "^5.14.0",
