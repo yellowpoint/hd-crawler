@@ -5,6 +5,8 @@ import dayjs from 'dayjs';
 
 import API from '@/lib/api';
 
+import WsTest from './ws';
+
 const renderArrayData = (data, index) => {
   if (!data || data.length === 0) return null;
   return data.map((suggestion, index) => (
@@ -108,6 +110,7 @@ const GoogleSuggest = () => {
           Search
         </Button>
       </div>
+      <WsTest />
       <Table
         rowKey="keyword"
         dataSource={suggestions}

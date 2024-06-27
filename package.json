@@ -30,6 +30,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-async-errors": "^3.1.1",
+    "express-ws": "^5.0.2",
     "glob": "^10.3.16",
     "gpt-tokenizer": "^2.1.2",
     "openai": "^4.52.0",
@@ -37,7 +38,8 @@
     "react": "^18",
     "react-dom": "^18",
     "react-router-dom": "^6.22.3",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "websocket": "^1.0.35"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
