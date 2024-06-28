@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 
 import API from '@/lib/api';
 
+import Search from './search';
 import WsTest from './ws';
 
 const renderArrayData = (data, index) => {
@@ -25,6 +26,7 @@ const format = (data) => {
 
 const GoogleSuggest = () => {
   const [searchTerm, setSearchTerm] = React.useState('');
+  const [search, setSearch] = React.useState('');
   const [suggestions, setSuggestions] = React.useState([]);
   React.useEffect(() => {
     const fetchData = async () => {
@@ -37,11 +39,12 @@ const GoogleSuggest = () => {
   }, []);
 
   const handleSearch = async () => {
-    const res = await API.googleAdd({
-      keyword: searchTerm,
-    });
-    const data1 = format(res);
-    setSuggestions(data1);
+    setSearch(searchTerm);
+    // const res = await API.googleAdd({
+    //   keyword: searchTerm,
+    // });
+    // const data1 = format(res);
+    // setSuggestions(data1);
   };
 
   const columns = [
@@ -98,7 +101,7 @@ const GoogleSuggest = () => {
 
   return (
     <div className="p-24">
-      <div className="flex items-center gap-16">
+      {/* <div className="flex items-center gap-16">
         <Input
           className="w-300"
           value={searchTerm}
@@ -109,16 +112,16 @@ const GoogleSuggest = () => {
         <Button type="primary" onClick={handleSearch}>
           Search
         </Button>
-      </div>
-      <WsTest />
-      <Table
+      </div> */}
+      <Search keyword={search} />
+      {/* <Table
         rowKey="keyword"
         dataSource={suggestions}
         columns={columns}
         pagination={false}
         expandable={{ expandedRowRender }}
         style={{ marginTop: '16px' }}
-      />
+      /> */}
     </div>
   );
 };
