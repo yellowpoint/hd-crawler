@@ -10,7 +10,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "migrate": "npx prisma migrate dev --name update",
+    "prisma": "npx prisma migrate dev --name update",
     "studio": "npx prisma studio"
   },
   "dependencies": {

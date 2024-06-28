@@ -51,18 +51,23 @@ const googleCrawler = async (keyword, level = 1, ws, parentKeyword) => {
         ws,
       );
       logAndWsSend(
-        keyword + '，添加搜索框提示词搜索' + JSON.stringify(presentation),
+        keyword + '，添加搜索框提示词搜索：' + JSON.stringify(presentation),
         ws,
       );
 
       // const suggestArrPromise = [...keywordAndxing, ...presentation].map(
-      const suggestArrPromise = [...keywordAndxing].map((i) => {
-        return googleCrawler(i, level + 1, ws, keyword).catch((error) => {
-          console.error('Error in processing item:', error);
-          return i + ',报错了';
+      const suggestArrPromise = [...keywordAndxing, ...presentation]
+        .slice(0, 5)
+        .map((i) => {
+          return googleCrawler(i, level + 1, ws, keyword)
+            .then(() => i + ',成功了')
+            .catch((error) => {
+              console.error('Error in processing item:', error);
+              return i + ',报错了';
+            });
         });
-      });
-      await Promise.all(suggestArrPromise);
+      const suggestArr = await Promise.all(suggestArrPromise);
+      logAndWsSend(keyword + '所有搜索完成：' + JSON.stringify(suggestArr), ws);
     }
   };
   return await crawlStart({
@@ -101,15 +106,23 @@ const addData = async (keyword, content, parentKeyword) => {
 };
 
 const getData = async (keyword) => {
-  const res = await prisma.google.findUnique({ where: { keyword } });
-  if (res) {
-    return res;
-  } else {
-    return false;
-  }
+  const main = await prisma.google.findUnique({ where: { keyword } });
+  if (!main) return null;
+  const children = await prisma.google.findMany({
+    where: {
+      OR: [{ parentKeywords: { contains: keyword } }],
+    },
+  });
+  const res = { ...main, children };
+  return res;
 };
 const getDataAll = async (keyword, content) => {
-  const dbres = await prisma.google.findMany({ orderBy: { id: 'desc' } });
+  const dbres = await prisma.google.findMany({
+    where: {
+      parentKeywords: null,
+    },
+    orderBy: { id: 'desc' },
+  });
   return dbres;
 };
 export const crawlerGoogle = async (req, ws) => {
@@ -140,7 +153,9 @@ router.post('/get', async (req, res) => {
   let config = req.body;
   const keyword = config?.keyword;
   console.log('keyword', keyword);
-  if (!keyword) throw new Error('keyword is required');
+  if (!keyword) {
+    return res.send({ message: 'keyword is required', code: 1 });
+  }
   const outputFileContent = await getData(keyword);
   return res.send({ data: outputFileContent, code: 0 });
 });
@@ -154,11 +169,11 @@ router.ws('/addws', async (ws, req) => {
   ws.send('来自服务端推送的消息');
   ws.on('message', async (msg) => {
     ws.send(`收到客户端的消息为：${msg}`);
-    try {
-      const outputFileContent = await crawlerGoogleWs(msg, ws);
-    } catch (error) {
-      ws.send('报错了' + error);
+    if (!msg) {
+      ws.send('keyword is required');
+      return;
     }
+    await crawlerGoogleWs(msg, ws);
   });
 
   // return res.send({ data: outputFileContent, code: 0 });

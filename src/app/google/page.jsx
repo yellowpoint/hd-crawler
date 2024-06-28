@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import { Table, Button, Input, message } from 'antd';
 import dayjs from 'dayjs';
@@ -6,15 +7,6 @@ import dayjs from 'dayjs';
 import API from '@/lib/api';
 
 import useSearch from './search';
-
-const renderArrayData = (data, index) => {
-  if (!data || data.length === 0) return null;
-  return data.map((suggestion, index) => (
-    <div key={index}>
-      {index + 1}. {suggestion}
-    </div>
-  ));
-};
 
 const format = (data) => {
   return data.map(({ content, ...rest }) => ({
@@ -55,6 +47,9 @@ const GoogleSuggest = () => {
     {
       title: 'Keyword',
       dataIndex: 'keyword',
+      render: (data) => (
+        <Link to={`/google/${encodeURIComponent(data)}`}>{data}</Link>
+      ),
     },
     {
       title: 'createdAt',
@@ -62,42 +57,6 @@ const GoogleSuggest = () => {
       render: (data) => dayjs(data).format('YYYY-MM-DD HH:mm:ss'),
     },
   ];
-
-  const expandedRowRender = (record) => {
-    const { content } = record;
-    return (
-      <Table
-        pagination={false}
-        rowKey="keyword"
-        dataSource={content}
-        columns={[
-          {
-            title: 'keyword',
-            dataIndex: 'keyword',
-          },
-          // {
-          //   title: 'url',
-          //   dataIndex: 'url',
-          // },
-          {
-            title: 'suggest',
-            dataIndex: 'presentation',
-            render: (suggestions) => renderArrayData(suggestions),
-          },
-          {
-            title: 'people_also_ask',
-            dataIndex: 'people_also_ask',
-            render: (suggestions) => renderArrayData(suggestions),
-          },
-          {
-            title: 'related_searches',
-            dataIndex: 'related_searches',
-            render: (suggestions) => renderArrayData(suggestions),
-          },
-        ]}
-      />
-    );
-  };
 
   return (
     <div className="p-24">
@@ -114,13 +73,12 @@ const GoogleSuggest = () => {
         </Button>
       </div>
       <DataList />
-      {/* <Search searchTerm={search} /> */}
       <Table
         rowKey="keyword"
         dataSource={suggestions}
         columns={columns}
         pagination={false}
-        expandable={{ expandedRowRender }}
+        expandable={false}
         style={{ marginTop: '16px' }}
       />
     </div>

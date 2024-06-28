@@ -17,6 +17,11 @@ export const routerList = [
     side: 'google 关键词',
   },
   {
+    path: '/google/:id',
+    notNeedLogin: true,
+    component: lazyLoad('googleId'),
+  },
+  {
     path: '/crawler',
     notNeedLogin: true,
     component: lazyLoad('crawler'),
