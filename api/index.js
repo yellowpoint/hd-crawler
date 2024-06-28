@@ -3,11 +3,11 @@ import { configDotenv } from 'dotenv';
 import express from 'express';
 import expressWs from 'express-ws';
 
-import crawlerRouter from '../apiLib/crawler/crawler.js';
-import googleRouter from '../apiLib/crawler/google.js';
-import { crawlerWiki } from '../apiLib/crawler/wiki.js';
-import wsRouter from '../apiLib/crawler/ws.js';
-import dbRouter from '../apiLib/db/testdb.js';
+import crawlerRouter from './crawler/crawler.js';
+import googleRouter from './crawler/google.js';
+import { crawlerWiki } from './crawler/wiki.js';
+import wsRouter from './crawler/ws.js';
+import dbRouter from './db/testdb.js';
 
 import 'express-async-errors';
 
