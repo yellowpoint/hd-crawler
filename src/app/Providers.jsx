@@ -6,7 +6,7 @@ import { StyleProvider } from '@ant-design/cssinjs';
 import { ConfigProvider, theme } from 'antd';
 import clsx from 'clsx';
 
-import Header from '@/components/Layout/Header';
+// import Header from '@/components/Layout/Header';
 import SideNav from '@/components/Layout/SideNav';
 
 const AntdProvider = ({ children }) => {
