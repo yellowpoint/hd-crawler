@@ -16,15 +16,15 @@ const logAndWsSend = (log, ws) => {
   console.log(log);
   ws?.send?.(log);
 };
-const googleCrawler = async (keyword, level = 1, ws) => {
+const googleCrawler = async (keyword, level = 1, ws, parentKeyword) => {
   const requestHandler = async ({ request, sendRequest, log, page }) => {
     const { url } = request;
 
-    logAndWsSend(keyword + '，开始获取', ws);
+    logAndWsSend(keyword + '，开始获取------------------------', ws);
     const { people_also_ask, presentation, related_searches } =
       await getRelatedSearchesAndAlsoAsks(page, keyword);
 
-    const result = {
+    let result = {
       keyword,
       url,
       people_also_ask,
@@ -35,9 +35,9 @@ const googleCrawler = async (keyword, level = 1, ws) => {
     try {
       logAndWsSend(keyword + '，获取数据完成：' + JSON.stringify(result), ws);
 
-      logAndWsSend(keyword + '开始存储', ws);
+      logAndWsSend(keyword + '，开始存储', ws);
       await Dataset.pushData(result);
-      await addData(keyword, JSON.stringify(result));
+      await addData(keyword, JSON.stringify(result), parentKeyword);
       logAndWsSend(keyword + '，存储成功', ws);
     } catch (error) {
       logAndWsSend(keyword + '，存储失败：' + error, ws);
@@ -57,7 +57,7 @@ const googleCrawler = async (keyword, level = 1, ws) => {
 
       // const suggestArrPromise = [...keywordAndxing, ...presentation].map(
       const suggestArrPromise = [...keywordAndxing].map((i) => {
-        return googleCrawler(i, level + 1, ws).catch((error) => {
+        return googleCrawler(i, level + 1, ws, keyword).catch((error) => {
           console.error('Error in processing item:', error);
           return i + ',报错了';
         });
@@ -71,12 +71,21 @@ const googleCrawler = async (keyword, level = 1, ws) => {
   });
 };
 
-const addData = async (keyword, content) => {
+const addData = async (keyword, content, parentKeyword) => {
   const page = await prisma.google.findUnique({ where: { keyword } });
-  const dbData = {
+  let parentKeywords = page?.parentKeywords;
+  if (parentKeyword) {
+    parentKeywords = JSON.parse(parentKeywords || '[]');
+    parentKeywords.push(parentKeyword);
+    parentKeywords = JSON.stringify(parentKeywords);
+  }
+  let dbData = {
     keyword,
     content,
   };
+  if (parentKeywords) {
+    dbData.parentKeywords = parentKeywords;
+  }
   if (page) {
     const updatedPage = await prisma.google.update({
       where: { id: page.id },
@@ -91,7 +100,7 @@ const addData = async (keyword, content) => {
   }
 };
 
-const getData = async (keyword, content) => {
+const getData = async (keyword) => {
   const res = await prisma.google.findUnique({ where: { keyword } });
   if (res) {
     return res;
@@ -127,6 +136,14 @@ export const crawlerGoogleWs = async (keyword, ws) => {
   await googleCrawler(keyword, 1, ws);
 };
 
+router.post('/get', async (req, res) => {
+  let config = req.body;
+  const keyword = config?.keyword;
+  console.log('keyword', keyword);
+  if (!keyword) throw new Error('keyword is required');
+  const outputFileContent = await getData(keyword);
+  return res.send({ data: outputFileContent, code: 0 });
+});
 router.post('/add', async (req, res) => {
   const outputFileContent = await crawlerGoogle(req);
   // const dbres = await getDataAll();

@@ -47,10 +47,11 @@ model SubLink {
 }
 
 model google {
-  id        Int      @id @default(autoincrement())
-  keyword   String   @unique
-  content   String
-  createdAt DateTime @default(now())
+  id             Int      @id @default(autoincrement())
+  keyword        String   @unique
+  parentKeywords String?
+  content        String
+  createdAt      DateTime @default(now())
 }
 
 model base {

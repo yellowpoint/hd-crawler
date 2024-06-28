@@ -1,12 +1,11 @@
 import React from 'react';
 
-import { Table, Button, Input } from 'antd';
+import { Table, Button, Input, message } from 'antd';
 import dayjs from 'dayjs';
 
 import API from '@/lib/api';
 
-import Search from './search';
-import WsTest from './ws';
+import useSearch from './search';
 
 const renderArrayData = (data, index) => {
   if (!data || data.length === 0) return null;
@@ -26,7 +25,7 @@ const format = (data) => {
 
 const GoogleSuggest = () => {
   const [searchTerm, setSearchTerm] = React.useState('');
-  const [search, setSearch] = React.useState('');
+  const { handleCrawler, DataList } = useSearch();
   const [suggestions, setSuggestions] = React.useState([]);
   React.useEffect(() => {
     const fetchData = async () => {
@@ -39,12 +38,13 @@ const GoogleSuggest = () => {
   }, []);
 
   const handleSearch = async () => {
-    setSearch(searchTerm);
-    // const res = await API.googleAdd({
-    //   keyword: searchTerm,
-    // });
-    // const data1 = format(res);
-    // setSuggestions(data1);
+    const keywordExist = await API.googleGet({
+      keyword: searchTerm,
+    });
+    setSuggestions(keywordExist ? [keywordExist] : []);
+    if (!keywordExist) {
+      handleCrawler(searchTerm);
+    }
   };
 
   const columns = [
@@ -101,7 +101,7 @@ const GoogleSuggest = () => {
 
   return (
     <div className="p-24">
-      {/* <div className="flex items-center gap-16">
+      <div className="flex items-center gap-16">
         <Input
           className="w-300"
           value={searchTerm}
@@ -112,16 +112,17 @@ const GoogleSuggest = () => {
         <Button type="primary" onClick={handleSearch}>
           Search
         </Button>
-      </div> */}
-      <Search keyword={search} />
-      {/* <Table
+      </div>
+      <DataList />
+      {/* <Search searchTerm={search} /> */}
+      <Table
         rowKey="keyword"
         dataSource={suggestions}
         columns={columns}
         pagination={false}
         expandable={{ expandedRowRender }}
         style={{ marginTop: '16px' }}
-      /> */}
+      />
     </div>
   );
 };

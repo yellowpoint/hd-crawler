@@ -4,14 +4,12 @@ import { Button, Input } from 'antd';
 
 import { baseURL } from '@/lib/api/axios';
 
-const Search = ({}) => {
-  const [keyword, setKeyword] = useState('');
-
+const useSearch = () => {
   const [ws, setWs] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [dataList, setDataList] = useState([]);
 
-  const handleConnect = () => {
+  const handleConnect = async () => {
     return new Promise((resolve, reject) => {
       const newWs = new WebSocket(baseURL + '/google/addws');
 
@@ -38,7 +36,7 @@ const Search = ({}) => {
     });
   };
 
-  const handleSearch = async () => {
+  const handleCrawler = async (keyword) => {
     if (!ws) {
       const newWs = await handleConnect();
       setWs(newWs);
@@ -57,21 +55,9 @@ const Search = ({}) => {
     };
   }, [ws]);
 
-  return (
-    <div>
-      <div className="flex items-center gap-16">
-        <Input
-          className="w-300"
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-          onPressEnter={handleSearch}
-          placeholder="Enter a keyword"
-        />
-        <Button type="primary" onClick={handleSearch} disabled={!keyword}>
-          Search
-        </Button>
-      </div>
-
+  const DataList = () => {
+    if (!Array.isArray(dataList) || dataList.length === 0) return null;
+    return (
       <ul className="border-gray-20 mt-16 rounded-16 border bg-white p-16 text-12">
         {dataList.map((data, index) => (
           <li
@@ -82,8 +68,14 @@ const Search = ({}) => {
           </li>
         ))}
       </ul>
-    </div>
-  );
+    );
+  };
+
+  return {
+    handleCrawler,
+    dataList,
+    DataList,
+  };
 };
 
-export default Search;
+export default useSearch;
