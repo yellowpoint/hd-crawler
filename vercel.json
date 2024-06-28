@@ -5,9 +5,5 @@
     "api/index.js": {
       "maxDuration": 60
     }
-  },
-  "ignore": [
-    "api/**/*",
-    "!api/index.js"
-  ]
+  }
 }
