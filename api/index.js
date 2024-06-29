@@ -6,8 +6,6 @@ import expressWs from 'express-ws';
 import crawlerRouter from './crawler/crawler.js';
 import googleRouter from './crawler/google.js';
 import { crawlerWiki } from './crawler/wiki.js';
-import wsRouter from './crawler/ws.js';
-import dbRouter from './db/testdb.js';
 
 import 'express-async-errors';
 
@@ -37,10 +35,8 @@ app.use(express.json());
 // 添加统一的/api路由
 const api = express.Router();
 app.use('/api', api);
-app.use('/api', dbRouter);
 app.use('/api/google', googleRouter);
 app.use('/api/crawler', crawlerRouter);
-app.use('/api/ws', wsRouter);
 
 api.post('/wiki', async (req, res) => {
   const outputFileContent = await crawlerWiki(req);
