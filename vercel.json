@@ -1,13 +1,12 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.js" },
+    { "source": "/api/(.*)", "destination": "/api" },
     { "source": "/(.*)", "destination": "/" }
   ],
   "functions": {
     "api/index.js": {
-      "maxDuration": 60,
-      "excludeFiles": "**/!(index).js"
+      "maxDuration": 60
     }
   }
 }
