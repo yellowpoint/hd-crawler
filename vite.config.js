@@ -16,6 +16,7 @@ export default defineConfig(({ mode, command }) => {
     },
     build: {
       sourcemap: false,
+      // https://github.com/vitejs/vite/issues/15012
       rollupOptions: {
         onLog(level, log, handler) {
           if (
