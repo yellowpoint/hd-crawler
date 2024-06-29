@@ -2,9 +2,10 @@
   "version": 2,
   "rewrites": [{ "source": "/api/(.*)", "destination": "/api" },{ "source": "/(.*)", "destination": "/" }],
   "functions": {
-    "api/index.js": {
+    "api/**/*.js": {
       "maxDuration": 60,
-      "excludeFiles": "api/**/!(index).js"
+      "excludeFiles": "api/**/*.js",
+      "includeFiles":"api/index.js"
     }
   }
 }
