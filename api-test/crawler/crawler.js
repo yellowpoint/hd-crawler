@@ -4,10 +4,9 @@ import { PrismaClient } from '@prisma/client';
 import { BasicCrawler, Dataset } from 'crawlee';
 import express from 'express';
 
+import ai from './lib/ai.js';
 import { crawlStart } from './lib/crawlerSetup.js';
 import { write, savePageScreenshot } from './lib/utils.js';
-
-import ai from '../ai/ai.js';
 
 const prisma = new PrismaClient();
 const api = express.Router();
