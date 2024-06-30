@@ -22,6 +22,7 @@ datasource db {
   url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
+
 // datasource db {
 //   provider = "sqlite"
 //   url      = "file:./dev.db"
@@ -49,6 +50,7 @@ model SubLink {
 model google {
   id             Int      @id @default(autoincrement())
   keyword        String   @unique
+  level          Int?
   parentKeywords String?
   content        String
   createdAt      DateTime @default(now())

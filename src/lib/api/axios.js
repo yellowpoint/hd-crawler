@@ -56,7 +56,10 @@ api.interceptors.response.use(
     // 检查 code 是否为 0
     if (responseData.code !== 0) {
       message.error({
-        content: responseData.message || 'code：' + responseData.code,
+        content:
+          responseData.data ||
+          responseData.message ||
+          'code：' + responseData.code,
       });
       return Promise.reject(responseData.code);
     }

@@ -8,12 +8,22 @@ import expressWs from 'express-ws';
 import { crawlStart } from './lib/crawlerSetup.js';
 import { write, savePageScreenshot } from './lib/utils.js';
 
+import pusher from '../lib/channels-event.js';
+
 const prisma = new PrismaClient();
 const router = express.Router();
 expressWs(router);
+const pusherSend = (log) => {
+  // pusher.trigger('google', 'google', {
+  //   message: log,
+  // });
+  // 怀疑不是严格按照时间线来的
+  pusher.trigger('google', 'google', log);
+};
 const logAndWsSend = (log, ws) => {
   console.log(log);
   ws?.send?.(log);
+  pusherSend(log);
 };
 export const getRelatedSearchesAndAlsoAsks = async (page, keyword) => {
   const people_also_ask = await page.evaluate(() => {
@@ -76,7 +86,7 @@ const googleCrawler = async (keyword, level = 1, ws, parentKeyword) => {
 
       logAndWsSend(keyword + '，开始存储', ws);
       await Dataset.pushData(result);
-      await addData(keyword, JSON.stringify(result), parentKeyword);
+      await addData(keyword, JSON.stringify(result), level, parentKeyword);
       logAndWsSend(keyword + '，存储成功', ws);
     } catch (error) {
       logAndWsSend(keyword + '，存储失败：' + error, ws);
@@ -115,7 +125,7 @@ const googleCrawler = async (keyword, level = 1, ws, parentKeyword) => {
   });
 };
 
-const addData = async (keyword, content, parentKeyword) => {
+const addData = async (keyword, content, level, parentKeyword) => {
   const page = await prisma.google.findUnique({ where: { keyword } });
   let parentKeywords = page?.parentKeywords;
   if (parentKeyword) {
@@ -126,6 +136,7 @@ const addData = async (keyword, content, parentKeyword) => {
   let dbData = {
     keyword,
     content,
+    level,
   };
   if (parentKeywords) {
     dbData.parentKeywords = parentKeywords;
@@ -158,7 +169,7 @@ const getData = async (keyword) => {
 const getDataAll = async (keyword, content) => {
   const dbres = await prisma.google.findMany({
     where: {
-      parentKeywords: null,
+      level: 1,
     },
     orderBy: { id: 'desc' },
   });
@@ -181,6 +192,7 @@ export const crawlerGoogle = async (req, ws) => {
   // console.log('outputFileContent', outputFileContent);
   return outputFileContent;
 };
+
 export const crawlerGoogleWs = async (keyword, ws) => {
   console.log('keyword', keyword);
   if (!keyword) throw new Error('keyword is required');
@@ -203,21 +215,32 @@ router.post('/add', async (req, res) => {
   // const dbres = await getDataAll();
   return res.send({ data: outputFileContent, code: 0 });
 });
-router.ws('/addws', async (ws, req) => {
-  // console.log('addws', req);
-  ws.send('来自服务端推送的消息');
-  ws.on('message', async (msg) => {
-    ws.send(`收到客户端的消息为：${msg}`);
-    if (!msg) {
-      ws.send('keyword is required');
-      return;
-    }
-    await crawlerGoogleWs(msg, ws);
-  });
+// router.ws('/addws', async (ws, req) => {
+//   // console.log('addws', req);
+//   ws.send('来自服务端推送的消息');
+//   ws.on('message', async (msg) => {
+//     ws.send(`收到客户端的消息为：${msg}`);
+//     if (!msg) {
+//       ws.send('keyword is required');
+//       return;
+//     }
+//     await crawlerGoogleWs(msg, ws);
+//   });
 
-  // return res.send({ data: outputFileContent, code: 0 });
+//   // return res.send({ data: outputFileContent, code: 0 });
+// });
+router.post('/addws', async (req, res) => {
+  let config = req.body;
+  const keyword = config?.keyword;
+  console.log('keyword', keyword);
+  if (!keyword) {
+    return logAndWsSend('keyword is required');
+  }
+  logAndWsSend('无此数据，正在进行爬取');
+  await crawlerGoogleWs(keyword);
+  // return res.send({ data: '无此数据，正在进行爬取', code: 1 });
+  return res.send({ data: '爬取完成', code: 0 });
 });
-
 router.post('/all', async (req, res) => {
   const dbres = await getDataAll();
   return res.send({ data: dbres, code: 0 });
