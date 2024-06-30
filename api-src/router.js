@@ -1,13 +1,12 @@
 import express from 'express';
 
-import google from './crawler/google.js';
+import crawlerRouter from './crawler/crawler.js';
+import googleRouter from './crawler/google.js';
+// import { crawlerWiki } from './crawler/wiki.js';
 
 const routes = express.Router();
 
-routes.get('/', async (req, res) => {
-  res.send(`Reached home!`);
-});
-
-routes.use('/api/google', google);
+routes.use('/api/google', googleRouter);
+routes.use('/api/crawler', crawlerRouter);
 
 export default routes;

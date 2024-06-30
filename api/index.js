@@ -1,9 +1,11 @@
-import express from 'express';
+import app from '../api-src/app.js';
+import router from '../api-src/router.js';
 
-const app = express();
-
+app.use('/', router);
 app.get('/api/index', (req, res) => res.send('Express on Vercel'));
 
-app.listen(3000, () => console.log('Server ready on port 3000.'));
+app.listen(4000, function () {
+  console.log('Server started. Go to http://localhost:4000/');
+});
 
 export default app;
