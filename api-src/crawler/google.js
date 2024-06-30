@@ -3,7 +3,7 @@ import { readFile } from 'fs/promises';
 import { PrismaClient } from '@prisma/client';
 import { BasicCrawler, Dataset } from 'crawlee';
 import express from 'express';
-import expressWs from 'express-ws';
+// import expressWs from 'express-ws';
 
 import { crawlStart } from './lib/crawlerSetup.js';
 import { write, savePageScreenshot } from './lib/utils.js';
@@ -12,7 +12,7 @@ import pusher from '../lib/channels-event.js';
 
 const prisma = new PrismaClient();
 const router = express.Router();
-expressWs(router);
+// expressWs(router);
 const pusherSend = (log) => {
   // pusher.trigger('google', 'google', {
   //   message: log,

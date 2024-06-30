@@ -1,7 +1,7 @@
 import cors from 'cors';
 import 'dotenv/config';
 import express from 'express';
-import expressWs from 'express-ws';
+// import expressWs from 'express-ws';
 
 import crawlerRouter from './crawler/crawler.js';
 import googleRouter from './crawler/google.js';
@@ -10,7 +10,7 @@ import { crawlerWiki } from './crawler/wiki.js';
 import 'express-async-errors';
 
 const app = express();
-expressWs(app);
+// expressWs(app);
 
 const port = Number(process.env.API_PORT) || 4000;
 const hostname = process.env.API_HOST || 'localhost';
