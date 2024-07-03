@@ -23,7 +23,7 @@ jobs:
           host: ${{ secrets.HOST }} # 服务器host
           username: 'root' # 服务器用户名
           password: ${{ secrets.PASSWORD }} # 服务器密码
-          source: 'dist,api,api-src' # 需要上传的文件, 多文件使用逗号隔开
+          source: 'dist,api,api-src,package.json,package-lock.json' # 需要上传的文件, 多文件使用逗号隔开
           target: '/www/wwwroot/hd-crawler' # 上传到服务器的什么位置
 
 

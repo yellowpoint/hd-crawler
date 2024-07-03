@@ -2,7 +2,7 @@
 import chromium from '@sparticuz/chromium-min';
 import { PuppeteerCrawler, Configuration, PlaywrightCrawler } from 'crawlee';
 import { configDotenv } from 'dotenv';
-import puppeteer from 'puppeteer-core';
+// import puppeteer from 'puppeteer-core';
 // 本地 Chrome 执行包路径
 export const localExecutablePath =
   'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
@@ -18,6 +18,7 @@ export const crawlStart = async (config) => {
 
   const startUrls = config.url;
   console.log('startUrls', startUrls);
+  console.log(' process.env.NODE_ENV', process.env.NODE_ENV);
 
   // 运行环境
   const launchOptions = isDev
@@ -39,8 +40,8 @@ export const crawlStart = async (config) => {
       maxRequestsPerCrawl: config.maxRequestsPerCrawl,
       // headless: false
       launchContext: {
-        launcher: puppeteer,
-        launchOptions,
+        // launcher: puppeteer,
+        // launchOptions,
       },
     },
     new Configuration({
