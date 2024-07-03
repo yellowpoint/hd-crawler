@@ -41,8 +41,7 @@ jobs:
           script: | # 运行多行命令，hd_crawler为项目名称，是宝塔生成的
             echo "[deploy] 运行api"
             cd /www/wwwroot/hd-crawler
-            cnpm i
-            kill -9 $(ps -ef | grep hd_crawler | grep -v grep | awk '{print $2}')
+            cpm i --registry=https://registry.npmmirror.com
             sh /www/server/nodejs/vhost/scripts/hd_crawler.sh
             echo "End"
 
