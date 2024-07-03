@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "type": "module",
   "description": "This is an example of a Crawlee project.",
+  "url":"https://github.com/yellowpoint/hd-crawler.git",
   "scripts": {
     "postinstall": "npx prisma generate",
     "api": "node api/index.js",
