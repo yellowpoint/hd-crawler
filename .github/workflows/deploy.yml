@@ -17,7 +17,15 @@ jobs:
           node-version: 20
       - run: npm i
       - run: npm run build
-      - run: ls -a 
+      - uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }} # 服务器host
+          username: 'root' # 服务器用户名
+          password: ${{ secrets.PASSWORD }} # 服务器密码
+          script: | # 运行多行命令
+            echo "[deploy] 删除老包"
+            cd /www/wwwroot/hd-crawler
+            rm -rf dist
       - uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.HOST }} # 服务器host
@@ -25,6 +33,17 @@ jobs:
           password: ${{ secrets.PASSWORD }} # 服务器密码
           source: 'dist,api,api-src,package.json,package-lock.json' # 需要上传的文件, 多文件使用逗号隔开
           target: '/www/wwwroot/hd-crawler' # 上传到服务器的什么位置
-
+      - uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }} # 服务器host
+          username: 'root' # 服务器用户名
+          password: ${{ secrets.PASSWORD }} # 服务器密码
+          script: | # 运行多行命令，hd_crawler为项目名称，是宝塔生成的
+            echo "[deploy] 运行api"
+            cd /www/wwwroot/hd-crawler
+            cnpm i
+            kill -9 $(ps -ef | grep hd_crawler | grep -v grep | awk '{print $2}')
+            sh /www/server/nodejs/vhost/scripts/hd_crawler.sh
+            echo "End"
 
 

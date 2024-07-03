@@ -7,6 +7,7 @@
   "scripts": {
     "postinstall": "npx prisma generate",
     "api": "node api/index.js",
+    "api-prod": "NODE_ENV=production node api/index.js",
     "testdb": "nodemon api/testdb.js",
     "dev": "vite",
     "build": "vite build",

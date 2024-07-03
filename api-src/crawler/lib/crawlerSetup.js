@@ -2,13 +2,14 @@
 import chromium from '@sparticuz/chromium-min';
 import { PuppeteerCrawler, Configuration, PlaywrightCrawler } from 'crawlee';
 import { configDotenv } from 'dotenv';
-// import puppeteer from 'puppeteer-core';
+import puppeteer from 'puppeteer-core';
 // 本地 Chrome 执行包路径
 export const localExecutablePath =
   'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
 // 远程执行包
-export const remoteExecutablePath =
-  'https://github.com/Sparticuz/chromium/releases/download/v119.0.2/chromium-v119.0.2-pack.tar';
+// export const remoteExecutablePath =
+//   'https://github.com/Sparticuz/chromium/releases/download/v119.0.2/chromium-v119.0.2-pack.tar';
+export const remoteExecutablePath = '/www/wwwroot/chromium-v119.0.2-pack.tar';
 
 configDotenv();
 const isDev = process.env.NODE_ENV === 'development';
@@ -40,8 +41,8 @@ export const crawlStart = async (config) => {
       maxRequestsPerCrawl: config.maxRequestsPerCrawl,
       // headless: false
       launchContext: {
-        // launcher: puppeteer,
-        // launchOptions,
+        launcher: puppeteer,
+        launchOptions,
       },
     },
     new Configuration({
