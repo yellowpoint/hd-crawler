@@ -5,9 +5,8 @@
   "description": "This is an example of a Crawlee project.",
   "url": "https://github.com/yellowpoint/hd-crawler.git",
   "scripts": {
-    "postinstall": "npx prisma generate",
     "api": "node api/index.js",
-    "api-prod": "NODE_ENV=production node api/index.js",
+    "api-prod": "npx prisma generate && cross-env NODE_ENV=production node api/index.js",
     "testdb": "nodemon api/testdb.js",
     "dev": "vite",
     "build": "vite build",
