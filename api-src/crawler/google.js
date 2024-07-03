@@ -3,27 +3,18 @@ import { readFile } from 'fs/promises';
 import { PrismaClient } from '@prisma/client';
 import { BasicCrawler, Dataset } from 'crawlee';
 import express from 'express';
-// import expressWs from 'express-ws';
+import expressWs from 'express-ws';
 
 import { crawlStart } from './lib/crawlerSetup.js';
 import { write, savePageScreenshot } from './lib/utils.js';
 
-import pusher from '../lib/channels-event.js';
-
 const prisma = new PrismaClient();
 const router = express.Router();
-// expressWs(router);
-const pusherSend = (log) => {
-  // pusher.trigger('google', 'google', {
-  //   message: log,
-  // });
-  // 怀疑不是严格按照时间线来的
-  pusher.trigger('google', 'google', log);
-};
+expressWs(router);
+
 const logAndWsSend = (log, ws) => {
   console.log(log);
   ws?.send?.(log);
-  pusherSend(log);
 };
 export const getRelatedSearchesAndAlsoAsks = async (page, keyword) => {
   const people_also_ask = await page.evaluate(() => {
@@ -215,32 +206,19 @@ router.post('/add', async (req, res) => {
   // const dbres = await getDataAll();
   return res.send({ data: outputFileContent, code: 0 });
 });
-// router.ws('/addws', async (ws, req) => {
-//   // console.log('addws', req);
-//   ws.send('来自服务端推送的消息');
-//   ws.on('message', async (msg) => {
-//     ws.send(`收到客户端的消息为：${msg}`);
-//     if (!msg) {
-//       ws.send('keyword is required');
-//       return;
-//     }
-//     await crawlerGoogleWs(msg, ws);
-//   });
+router.ws('/addws', async (ws, req) => {
+  ws.on('message', async (msg) => {
+    logAndWsSend(`收到客户端的消息为：${msg}`, ws);
 
-//   // return res.send({ data: outputFileContent, code: 0 });
-// });
-router.post('/addws', async (req, res) => {
-  let config = req.body;
-  const keyword = config?.keyword;
-  console.log('keyword', keyword);
-  if (!keyword) {
-    return logAndWsSend('keyword is required');
-  }
-  logAndWsSend('无此数据，正在进行爬取');
-  await crawlerGoogleWs(keyword);
-  // return res.send({ data: '无此数据，正在进行爬取', code: 1 });
-  return res.send({ data: '爬取完成', code: 0 });
+    if (!msg) {
+      logAndWsSend('keyword is required', ws);
+      return;
+    }
+    logAndWsSend('无此数据，正在进行爬取', ws);
+    await crawlerGoogleWs(msg, ws);
+  });
 });
+
 router.post('/all', async (req, res) => {
   const dbres = await getDataAll();
   return res.send({ data: dbres, code: 0 });

@@ -1,60 +1,59 @@
 import { useEffect, useState } from 'react';
 
-import Pusher from 'pusher-js';
+import { Button, Input } from 'antd';
 
-import API from '@/lib/api';
+import { baseURL } from '@/lib/api/axios';
 
 const useSearch = () => {
-  const [channel, setChannel] = useState(null);
+  const [ws, setWs] = useState(null);
+  const [isConnected, setIsConnected] = useState(false);
   const [dataList, setDataList] = useState([]);
 
-  const handleConnect = () => {
+  const handleConnect = async () => {
     return new Promise((resolve, reject) => {
-      const pusher = new Pusher('1a7382794c3a45f962f9', {
-        cluster: 'ap1',
-        encrypted: true,
-      });
+      const newWs = new WebSocket(baseURL + '/google/addws');
 
-      const newChannel = pusher.subscribe('google');
-      setChannel(newChannel);
+      newWs.onopen = () => {
+        console.log('Connected to the server');
+        setIsConnected(true);
+        resolve(newWs);
+      };
+      newWs.onmessage = (event) => {
+        // const message = JSON.parse(event.data);
+        const message = event.data;
+        console.log('Received message:', message);
+        setDataList((prevDataList) => [...prevDataList, message]);
+      };
 
-      newChannel.bind('google', (data) => {
-        console.log('data', data);
-        setDataList((prevDataList) => [...prevDataList, data]);
-      });
-      pusher.connection.bind('state_change', function (states) {
-        // states = {previous: 'oldState', current: 'newState'}
-        console.log('states', states.current);
-        if (states.current === 'connected') {
-          resolve(newChannel);
-        } else {
-          reject(states.current);
-        }
-      });
+      newWs.onclose = (event) => {
+        console.log('onclose message:', event);
+        setIsConnected(false);
+      };
+      newWs.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        reject(error);
+      };
     });
   };
 
   const handleCrawler = async (keyword) => {
-    if (!channel) {
-      const newChannel = await handleConnect();
+    if (!ws) {
+      const newWs = await handleConnect();
+      setWs(newWs);
+      newWs.send(keyword);
     }
-    await API.googleAddws({
-      keyword,
-    });
-
-    // if (channel && keyword) {
-    //   channel.trigger('google', keyword);
-    // }
+    if (ws && isConnected && keyword) {
+      ws.send(keyword);
+    }
   };
 
   useEffect(() => {
     return () => {
-      if (channel) {
-        channel.unbind_all();
-        channel.unsubscribe();
+      if (ws) {
+        ws.close();
       }
     };
-  }, [channel]);
+  }, [ws]);
 
   const DataList = () => {
     if (!Array.isArray(dataList) || dataList.length === 0) return null;

@@ -2,7 +2,7 @@ import { message } from 'antd';
 import axios from 'axios';
 
 const isDev = process.env.NODE_ENV === 'development';
-const proUrl = 'https://hd-crawler.vercel.app/api';
+const proUrl = 'http://120.27.141.74/api';
 
 export const isTest = isDev && false;
 const devUrl = isTest
