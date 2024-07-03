@@ -17,17 +17,17 @@ generator client {
 //   url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
 //   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 // }
-// datasource db {
-//   provider  = "postgresql"
-//   url       = "postgres://crawler:diJpTJBXz2fY@120.27.141.74:5432/crawler"// uses connection pooling
-// }
+datasource db {
+  provider  = "mysql"
+  url       = "mysql://crawler:diJpTJBXz2fY@120.27.141.74:3306/crawler"// uses connection pooling
+}
 // create user crawler with password 'diJpTJBXz2fY'
 // create database crawler owner crawler
 
-datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
-}
+// datasource db {
+//   provider = "sqlite"
+//   url      = "file:./dev.db"
+// }
 
 model Page {
   id        Int       @id @default(autoincrement())
