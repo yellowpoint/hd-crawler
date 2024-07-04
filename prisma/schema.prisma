@@ -8,51 +8,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// datasource dev {
-//   provider = "sqlite"
-//   url      = "file:./dev.db"
-// }
-// datasource prod {
-//   provider  = "postgresql"
-//   url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-//   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
-// }
-// datasource db {
-//   provider  = "mysql"
-//   url       = "mysql://crawler:diJpTJBXz2fY@120.27.141.74:3306/crawler"// uses connection pooling
-//   shadowDatabaseUrl       = "mysql://crawler_shadow:diJpTJBXz2fY@120.27.141.74:3306/crawler_shadow"// uses connection pooling
-// }
-
 datasource db {
-  provider  = "postgresql"
-  url       = "postgresql://postgres:postgreshd@120.27.141.74:5432/hd"// uses connection pooling
-  // shadowDatabaseUrl       = "postgresql://postgres:postgreshd@120.27.141.74:5432/hd_shadow"// uses connection pooling
-  // url       = "postgresql://crawler:diJpTJBXz2fY@120.27.141.74:5432/crawler"// uses connection pooling
-  // shadowDatabaseUrl       = "postgresql://crawler_shadow:diJpTJBXz2fY@120.27.141.74:5432/crawler_shadow"// uses connection pooling
+  provider = "postgresql"
+  url      = env("aliyundb") // uses connection pooling
 }
-//  sudo find / -name 'pg_hba.conf'
-
-// /www/server/pgsql/data/pg_hba.conf
-
-// host    all             all             171.112.250.34/32            trust
-
-// GRANT ALL PRIVILEGES ON DATABASE hd TO hd;
-// psql -U hd -h localhost -d hd
-// mysql -u crawler -p -h localhost -P 3306
-// SHOW GRANTS FOR 'crawler'@'localhost';
-
-// psql -U crawler -h localhost -p 5432 -d crawler
-
-// ALTER USER hd WITH CREATEDB;
-// CREATE DATABASE hdd OWNER hd;
-
-// CREATE DATABASE hdd OWNER postgres;
-
-// postgres
-
-// ALTER USER postgres WITH PASSWORD 'postgreshd';
-// create user crawler with password 'diJpTJBXz2fY'
-// create database crawler owner crawler
 
 // datasource db {
 //   provider = "sqlite"

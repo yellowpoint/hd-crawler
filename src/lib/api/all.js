@@ -11,3 +11,4 @@ export const googleAll = (e) => post(`/google/all`, e);
 export const googleGet = (e) => post(`/google/get`, e);
 
 export const baseAll = (e) => post(`/crawler/all`, e);
+export const baseAdd = (e) => post(`/crawler/add`, e);

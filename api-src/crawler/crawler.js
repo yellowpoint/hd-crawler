@@ -24,20 +24,26 @@ const crawler = async (url, level = 1) => {
       const articleContent = await page.evaluate(async () => {
         const elementHandle = document.querySelector('.hentry');
         // const text = elementHandle.textContent.trim();
-        const text = elementHandle.outerHTML.trim();
+        const text = elementHandle?.outerHTML?.trim?.();
         return text;
       });
 
       let aiSummary;
-      try {
-        aiSummary = await ai({
-          prompt:
-            '获取博客名称，以及各个大标题分类，以及其分类下的内容整理，只返回最后格式化后的结果',
-          text: articleContent,
-        });
-      } catch (error) {
-        aiSummary = error;
+      if (articleContent) {
+        console.log('有数据，进行ai分析');
+        try {
+          aiSummary = await ai({
+            prompt:
+              '获取博客名称，以及各个大标题分类，以及其分类下的内容整理，只返回最后格式化后的结果',
+            text: articleContent,
+          });
+          console.log('ai分析成功');
+        } catch (error) {
+          console.log('ai分析失败');
+          aiSummary = error || 'ai分析失败';
+        }
       }
+
       const result = {
         url,
         aiSummary,

@@ -7,13 +7,20 @@ import dayjs from 'dayjs';
 import API from '@/lib/api';
 
 function renderArrayData(data, index) {
-  return <pre style={{ whiteSpace: 'pre-wrap' }}>{data}</pre>;
+  if (!data) return null;
+  return <pre style={{ whiteSpace: 'pre-wrap' }}>{JSON.stringify(data)}</pre>;
 }
 const format = (data) => {
-  return data.map(({ content, ...rest }) => ({
-    ...rest,
-    content: JSON.parse(content),
-  }));
+  return data.map(({ content, ...rest }) => {
+    let c = content || {};
+    c = JSON.parse(c);
+    c = c?.[0];
+
+    return {
+      ...rest,
+      ...c,
+    };
+  });
 };
 export default function BaseCrawler() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -21,16 +28,16 @@ export default function BaseCrawler() {
   const { data: allData } = useRequest(API.baseAll, {
     // refreshDeps: [searchTerm],
     onSuccess: (data) => {
-      if (!data) return;
+      if (!data || !data.length) return;
       const data1 = format(data);
       console.log('data1', data1);
-      setSuggestions(data1[0].content);
+      setSuggestions(data1);
     },
   });
 
   const handleSearch = async () => {
     const res = await API.baseAdd({
-      keyword: searchTerm,
+      url: searchTerm,
     });
     console.log('res', res);
     const data1 = format(res);
@@ -84,7 +91,7 @@ export default function BaseCrawler() {
         </Button>
       </div>
       <Table
-        rowKey="url"
+        rowKey="id"
         dataSource={suggestions}
         columns={columns}
         pagination={false}

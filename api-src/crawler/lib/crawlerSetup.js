@@ -38,7 +38,8 @@ export const crawlStart = async (config) => {
       requestHandler: config.requestHandler,
 
       // Comment this option to scrape the full website.
-      maxRequestsPerCrawl: config.maxRequestsPerCrawl,
+      maxRequestsPerCrawl: config.maxRequestsPerCrawl, // 这个是最多发出多少个请求
+      maxConcurrency: isDev ? undefined : 1, // 最大并发数
       // headless: false
       launchContext: {
         launcher: puppeteer,
