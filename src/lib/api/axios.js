@@ -6,7 +6,7 @@ const proUrl = 'http://120.27.141.74:4000/api';
 
 export const isTest = isDev && false;
 const devUrl = isTest
-  ? 'https://120.46.191.217/api'
+  ? 'http://120.27.141.74:4000/api'
   : 'http://localhost:4000/api';
 
 export const baseURL = isDev ? devUrl : proUrl;

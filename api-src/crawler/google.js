@@ -147,7 +147,11 @@ const addData = async (keyword, content, level, parentKeyword) => {
 };
 
 const getData = async (keyword) => {
-  const main = await prisma.google.findUnique({ where: { keyword } });
+  const main = await prisma.google
+    .findUnique({ where: { keyword } })
+    .catch((error) => {
+      console.log('prisma error', error);
+    });
   if (!main) return null;
   const children = await prisma.google.findMany({
     where: {
@@ -169,7 +173,7 @@ const getDataAll = async (keyword, content) => {
 export const crawlerGoogle = async (req, ws) => {
   let config = req.body;
   const keyword = config?.keyword;
-  console.log('keyword', keyword);
+  console.log('crawlerGoogle keyword', keyword);
   if (!keyword) throw new Error('keyword is required');
 
   await googleCrawler(keyword, 1, ws);
@@ -185,7 +189,7 @@ export const crawlerGoogle = async (req, ws) => {
 };
 
 export const crawlerGoogleWs = async (keyword, ws) => {
-  console.log('keyword', keyword);
+  console.log('crawlerGoogleWs keyword', keyword);
   if (!keyword) throw new Error('keyword is required');
 
   await googleCrawler(keyword, 1, ws);
@@ -194,7 +198,7 @@ export const crawlerGoogleWs = async (keyword, ws) => {
 router.post('/get', async (req, res) => {
   let config = req.body;
   const keyword = config?.keyword;
-  console.log('keyword', keyword);
+  console.log('get keyword', keyword);
   if (!keyword) {
     return res.send({ message: 'keyword is required', code: 1 });
   }
@@ -214,7 +218,7 @@ router.ws('/addws', async (ws, req) => {
       logAndWsSend('keyword is required', ws);
       return;
     }
-    logAndWsSend('无此数据，正在进行爬取', ws);
+    logAndWsSend('无此数据，正在进行爬取...', ws);
     await crawlerGoogleWs(msg, ws);
   });
 });

@@ -26,17 +26,18 @@ export const crawlStart = async (config) => {
       }
     : {
         args: chromium.args,
-        executablePath: await chromium.executablePath(remoteExecutablePath),
+        executablePath: '/tmp/chromium',
+        // executablePath: await chromium.executablePath(remoteExecutablePath),
         headless: true,
       };
-  // console.log('launchOptions', launchOptions);
+  console.log('launchOptions', launchOptions.executablePath);
   const crawler = new PuppeteerCrawler(
     {
       // proxyConfiguration: new ProxyConfiguration({ proxyUrls: ['...'] }),
       requestHandler: config.requestHandler,
 
-      // Comment this option to scrape the full website.
-      maxRequestsPerCrawl: config.maxRequestsPerCrawl,
+      maxRequestsPerCrawl: config.maxRequestsPerCrawl, // 这个是最多发出多少个请求
+      maxConcurrency: isDev ? undefined : 1, // 最大并发数
       // headless: false
       launchContext: {
         launcher: puppeteer,
