@@ -8,7 +8,7 @@ export const localExecutablePath =
   'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
 // 远程执行包
 export const remoteExecutablePath =
-  'https://github.com/Sparticuz/chromium/releases/download/v119.0.2/chromium-v119.0.2-pack.tar';
+  '/www/wwwroot/hd-crawler/chromium-v119.0.2-pack';
 
 configDotenv();
 const isDev = process.env.NODE_ENV === 'development';
@@ -26,8 +26,8 @@ export const crawlStart = async (config) => {
       }
     : {
         args: chromium.args,
-        executablePath: '/tmp/chromium',
-        // executablePath: await chromium.executablePath(remoteExecutablePath),
+        // executablePath: '/tmp/chromium',
+        executablePath: await chromium.executablePath(remoteExecutablePath),
         headless: true,
       };
   console.log('launchOptions', launchOptions.executablePath);

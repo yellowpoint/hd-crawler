@@ -26,7 +26,7 @@ const items = [
   {
     key: '2',
     icon: <SettingOutlined />,
-    label: 'Navigation Two',
+    label: '商品管理',
     children: [
       {
         key: '21',

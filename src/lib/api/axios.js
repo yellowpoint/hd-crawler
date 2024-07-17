@@ -2,12 +2,10 @@ import { message } from 'antd';
 import axios from 'axios';
 
 const isDev = process.env.NODE_ENV === 'development';
-const proUrl = 'http://120.27.141.74:4000/api';
+const proUrl = '//120.27.141.74/api';
 
 export const isTest = isDev && true;
-const devUrl = isTest
-  ? 'http://120.27.141.74:4000/api'
-  : 'http://localhost:4000/api';
+const devUrl = isTest ? '//120.27.141.74/api' : '//localhost:4000/api';
 
 export const baseURL = isDev ? devUrl : proUrl;
 export const baseImgURL = proUrl;
