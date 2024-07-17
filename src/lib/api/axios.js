@@ -4,7 +4,7 @@ import axios from 'axios';
 const isDev = process.env.NODE_ENV === 'development';
 const proUrl = 'http://120.27.141.74:4000/api';
 
-export const isTest = isDev && false;
+export const isTest = isDev && true;
 const devUrl = isTest
   ? 'http://120.27.141.74:4000/api'
   : 'http://localhost:4000/api';

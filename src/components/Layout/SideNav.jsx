@@ -1,45 +1,67 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-import clsx from 'clsx';
+import {
+  AppstoreOutlined,
+  MailOutlined,
+  SettingOutlined,
+} from '@ant-design/icons';
+import { Menu } from 'antd';
 
-import { getIsKol } from '@/lib/utils';
-import { routerList } from '@/router';
-
+const items = [
+  {
+    key: '1',
+    icon: <AppstoreOutlined />,
+    label: 'SEO',
+    children: [
+      {
+        key: '/seo',
+        label: 'SEO',
+      },
+      // {
+      //   key: '12',
+      //   label: '文章优化',
+      // },
+    ],
+  },
+  {
+    key: '2',
+    icon: <SettingOutlined />,
+    label: 'Navigation Two',
+    children: [
+      {
+        key: '21',
+        label: 'Option 1',
+      },
+      {
+        key: '22',
+        label: 'Option 2',
+      },
+    ],
+  },
+];
 export default function SideNav({ pathname }) {
-  const linkList = routerList.filter((i) => i.side);
-
+  const navigate = useNavigate();
+  console.log('pathname', pathname);
+  const onClick = (e) => {
+    const { item, key, keyPath } = e;
+    console.log('onClick', e);
+    if (key.startsWith('/')) {
+      navigate(key);
+    }
+    // if (item.props.path) {
+    //   navigate(item.props.path);
+    // }
+  };
   return (
-    <div className="fixed bottom-16 left-0 top-0 z-[50] pt-16">
-      <div className="group flex h-full w-150 flex-col gap-16 rounded-24 bg-[#181818] p-12 text-white transition-all">
-        {linkList.map(({ icon, side, path, show }, index) => {
-          if (show === false) return null;
-          const isAct = pathname === path;
-          const iconUrl = icon + (isAct ? '2' : '');
-          return (
-            <Link to={path} key={index}>
-              <div
-                className={clsx(
-                  'flex h-40 items-center gap-8 rounded-16  pl-8 hover:bg-tr-5',
-                  { 'bg-tr-5': isAct },
-                )}
-              >
-                {/* <img
-                  src={`/icons/${iconUrl}.svg`}
-                  className="w-24"
-                  alt={name}
-                /> */}
-                <div
-                  className={clsx('overflow-hidden text-nowrap text-12 ', {
-                    ' font-bold text-main': isAct,
-                  })}
-                >
-                  {side}
-                </div>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
+    <div className="fixed bottom-0 left-0 top-0 z-[50] w-200 bg-white pt-16">
+      <Menu
+        onClick={onClick}
+        mode="inline"
+        defaultSelectedKeys={[pathname]}
+        defaultOpenKeys={['1']}
+        className="w-full"
+        items={items}
+      />
     </div>
   );
 }

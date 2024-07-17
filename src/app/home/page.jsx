@@ -5,7 +5,7 @@ export default function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigate('/google', { replace: true });
+    navigate('/seo', { replace: true });
   }, []);
 
   return (

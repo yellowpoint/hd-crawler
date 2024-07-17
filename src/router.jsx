@@ -11,10 +11,16 @@ export const routerList = [
     component: lazyLoad('home'),
   },
   {
+    path: '/seo',
+    notNeedLogin: true,
+    component: lazyLoad('seo'),
+    side: 'SEO',
+  },
+  {
     path: '/google',
     notNeedLogin: true,
     component: lazyLoad('google'),
-    side: 'google 关键词',
+    // side: 'google 关键词',
   },
   {
     path: '/google/:id',
@@ -25,7 +31,7 @@ export const routerList = [
     path: '/crawler',
     notNeedLogin: true,
     component: lazyLoad('crawler'),
-    side: '基础爬取',
+    // side: '基础爬取',
   },
   {
     path: '/ai',

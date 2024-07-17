@@ -93,7 +93,7 @@ export default function Providers({ children }) {
         })}
       >
         {needSideNav && (
-          <div className="mr-16 w-150 flex-none">
+          <div className="mr-16 w-200 flex-none">
             <SideNav pathname={pathname} />
           </div>
         )}

@@ -108,6 +108,9 @@ const googleCrawler = async (keyword, level = 1, ws, parentKeyword) => {
         });
       const suggestArr = await Promise.all(suggestArrPromise);
       logAndWsSend(keyword + '所有搜索完成：' + JSON.stringify(suggestArr), ws);
+      if (ws) {
+        ws.close();
+      }
     }
   };
   return await crawlStart({
