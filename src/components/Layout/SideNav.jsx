@@ -17,10 +17,10 @@ const items = [
         key: '/seo',
         label: 'SEO',
       },
-      // {
-      //   key: '12',
-      //   label: '文章优化',
-      // },
+      {
+        key: '/ailist',
+        label: 'ai',
+      },
     ],
   },
   {

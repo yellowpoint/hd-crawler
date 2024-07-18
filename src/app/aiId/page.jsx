@@ -1,23 +1,39 @@
 import { useState, KeyboardEvent } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
+import { useRequest } from 'ahooks';
 import { Form, Input, Button, Card, message, Spin } from 'antd';
 
 import API from '@/lib/api';
 
-import { main } from './kimi';
-import { keyword } from './prompt';
+import { main } from '../ai/kimi';
 
 const Ai = () => {
-  const [output, setOutput] = useState('');
-  const [loading, setLoading] = useState(false);
-  const defaultContent = useLocation()?.state;
+  const { id } = useParams();
+  const [form] = Form.useForm();
+  const [output, setOutput] = useState();
+  const [loading, setLoading] = useState(true);
+
+  const { data = {}, error } = useRequest(API.crud, {
+    defaultParams: [{ model: 'ai', operation: 'readOne', id }],
+    onSuccess: (data) => {
+      // console.log('data', data);
+      setOutput(data.output);
+      setLoading(false);
+      form.setFieldsValue({
+        prompt: data.prompt,
+        content: data.input,
+      });
+    },
+  });
+
   const handleFinish = async (values) => {
     const { prompt, content } = values;
 
     setLoading(true);
     try {
       const res = await main({ prompt, text: content });
+
       setOutput(res);
       await API.crud({
         model: 'ai',
@@ -35,8 +51,9 @@ const Ai = () => {
   return (
     <Form
       layout="vertical"
-      initialValues={{ prompt: keyword, content: defaultContent }}
+      // initialValues={{ prompt: data.prompt, content: data.input }}
       onFinish={handleFinish}
+      form={form}
     >
       <div className="flex h-full gap-16">
         <Form.Item

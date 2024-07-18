@@ -32,9 +32,7 @@ export default defineConfig(({ mode, command }) => {
     base: '/',
     plugins,
     define: {
-      'process.env.VITE_TWITTER_V2_CLIENT_ID': JSON.stringify(
-        process.env.VITE_TWITTER_V2_CLIENT_ID,
-      ),
+      'process.env.VITE_KIMI': JSON.stringify(process.env.VITE_KIMI),
       'process.env.VITE_TWITTER_V2_CLIENT_SECRET': JSON.stringify(
         process.env.VITE_TWITTER_V2_CLIENT_SECRET,
       ),

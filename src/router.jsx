@@ -40,6 +40,17 @@ export const routerList = [
     // side: 'ai',
   },
   {
+    path: '/ailist',
+    notNeedLogin: true,
+    component: lazyLoad('aiList'),
+    // side: 'ai',
+  },
+  {
+    path: '/ai/:id',
+    notNeedLogin: true,
+    component: lazyLoad('aiId'),
+  },
+  {
     path: '*',
     title: '404',
     notNeedLogin: true,
