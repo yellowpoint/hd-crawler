@@ -5,7 +5,8 @@ const prisma = new PrismaClient();
 const router = express.Router();
 
 const handleCrud = async (req, res) => {
-  const { model, operation, id, data } = req.body;
+  const { model, operation, id, data, page = 1, pageSize = 10 } = req.body;
+  // const { page = 1, pageSize = 10 } = req.query;
 
   switch (operation) {
     case 'create':
@@ -35,8 +36,18 @@ const handleCrud = async (req, res) => {
 
     case 'readMany':
       try {
-        const result = await prisma[model].findMany();
-        res.send({ data: result, code: 0 });
+        const result = await prisma[model].findMany({
+          take: Number(pageSize),
+          skip: (Number(page) - 1) * Number(pageSize),
+        });
+        const total = await prisma[model].count();
+        res.send({
+          data: {
+            total,
+            list: result,
+          },
+          code: 0,
+        });
       } catch (error) {
         res.status(400).send({ data: error.message, code: 1 });
       }

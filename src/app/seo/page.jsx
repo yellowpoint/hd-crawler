@@ -13,18 +13,8 @@ const categoryCards = [
       },
       {
         title: '亚马逊关键词搜索',
-        content: '亚马逊关键词搜索',
-        path: '/google',
-      },
-      {
-        title: 'Google关键词搜索',
-        content: 'Google关键词搜索',
-        path: '/google',
-      },
-      {
-        title: '亚马逊关键词搜索',
-        content: '亚马逊关键词搜索',
-        path: '/google',
+        content: 'coming soon',
+        // path: '/google',
       },
     ],
   },
@@ -33,13 +23,13 @@ const categoryCards = [
     cards: [
       {
         title: 'SEO推荐文章',
-        content: 'SEO推荐文章',
-        path: '/seo/article',
+        content: 'coming soon',
+        // path: '/seo/article',
       },
       {
         title: '文章优化',
-        content: '文章优化',
-        path: '/seo/article',
+        content: 'coming soon',
+        // path: '/seo/article',
       },
     ],
   },

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import { useRequest } from 'ahooks';
+import { useRequest, useAntdTable } from 'ahooks';
 import { Table, Tooltip, Typography } from 'antd';
 
 import API from '@/lib/api';
@@ -17,9 +17,21 @@ const renderCopyableText = (text) => (
 );
 
 const AiList = () => {
-  const { data, loading, error } = useRequest(API.crud, {
-    defaultParams: [{ model: 'ai', operation: 'readMany' }],
-  });
+  const { tableProps, search } = useAntdTable(
+    async (params) => {
+      const { current, pageSize, sorter } = params;
+      const res = await API.crud({
+        model: 'ai',
+        operation: 'readMany',
+        page: current,
+        pageSize,
+      });
+      return res;
+    },
+    {
+      defaultPageSize: 10,
+    },
+  );
 
   const columns = [
     {
@@ -54,13 +66,9 @@ const AiList = () => {
   ];
 
   return (
-    <Table
-      columns={columns}
-      dataSource={data}
-      loading={loading}
-      rowKey="id"
-      pagination={{ pageSize: 10 }}
-    />
+    <>
+      <Table {...tableProps} rowKey="id" columns={columns} />
+    </>
   );
 };
 
