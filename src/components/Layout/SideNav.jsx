@@ -11,30 +11,69 @@ const items = [
   {
     key: '1',
     icon: <AppstoreOutlined />,
-    label: 'SEO',
-    children: [
-      {
-        key: '/seo',
-        label: 'SEO',
-      },
-      {
-        key: '/ailist',
-        label: 'ai',
-      },
-    ],
+    label: '市场分析',
   },
   {
     key: '2',
     icon: <SettingOutlined />,
-    label: '商品管理',
+    label: '独立站搭建',
     children: [
       {
         key: '21',
-        label: 'Option 1',
+        label: '创建独立站',
       },
       {
         key: '22',
-        label: 'Option 2',
+        label: '管理独立站',
+      },
+    ],
+  },
+  {
+    key: '3',
+    icon: <AppstoreOutlined />,
+    label: '智能营销助手',
+    children: [
+      {
+        key: '/seo',
+        label: 'SEO优化助手',
+      },
+      {
+        key: '/ailist',
+        label: 'AI助手',
+      },
+      {
+        key: '32',
+        label: '社交媒体助手',
+      },
+      {
+        key: '33',
+        label: '广告投放助手',
+      },
+      {
+        key: '34',
+        label: 'B2B销售线索助手',
+      },
+    ],
+  },
+  {
+    key: '4',
+    icon: <SettingOutlined />,
+    label: '数据分析助手',
+    children: [
+      {
+        key: '41',
+        label: '数据分析',
+      },
+    ],
+  },
+  {
+    key: '5',
+    icon: <SettingOutlined />,
+    label: '工作流自定义',
+    children: [
+      {
+        key: '51',
+        label: '自定义工作流',
       },
     ],
   },
