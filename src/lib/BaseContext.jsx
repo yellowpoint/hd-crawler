@@ -17,3 +17,9 @@ export const ContextPageProvider = ({ children }) => {
     </ContextPage.Provider>
   );
 };
+
+export const ContextPageChildren = () => {
+  const { pageData, setPageData } = useContextPage();
+
+  return <div></div>;
+};

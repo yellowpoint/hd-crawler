@@ -17,6 +17,11 @@ export const routerList = [
     side: 'SEO',
   },
   {
+    path: '/flow',
+    notNeedLogin: true,
+    component: lazyLoad('flow'),
+  },
+  {
     path: '/google',
     notNeedLogin: true,
     component: lazyLoad('google'),

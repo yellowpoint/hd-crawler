@@ -42,6 +42,10 @@ const items = [
         label: 'AI助手',
       },
       {
+        key: '/flow',
+        label: '流程图',
+      },
+      {
         key: '32',
         label: '社交媒体助手',
       },
