@@ -20,11 +20,11 @@ const initialNodes = [
     id: '1',
     position: { x: 0, y: 0 },
     data: { value: '1' },
-    type: 'NodeImg',
+    type: 'NodeInput',
   },
   {
     id: '2',
-    position: { x: 0, y: 200 },
+    position: { x: 0, y: 300 },
     data: { label: '2' },
     type: 'NodeText',
   },
@@ -54,7 +54,7 @@ export default function Flow() {
           onNodesChange={onNodesChange}
           edges={edges}
           onEdgesChange={onEdgesChange}
-          fitView
+          // fitView
           nodeTypes={nodeTypes}
         >
           <Background />
