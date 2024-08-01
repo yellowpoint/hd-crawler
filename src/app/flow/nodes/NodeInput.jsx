@@ -7,7 +7,7 @@ import { useContextPage } from '@/lib/BaseContext';
 
 export default function Node({ data, id }) {
   const { pageData, setPageData } = useContextPage();
-  const [inputValue, setInputValue] = useState(pageData[id] || '');
+  const [inputValue, setInputValue] = useState(pageData[id].value || '');
 
   const handleChange = (evt) => {
     const res = evt.target.value;

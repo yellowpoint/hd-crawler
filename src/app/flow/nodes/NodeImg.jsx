@@ -1,33 +1,17 @@
-import { useCallback } from 'react';
+import NodeBase from './NodeBase';
 
-import { Handle, Position } from '@xyflow/react';
-
-import { useContextPage } from '@/lib/BaseContext';
-
-export default function Node({ data, id }) {
-  const { pageData, setPageData } = useContextPage();
-
-  const handleChange = (evt) => {
-    console.log(evt.target.value, id);
-    // onChange();
-    const res = evt.target.value;
-    setPageData({ [id]: res });
-  };
-
+export default function Node(props) {
   return (
-    <>
-      <Handle type="target" position={Position.Top} />
-      <div>
-        <label htmlFor="text">Text:</label>
-        <input
-          id="text"
-          name="text"
-          // value={pageData[id]}
-          onChange={handleChange}
-          className="nodrag"
-        />
-      </div>
-      <Handle type="source" position={Position.Bottom} id="a" />
-    </>
+    <NodeBase {...props}>
+      {(item) => {
+        return (
+          <img
+            className="h-240 w-300 object-contain"
+            alt="example"
+            src={item.value}
+          />
+        );
+      }}
+    </NodeBase>
   );
 }

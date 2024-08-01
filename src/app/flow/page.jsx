@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 
 import {
   ReactFlow,
@@ -17,24 +17,49 @@ import nodeTypes from './nodes';
 
 const initialNodes = [
   {
-    id: '1',
+    id: 'img',
     position: { x: 0, y: 0 },
-    data: { value: '1' },
-    type: 'NodeInput',
+    data: { title: '商品图' },
+    type: 'NodeImg',
   },
   {
-    id: '2',
-    position: { x: 0, y: 300 },
-    data: { label: '2' },
+    id: 'keyword',
+    position: { x: 0, y: 400 },
+    data: { title: '关键词' },
+    type: 'NodeKeyword',
+  },
+  {
+    id: 'text',
+    position: { x: 0, y: 600 },
+    data: { title: '分析结果' },
     type: 'NodeText',
   },
 ];
 const initialEdges = [
-  { id: 'e1-2', source: '1', target: '2', label: '1-2', animated: true },
+  {
+    id: 'e1-2',
+    source: 'img',
+    target: 'keyword',
+    label: '1-2',
+    animated: true,
+  },
+  {
+    id: 'e2-3',
+    source: 'keyword',
+    target: 'text',
+    label: '1-2',
+    animated: true,
+  },
 ];
 
 export default function Flow() {
-  const [pageData, setPageData] = useSetState({});
+  const [pageData, setPageData] = useSetState({
+    img: {
+      status: 'loading', // init loading success error
+    },
+    keyword: {},
+    text: {},
+  });
 
   const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState(initialEdges);
@@ -46,6 +71,44 @@ export default function Flow() {
     (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
     [],
   );
+
+  useEffect(() => {
+    setTimeout(() => {
+      setPageData({
+        img: {
+          status: 'success',
+          value: 'https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png',
+        },
+        keyword: {
+          status: 'loading',
+        },
+      });
+    }, 1000);
+    setTimeout(() => {
+      setPageData({
+        keyword: {
+          status: 'success',
+          value: 'aaa',
+        },
+        text: {
+          status: 'loading',
+        },
+      });
+    }, 2000);
+    setTimeout(() => {
+      setPageData({
+        keyword: {
+          status: 'success',
+          value: 'aaa',
+        },
+        text: {
+          status: 'success',
+          value: 'abababababababababaab',
+        },
+      });
+    }, 3000);
+  }, []);
+
   return (
     <ContextPage.Provider value={{ pageData, setPageData }}>
       <div className="h-full w-full">
