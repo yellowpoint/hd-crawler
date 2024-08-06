@@ -22,8 +22,12 @@ const items = [
         label: 'prompt管理',
       },
       {
+        key: '/ai',
+        label: 'AI分析',
+      },
+      {
         key: '/ailist',
-        label: 'AI助手',
+        label: 'AI分析历史',
       },
     ],
   },

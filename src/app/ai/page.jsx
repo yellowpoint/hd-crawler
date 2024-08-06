@@ -1,22 +1,36 @@
 import { useState, KeyboardEvent } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Form, Input, Button, Card, message, Spin } from 'antd';
+import { useRequest } from 'ahooks';
+import { Form, Input, Button, Card, message, Select } from 'antd';
 
 import API from '@/lib/api';
 
 import { main } from './kimi';
 import { keyword } from './prompt';
 
+const { Option } = Select;
+
 const Ai = () => {
   const [output, setOutput] = useState('');
   const [loading, setLoading] = useState(false);
   const defaultContent = useLocation()?.state;
+  const [form] = Form.useForm();
+  const navigate = useNavigate();
+  const {
+    data: res,
+    error,
+    loading: loadingPrompt,
+  } = useRequest(API.crud, {
+    defaultParams: [{ model: 'prompt', operation: 'readMany' }],
+  });
+  const data = res?.list || [];
   const handleFinish = async (values) => {
-    const { prompt, content } = values;
+    const { promptId, content, prompt } = values;
 
     setLoading(true);
     try {
+      // const prompt = data.find((item) => item.id === promptId).content;
       const res = await main({ prompt, text: content });
       setOutput(res);
       await API.crud({
@@ -35,23 +49,49 @@ const Ai = () => {
   return (
     <Form
       layout="vertical"
-      initialValues={{ prompt: keyword, content: defaultContent }}
+      initialValues={{ promptId: data[0]?.id, content: defaultContent }}
       onFinish={handleFinish}
+      form={form}
     >
       <div className="flex h-full gap-16">
-        <Form.Item
-          className="flex-1"
-          label="prompt"
-          name="prompt"
-          rules={[{ required: true, message: '请输入prompt' }]}
-        >
-          <Input.TextArea
-            className="!resize-none"
-            rows={20}
-            // autoSize={{ minRows: 1, maxRows: 20 }}
-            disabled={loading}
-          />
-        </Form.Item>
+        <div className="flex flex-1 flex-col">
+          <Form.Item
+            label="选择prompt"
+            name="promptId"
+            rules={[{ required: true, message: '请选择prompt' }]}
+          >
+            <Select
+              className="w-full"
+              loading={loadingPrompt}
+              placeholder="Select a prompt"
+              optionFilterProp="children"
+              onChange={(value) => {
+                form.setFieldsValue({
+                  prompt: data.find((item) => item.id === value)?.content,
+                });
+              }}
+            >
+              {data.map((item) => (
+                <Option key={item.id} value={item.id}>
+                  {item.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label="prompt内容"
+            name="prompt"
+            rules={[{ required: true, message: '请输入prompt' }]}
+          >
+            <Input.TextArea
+              className="!resize-none"
+              rows={16}
+              // autoSize={{ minRows: 1, maxRows: 20 }}
+              disabled={loading}
+            />
+          </Form.Item>
+        </div>
+
         <Form.Item
           className="flex-1"
           label="内容"

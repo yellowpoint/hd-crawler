@@ -46,7 +46,13 @@ const Prompt = () => {
     {
       title: '内容',
       dataIndex: 'content',
-      render: (content) => <pre>{content}</pre>,
+      render: (content) => (
+        <pre>
+          {content
+            ? content.slice(0, 10) + (content.length > 10 ? '...' : '')
+            : content}
+        </pre>
+      ),
     },
     {
       title: '版本',
@@ -140,7 +146,7 @@ const Prompt = () => {
             <Input />
           </Form.Item>
           <Form.Item name="content" label="内容" rules={[{ required: true }]}>
-            <Input.TextArea />
+            <Input.TextArea autoSize />
           </Form.Item>
           <Form.Item name="id" hidden>
             <Input />

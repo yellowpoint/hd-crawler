@@ -83,6 +83,11 @@ const handleCrud = async (req, res) => {
 
     case 'delete':
       try {
+        if (model === 'prompt') {
+          await prisma.promptHistory.deleteMany({
+            where: { promptId: Number(id) },
+          });
+        }
         await prisma[model].delete({
           where: { id: Number(id) },
         });
