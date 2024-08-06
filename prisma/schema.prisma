@@ -61,3 +61,20 @@ model ai {
   output    String?
   createdAt DateTime @default(now())
 }
+
+model Prompt {
+  id        Int             @id @default(autoincrement())
+  name      String          @unique
+  content   String
+  createdAt DateTime        @default(now())
+  histories PromptHistory[]
+}
+
+model PromptHistory {
+  id        Int      @id @default(autoincrement())
+  promptId  Int
+  content   String
+  createdAt DateTime @default(now())
+
+  prompt Prompt @relation(fields: [promptId], references: [id])
+}

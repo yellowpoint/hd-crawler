@@ -22,6 +22,11 @@ export const routerList = [
     component: lazyLoad('flow'),
   },
   {
+    path: '/prompt',
+    notNeedLogin: true,
+    component: lazyLoad('prompt'),
+  },
+  {
     path: '/google',
     notNeedLogin: true,
     component: lazyLoad('google'),

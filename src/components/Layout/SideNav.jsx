@@ -9,6 +9,25 @@ import { Menu } from 'antd';
 
 const items = [
   {
+    key: '0',
+    icon: <SettingOutlined />,
+    label: '功能测试',
+    children: [
+      {
+        key: '/flow',
+        label: '流程图',
+      },
+      {
+        key: '/prompt',
+        label: 'prompt管理',
+      },
+      {
+        key: '/ailist',
+        label: 'AI助手',
+      },
+    ],
+  },
+  {
     key: '1',
     icon: <AppstoreOutlined />,
     label: '市场分析',
@@ -37,14 +56,7 @@ const items = [
         key: '/seo',
         label: 'SEO优化助手',
       },
-      {
-        key: '/ailist',
-        label: 'AI助手',
-      },
-      {
-        key: '/flow',
-        label: '流程图',
-      },
+
       {
         key: '32',
         label: '社交媒体助手',

@@ -16,7 +16,7 @@ const handleCrud = async (req, res) => {
         });
         res.send({ data: result, code: 0 });
       } catch (error) {
-        res.status(400).send({ data: error.message, code: 1 });
+        res.status(200).send({ data: error.message, code: 1 });
       }
       break;
 
@@ -26,11 +26,11 @@ const handleCrud = async (req, res) => {
           where: { id: Number(id) },
         });
         if (!result) {
-          return res.status(404).send({ data: 'Not found', code: 1 });
+          return res.status(200).send({ data: 'Not found', code: 1 });
         }
         res.send({ data: result, code: 0 });
       } catch (error) {
-        res.status(400).send({ data: error.message, code: 1 });
+        res.status(200).send({ data: error.message, code: 1 });
       }
       break;
 
@@ -39,6 +39,14 @@ const handleCrud = async (req, res) => {
         const result = await prisma[model].findMany({
           take: Number(pageSize),
           skip: (Number(page) - 1) * Number(pageSize),
+          // include: model === 'prompt' && { histories: true },
+          include: model === 'prompt' && {
+            histories: {
+              // take: 1,
+              orderBy: { createdAt: 'desc' },
+              select: { id: true, promptId: true },
+            },
+          },
         });
         const total = await prisma[model].count();
         res.send({
@@ -49,7 +57,7 @@ const handleCrud = async (req, res) => {
           code: 0,
         });
       } catch (error) {
-        res.status(400).send({ data: error.message, code: 1 });
+        res.status(200).send({ data: error.message, code: 1 });
       }
       break;
 
@@ -59,9 +67,17 @@ const handleCrud = async (req, res) => {
           where: { id: Number(id) },
           data,
         });
+        if (model === 'prompt') {
+          await prisma.promptHistory.create({
+            data: {
+              promptId: Number(id),
+              content: data.content,
+            },
+          });
+        }
         res.send({ data: result, code: 0 });
       } catch (error) {
-        res.status(400).send({ data: error.message, code: 1 });
+        res.status(200).send({ data: error.message, code: 1 });
       }
       break;
 
@@ -72,12 +88,12 @@ const handleCrud = async (req, res) => {
         });
         res.send({ data: 'Success', code: 0 });
       } catch (error) {
-        res.status(400).send({ data: error.message, code: 1 });
+        res.status(200).send({ data: error.message, code: 1 });
       }
       break;
 
     default:
-      res.status(400).send({ data: 'Invalid operation', code: 1 });
+      res.status(200).send({ data: 'Invalid operation', code: 1 });
   }
 };
 
