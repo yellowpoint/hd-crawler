@@ -36,6 +36,9 @@ export default defineConfig(({ mode, command }) => {
       'process.env.VITE_TWITTER_V2_CLIENT_SECRET': JSON.stringify(
         process.env.VITE_TWITTER_V2_CLIENT_SECRET,
       ),
+      'process.env.VITE_GEMINI_API_KEY': JSON.stringify(
+        process.env.VITE_GEMINI_API_KEY,
+      ),
     },
     css: {
       modules: {
