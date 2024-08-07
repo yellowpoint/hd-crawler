@@ -35,7 +35,12 @@ const Ai = () => {
       await API.crud({
         model: 'ai',
         operation: 'create',
-        data: { prompt, input: content, output: res, llm },
+        data: {
+          prompt,
+          input: `${image && '图片文件,\n'}${content}`,
+          output: res,
+          llm,
+        },
       });
     } catch (error) {
       message.error('生成文本失败');

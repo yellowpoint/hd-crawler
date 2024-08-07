@@ -42,7 +42,11 @@ export async function gemini({ prompt, text: input, image }) {
   // const contents = [...history];
   // const { totalTokens } = await model.countTokens({ contents });
   // console.log('totalTokens', totalTokens);
-  const result = await chat.sendMessage([...imageParts, input]);
+  const allInput = imageParts;
+  if (input) {
+    allInput.push(input);
+  }
+  const result = await chat.sendMessage(allInput);
   const response = await result.response;
   console.log('response', response);
   const text = response.text();

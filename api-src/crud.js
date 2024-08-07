@@ -44,9 +44,11 @@ const handleCrud = async (req, res) => {
             histories: {
               // take: 1,
               orderBy: { createdAt: 'desc' },
+              select: { id: true, promptId: true, createdAt: true },
               select: { id: true, promptId: true },
             },
           },
+          orderBy: { createdAt: 'desc' },
         });
         const total = await prisma[model].count();
         res.send({
