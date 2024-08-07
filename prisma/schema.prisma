@@ -76,5 +76,22 @@ model PromptHistory {
   content   String
   createdAt DateTime @default(now())
 
-  prompt Prompt @relation(fields: [promptId], references: [id])
+  prompt Prompt @relation(fields: [promptId], references: [id], onDelete: Cascade)
+}
+
+model Flow {
+  id        Int           @id @default(autoincrement())
+  name      String        @unique
+  content   String
+  createdAt DateTime        @default(now())
+  histories FlowHistory[]
+}
+
+model FlowHistory {
+  id        Int      @id @default(autoincrement())
+  flowId    Int
+  content   String
+  createdAt DateTime @default(now())
+
+  Flow Flow @relation(fields: [flowId], references: [id], onDelete: Cascade)
 }

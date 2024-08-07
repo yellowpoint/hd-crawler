@@ -39,13 +39,12 @@ const handleCrud = async (req, res) => {
         const result = await prisma[model].findMany({
           take: Number(pageSize),
           skip: (Number(page) - 1) * Number(pageSize),
-          // include: model === 'prompt' && { histories: true },
-          include: model === 'prompt' && {
+          include: ['prompt', 'flow'].includes(model) && {
             histories: {
               // take: 1,
               orderBy: { createdAt: 'desc' },
-              select: { id: true, promptId: true, createdAt: true },
-              select: { id: true, promptId: true },
+              select: { id: true, [model + 'Id']: true, createdAt: true },
+              select: { id: true, [model + 'Id']: true },
             },
           },
           orderBy: { createdAt: 'desc' },
@@ -69,10 +68,10 @@ const handleCrud = async (req, res) => {
           where: { id: Number(id) },
           data,
         });
-        if (model === 'prompt') {
-          await prisma.promptHistory.create({
+        if (['prompt', 'flow'].includes(model)) {
+          await prisma[model + 'History'].create({
             data: {
-              promptId: Number(id),
+              [model + 'Id']: Number(id),
               content: data.content,
             },
           });
@@ -85,11 +84,11 @@ const handleCrud = async (req, res) => {
 
     case 'delete':
       try {
-        if (model === 'prompt') {
-          await prisma.promptHistory.deleteMany({
-            where: { promptId: Number(id) },
-          });
-        }
+        // if (['prompt', 'flow'].includes(model)) {
+        //   await prisma[model + 'History'].deleteMany({
+        //     where: { [model + 'Id']: Number(id) },
+        //   });
+        // }
         await prisma[model].delete({
           where: { id: Number(id) },
         });

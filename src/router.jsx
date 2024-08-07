@@ -19,6 +19,11 @@ export const routerList = [
   {
     path: '/flow',
     notNeedLogin: true,
+    component: lazyLoad('flowList'),
+  },
+  {
+    path: '/flow/:id',
+    notNeedLogin: true,
     component: lazyLoad('flow'),
   },
   {
