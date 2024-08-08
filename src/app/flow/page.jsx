@@ -9,6 +9,7 @@ import {
   applyEdgeChanges,
 } from '@xyflow/react';
 import { useRequest, useSetState } from 'ahooks';
+import { Button } from 'antd';
 
 import '@xyflow/react/dist/style.css';
 
@@ -20,19 +21,19 @@ import nodeTypes from './nodes';
 const flowData2 = {
   nodes: [
     {
-      id: 'img',
+      id: '0',
       position: { x: 0, y: 0 },
-      data: { title: '商品图' },
+      data: { title: '商品图', readonly: true, status: 'loading' },
       type: 'NodeImg',
     },
     {
-      id: 'keyword',
-      position: { x: 0, y: 400 },
-      data: { title: '关键词' },
+      id: '1',
+      position: { x: 0, y: 300 },
+      data: { title: '关键词', status: 'waiting' },
       type: 'NodeKeyword',
     },
     {
-      id: 'text',
+      id: '2',
       position: { x: 0, y: 600 },
       data: { title: '分析结果' },
       type: 'NodeText',
@@ -41,15 +42,15 @@ const flowData2 = {
   edges: [
     {
       id: 'e1-2',
-      source: 'img',
-      target: 'keyword',
-      label: '1-2',
+      source: '0',
+      target: '1',
+      label: '0-1',
       animated: true,
     },
     {
       id: 'e2-3',
-      source: 'keyword',
-      target: 'text',
+      source: '1',
+      target: '2',
       label: '1-2',
       animated: true,
     },
@@ -69,13 +70,18 @@ export default function Flow() {
     defaultParams: [{ model: 'flow', operation: 'readOne', id }],
     onSuccess: (data) => {
       console.log('data', data);
-      const flowData = JSON.parse(data.content || '{}');
+      // const flowData = JSON.parse(data.content || '{}');
+      const flowData = flowData2;
       setNodes(flowData.nodes);
       setEdges(flowData.edges);
-      setPageData(flowData.data);
+      setPageData(flowData.nodes);
     },
   });
 
+  const { data: _resPrompt, loading: loadingPrompt } = useRequest(API.crud, {
+    defaultParams: [{ model: 'prompt', operation: 'readMany' }],
+  });
+  const resPrompt = _resPrompt?.list;
   // console.log('data', data.content, flowData);
   const [pageData, setPageData] = useSetState();
   const [nodes, setNodes] = useState();
@@ -88,53 +94,31 @@ export default function Flow() {
     (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
     [],
   );
-
-  useEffect(() => {
-    if (!data) return;
-    setTimeout(() => {
-      setPageData({
-        img: {
-          status: 'success',
-          value: 'https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png',
-        },
-        keyword: {
-          status: 'loading',
-        },
-      });
-    }, 1000);
-    setTimeout(() => {
-      setPageData({
-        keyword: {
-          status: 'success',
-          value: 'aaa',
-        },
-        text: {
-          status: 'loading',
-        },
-      });
-    }, 2000);
-    setTimeout(() => {
-      setPageData({
-        keyword: {
-          status: 'success',
-          value: 'aaa',
-        },
-        text: {
-          status: 'success',
-          value: 'abababababababababaab',
-        },
-      });
-    }, 3000);
-  }, [data]);
+  const next = (id) => {
+    const newData = pageData;
+    const nextId = Number(id) + 1;
+    const nextItem = newData[nextId];
+    if (!nextItem) return;
+    newData[nextId].data = {
+      ...nextItem.data,
+      status: 'loading',
+    };
+    setPageData(newData);
+  };
 
   return (
-    <ContextPage.Provider value={{ pageData, setPageData }}>
-      <div className="h-full w-full">
+    <ContextPage.Provider
+      value={{ pageData, setPageData, next, resPrompt, loadingPrompt }}
+    >
+      <div className="relative h-full w-full">
+        <div className="absolute right-0 top-0 z-20">
+          <Button>历史记录</Button>
+        </div>
         <ReactFlow
           nodes={nodes}
-          onNodesChange={onNodesChange}
+          // onNodesChange={onNodesChange}
           edges={edges}
-          onEdgesChange={onEdgesChange}
+          // onEdgesChange={onEdgesChange}
           // fitView
           nodeTypes={nodeTypes}
         >

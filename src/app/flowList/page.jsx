@@ -11,12 +11,15 @@ import {
   Modal,
   Input,
   Form,
+  Select,
   message,
   Popconfirm,
 } from 'antd';
 import dayjs from 'dayjs';
 
 import API from '@/lib/api';
+
+import { templates } from './templates';
 
 const dbModel = 'flow';
 const Page = () => {
@@ -154,6 +157,19 @@ const Page = () => {
         <Form form={form} onFinish={handleFinish}>
           <Form.Item name="name" label="名称" rules={[{ required: true }]}>
             <Input />
+          </Form.Item>
+          <Form.Item name="template" label="模板">
+            <Select
+              onChange={(value) => {
+                form.setFieldValue('content', value);
+              }}
+            >
+              {templates.map(({ key, value }) => (
+                <Select.Option key={key} value={value}>
+                  {key}
+                </Select.Option>
+              ))}
+            </Select>
           </Form.Item>
           <Form.Item name="content" label="内容" rules={[{ required: true }]}>
             <Input.TextArea autoSize />

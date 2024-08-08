@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import {
   CheckCircleOutlined,
   ClockCircleOutlined,
@@ -54,22 +56,45 @@ export const NodeTag = ({ status }) => {
   ) : null;
 };
 
-export default function Node({ data, id, children }) {
-  const { pageData, setPageData } = useContextPage();
-
-  const item = pageData[id] || {};
-  const loading = item.status === 'loading';
-  const success = item.status === 'success';
+export default function Node(props) {
+  const { data, id, children } = props;
+  const {
+    pageData,
+    setPageData,
+    next: _next,
+    ...restPageData
+  } = useContextPage();
+  const item = pageData[id]?.data || {};
+  // console.log('props', props);
+  const prevValue = pageData[Number(id) - 1]?.data;
+  const status = item.status || 'waiting';
+  const loading = status === 'loading';
+  const success = status === 'success';
+  const waiting = status === 'waiting';
   const title = data.title;
+  const setData = (data = {}) => {
+    const newData = pageData;
+    newData[id].data = {
+      ...item,
+      ...data,
+    };
+    setPageData(newData);
+  };
+  const next = () => {
+    _next(id);
+  };
+
+  useEffect(() => {
+    if (!loading) return;
+    console.log(id, '开始');
+  }, [loading, id]);
   return (
     <>
       <Handle type="target" position={Position.Top} />
-      <Card
-        title={title}
-        className="w-300"
-        extra={<NodeTag status={item.status || 'waiting'} />}
-      >
-        {success && children(item)}
+      <Card title={title} className="w-300" extra={<NodeTag status={status} />}>
+        {/* {success && children(item, setData)} */}
+        {!waiting &&
+          children({ item, setData, next, prevValue, ...restPageData })}
       </Card>
       <Handle type="source" position={Position.Bottom} />
     </>
