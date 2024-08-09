@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Button, Form, Select } from 'antd';
 
 import { main, llm } from '@/app/ai/gemini';
+import { EllipsisFlex } from '@/components';
 import API from '@/lib/api';
 
 import NodeBase from './NodeBase';
@@ -76,8 +77,13 @@ export default function Node(props) {
                   ))}
               </Select>
             </Form.Item>
-            <p>{item.value}</p>
-            <Button type="primary" htmlType="submit" loading={loading}>
+            <EllipsisFlex rows={3}>{item.value || '输出结果区域'}</EllipsisFlex>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              className="mt-8"
+            >
               下一步
             </Button>
           </Form>

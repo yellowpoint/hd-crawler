@@ -83,11 +83,21 @@ model Flow {
   id        Int           @id @default(autoincrement())
   name      String        @unique
   content   String
-  createdAt DateTime        @default(now())
+  createdAt DateTime      @default(now())
   histories FlowHistory[]
+  records   FlowRecord[]
 }
 
 model FlowHistory {
+  id        Int      @id @default(autoincrement())
+  flowId    Int
+  content   String
+  createdAt DateTime @default(now())
+
+  Flow Flow @relation(fields: [flowId], references: [id], onDelete: Cascade)
+}
+
+model FlowRecord {
   id        Int      @id @default(autoincrement())
   flowId    Int
   content   String

@@ -4,20 +4,61 @@ import express from 'express';
 const prisma = new PrismaClient();
 const router = express.Router();
 
-const handleCrud = async (req, res) => {
+const handleCreate = async (req, res) => {
   const { model, operation, id, data, page = 1, pageSize = 10 } = req.body;
-  // const { page = 1, pageSize = 10 } = req.query;
+
+  try {
+    const result = await prisma[model].create({
+      data,
+    });
+    res.send({ data: result, code: 0 });
+  } catch (error) {
+    res.status(200).send({ data: error.message, code: 1 });
+  }
+};
+
+const handleUpdate = async (req, res) => {
+  const { model, operation, id, data, page = 1, pageSize = 10 } = req.body;
+
+  try {
+    const result = await prisma[model].update({
+      where: { id: Number(id) },
+      data,
+    });
+    if (['prompt', 'flow'].includes(model)) {
+      await prisma[model + 'History'].create({
+        data: {
+          [model + 'Id']: Number(id),
+          content: data.content,
+        },
+      });
+    }
+    res.send({ data: result, code: 0 });
+  } catch (error) {
+    res.status(200).send({ data: error.message, code: 1 });
+  }
+};
+
+const handleCrud = async (req, res) => {
+  const {
+    model,
+    operation,
+    id,
+    data,
+    page = 1,
+    pageSize = 10,
+    filter,
+  } = req.body;
 
   switch (operation) {
+    case 'createOrUpdate':
+      await (id ? handleUpdate : handleCreate)(req, res);
+      break;
     case 'create':
-      try {
-        const result = await prisma[model].create({
-          data,
-        });
-        res.send({ data: result, code: 0 });
-      } catch (error) {
-        res.status(200).send({ data: error.message, code: 1 });
-      }
+      await handleCreate(req, res);
+      break;
+    case 'update':
+      await handleUpdate(req, res);
       break;
 
     case 'readOne':
@@ -41,9 +82,7 @@ const handleCrud = async (req, res) => {
           skip: (Number(page) - 1) * Number(pageSize),
           include: ['prompt', 'flow'].includes(model) && {
             histories: {
-              // take: 1,
               orderBy: { createdAt: 'desc' },
-              select: { id: true, [model + 'Id']: true, createdAt: true },
               select: { id: true, [model + 'Id']: true },
             },
           },
@@ -61,34 +100,31 @@ const handleCrud = async (req, res) => {
         res.status(200).send({ data: error.message, code: 1 });
       }
       break;
-
-    case 'update':
+    case 'readManyWithFilter':
+      const { key, value } = filter;
       try {
-        const result = await prisma[model].update({
-          where: { id: Number(id) },
-          data,
+        const result = await prisma[model].findMany({
+          where: { [key]: value },
+          take: Number(pageSize),
+          skip: (Number(page) - 1) * Number(pageSize),
+          orderBy: { createdAt: 'desc' },
         });
-        if (['prompt', 'flow'].includes(model)) {
-          await prisma[model + 'History'].create({
-            data: {
-              [model + 'Id']: Number(id),
-              content: data.content,
-            },
-          });
-        }
-        res.send({ data: result, code: 0 });
+        const total = await prisma[model].count({
+          where: { [key]: value },
+        });
+        res.send({
+          data: {
+            total,
+            list: result,
+          },
+          code: 0,
+        });
       } catch (error) {
         res.status(200).send({ data: error.message, code: 1 });
       }
       break;
-
     case 'delete':
       try {
-        // if (['prompt', 'flow'].includes(model)) {
-        //   await prisma[model + 'History'].deleteMany({
-        //     where: { [model + 'Id']: Number(id) },
-        //   });
-        // }
         await prisma[model].delete({
           where: { id: Number(id) },
         });

@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -9,33 +9,35 @@ import {
   applyEdgeChanges,
 } from '@xyflow/react';
 import { useRequest, useSetState } from 'ahooks';
-import { Button } from 'antd';
+import { Button, Drawer } from 'antd';
 
 import '@xyflow/react/dist/style.css';
 
 import API from '@/lib/api';
 import { ContextPage } from '@/lib/BaseContext.jsx';
 
+import FlowRecord from './FlowRecord.jsx';
 import nodeTypes from './nodes';
 
-const flowData2 = {
+let flowRecordId = undefined;
+export const flowDataDemo = {
   nodes: [
     {
       id: '0',
       position: { x: 0, y: 0 },
-      data: { title: '商品图', readonly: true, status: 'loading' },
+      data: { title: '上传图片', readonly: true, status: 'loading' },
       type: 'NodeImg',
     },
     {
       id: '1',
       position: { x: 0, y: 300 },
-      data: { title: '关键词', status: 'waiting' },
+      data: { title: '识别图片', status: 'waiting' },
       type: 'NodeKeyword',
     },
     {
       id: '2',
-      position: { x: 0, y: 600 },
-      data: { title: '分析结果' },
+      position: { x: 0, y: 650 },
+      data: { title: '识图提取关键词' },
       type: 'NodeText',
     },
   ],
@@ -55,23 +57,17 @@ const flowData2 = {
       animated: true,
     },
   ],
-  data: {
-    img: {
-      status: 'loading',
-    },
-    keyword: {},
-    text: {},
-  },
 };
 // init loading success error
 export default function Flow() {
-  const { id } = useParams();
+  let { id: flowId } = useParams();
+  flowId = Number(flowId);
   const { data = {}, error } = useRequest(API.crud, {
-    defaultParams: [{ model: 'flow', operation: 'readOne', id }],
+    defaultParams: [{ model: 'flow', operation: 'readOne', id: flowId }],
     onSuccess: (data) => {
       console.log('data', data);
-      // const flowData = JSON.parse(data.content || '{}');
-      const flowData = flowData2;
+      const flowData = JSON.parse(data.content || '{}');
+      // const flowData = flowDataDemo;
       setNodes(flowData.nodes);
       setEdges(flowData.edges);
       setPageData(flowData.nodes);
@@ -86,6 +82,7 @@ export default function Flow() {
   const [pageData, setPageData] = useSetState();
   const [nodes, setNodes] = useState();
   const [edges, setEdges] = useState();
+  const [visible, setVisible] = useState(false);
   const onNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
     [],
@@ -94,7 +91,7 @@ export default function Flow() {
     (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
     [],
   );
-  const next = (id) => {
+  const next = async (id) => {
     const newData = pageData;
     const nextId = Number(id) + 1;
     const nextItem = newData[nextId];
@@ -104,16 +101,43 @@ export default function Flow() {
       status: 'loading',
     };
     setPageData(newData);
-  };
+    const data = await API.crud({
+      model: 'FlowRecord',
+      operation: 'createOrUpdate',
+      data: {
+        id: flowRecordId,
+        flowId,
+        content: JSON.stringify(newData),
+      },
+    });
+    console.log('data', data);
 
+    flowRecordId = data.id;
+  };
+  const onOpenHistory = () => {
+    setVisible(true);
+  };
+  const onCloseHistory = () => {
+    setVisible(false);
+  };
   return (
     <ContextPage.Provider
       value={{ pageData, setPageData, next, resPrompt, loadingPrompt }}
     >
       <div className="relative h-full w-full">
         <div className="absolute right-0 top-0 z-20">
-          <Button>历史记录</Button>
+          <Button onClick={onOpenHistory}>历史记录</Button>
         </div>
+        <Drawer
+          width="70%"
+          title="历史记录"
+          placement="right"
+          closable={false}
+          onClose={onCloseHistory}
+          open={visible}
+        >
+          <FlowRecord flowId={flowId} onClose={onCloseHistory} />
+        </Drawer>
         <ReactFlow
           nodes={nodes}
           // onNodesChange={onNodesChange}

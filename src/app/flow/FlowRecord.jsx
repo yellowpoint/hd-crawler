@@ -1,6 +1,5 @@
 // 表单页面模板
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { useAntdTable, useRequest } from 'ahooks';
 import {
@@ -11,7 +10,6 @@ import {
   Modal,
   Input,
   Form,
-  Select,
   message,
   Popconfirm,
 } from 'antd';
@@ -19,21 +17,16 @@ import dayjs from 'dayjs';
 
 import API from '@/lib/api';
 
-import { templates } from './templates';
-
-const dbModel = 'flow';
-const Page = () => {
+const Page = ({ flowId }) => {
   const [showModal, setShowModal] = useState(false);
   const [form] = Form.useForm();
-
-  const navigate = useNavigate();
-
   const { tableProps, search, runAsync } = useAntdTable(
     async (params) => {
       const { current, pageSize, sorter } = params;
       const res = await API.crud({
-        model: dbModel,
-        operation: 'readMany',
+        model: 'FlowRecord',
+        operation: 'readManyWithFilter',
+        filter: { key: 'flowId', value: flowId },
         page: current,
         pageSize,
       });
@@ -49,10 +42,6 @@ const Page = () => {
   const columns = [
     { title: 'id', dataIndex: 'id' },
     {
-      title: 'name',
-      dataIndex: 'name',
-    },
-    {
       title: '内容',
       dataIndex: 'content',
       render: (content) => (
@@ -64,11 +53,6 @@ const Page = () => {
       ),
     },
     {
-      title: '版本',
-      dataIndex: 'histories',
-      render: (histories) => <Tag color="green">{histories?.length || 0}</Tag>,
-    },
-    {
       title: '更新时间',
       dataIndex: 'updatedAt',
       render: (updatedAt) => dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss'),
@@ -77,10 +61,7 @@ const Page = () => {
       title: '操作',
       render: (_, record) => (
         <Space>
-          <Button type="primary" onClick={() => navigate('/flow/' + record.id)}>
-            详情
-          </Button>
-          <Button
+          {/* <Button
             type="primary"
             onClick={() => {
               form.setFieldsValue({ ...record });
@@ -88,12 +69,12 @@ const Page = () => {
             }}
           >
             编辑
-          </Button>
-          <Popconfirm
+          </Button> */}
+          {/* <Popconfirm
             title="确定要删除吗?"
             onConfirm={async () => {
               await API.crud({
-                model: dbModel,
+                model: 'prompt',
                 operation: 'delete',
                 id: record.id,
               });
@@ -106,7 +87,7 @@ const Page = () => {
             <Button type="primary" danger>
               删除
             </Button>
-          </Popconfirm>
+          </Popconfirm> */}
         </Space>
       ),
     },
@@ -115,16 +96,15 @@ const Page = () => {
   const handleFinish = async (values) => {
     const { id } = values;
     console.log('values', values);
-    // const content = JSON.stringify(values.);
     const res = id
       ? await API.crud({
-          model: dbModel,
+          model: 'prompt',
           operation: 'update',
           id,
           data: { ...values },
         })
       : await API.crud({
-          model: dbModel,
+          model: 'prompt',
           operation: 'create',
           data: { ...values },
         });
@@ -133,27 +113,8 @@ const Page = () => {
     submit();
   };
 
-  const handleKeyDown = (e) => {
-    if (e.ctrlKey && e.key === 's') {
-      e.preventDefault();
-      form.submit();
-    }
-  };
-
   return (
-    <div onKeyDown={handleKeyDown}>
-      <div className="mb-4">
-        <Button
-          type="primary"
-          onClick={() => {
-            form.resetFields();
-            setShowModal(true);
-          }}
-        >
-          添加
-        </Button>
-      </div>
-
+    <div>
       <Table rowKey="id" {...tableProps} columns={columns} />
       <Modal
         title={form.getFieldValue('id') ? '编辑' : '添加'}
@@ -164,19 +125,6 @@ const Page = () => {
         <Form form={form} onFinish={handleFinish}>
           <Form.Item name="name" label="名称" rules={[{ required: true }]}>
             <Input />
-          </Form.Item>
-          <Form.Item name="template" label="模板">
-            <Select
-              onChange={(value) => {
-                form.setFieldValue('content', value);
-              }}
-            >
-              {templates.map(({ key, value }) => (
-                <Select.Option key={key} value={value}>
-                  {key}
-                </Select.Option>
-              ))}
-            </Select>
           </Form.Item>
           <Form.Item name="content" label="内容" rules={[{ required: true }]}>
             <Input.TextArea autoSize />
