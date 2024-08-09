@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -104,8 +104,8 @@ export default function Flow() {
     const data = await API.crud({
       model: 'FlowRecord',
       operation: 'createOrUpdate',
+      id: flowRecordId,
       data: {
-        id: flowRecordId,
         flowId,
         content: JSON.stringify(newData),
       },
@@ -140,9 +140,9 @@ export default function Flow() {
         </Drawer>
         <ReactFlow
           nodes={nodes}
-          // onNodesChange={onNodesChange}
+          onNodesChange={onNodesChange}
           edges={edges}
-          // onEdgesChange={onEdgesChange}
+          onEdgesChange={onEdgesChange}
           // fitView
           nodeTypes={nodeTypes}
         >

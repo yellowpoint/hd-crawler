@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Image, Upload, message } from 'antd';
 
+import { baseURL } from '@/lib/api/axios';
+
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -68,6 +70,7 @@ const UploadImg = ({ onChange, value, disabled }) => {
   return (
     <>
       <Upload
+        action={baseURL + '/upload'}
         listType="picture-card"
         fileList={fileList}
         // maxCount={1}
@@ -83,9 +86,9 @@ const UploadImg = ({ onChange, value, disabled }) => {
         // }}
         accept=".png, .jpg, .jpeg, .webp"
         name="image"
-        beforeUpload={(file) => {
-          return false;
-        }}
+        // beforeUpload={(file) => {
+        //   return false;
+        // }}
       >
         {uploadButton}
       </Upload>

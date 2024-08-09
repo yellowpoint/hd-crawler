@@ -53,9 +53,9 @@ const Page = ({ flowId }) => {
       ),
     },
     {
-      title: '更新时间',
-      dataIndex: 'updatedAt',
-      render: (updatedAt) => dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss'),
+      title: '时间',
+      dataIndex: 'createdAt',
+      render: (createdAt) => dayjs(createdAt).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
       title: '操作',
