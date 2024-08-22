@@ -10,6 +10,27 @@ configDotenv();
 const isDev = process.env.NODE_ENV === 'development';
 export const TempDir = isDev ? './storage' : '/tmp/storage';
 
+export function getPageHtmlBase(page, selector = 'body') {
+  return page.evaluate((selector) => {
+    // Check if the selector is an XPath
+    if (selector.startsWith('/')) {
+      const elements = document.evaluate(
+        selector,
+        document,
+        null,
+        XPathResult.ANY_TYPE,
+        null,
+      );
+      let result = elements.iterateNext();
+      return result ? result.textContent || '' : '';
+    } else {
+      // Handle as a CSS selector
+      const el = document.querySelector(selector);
+      return el?.innerText || '';
+    }
+  }, selector);
+}
+
 export function getPageHtml(page, selector = 'body') {
   return page.evaluate((selector) => {
     // Check if the selector is an XPath
