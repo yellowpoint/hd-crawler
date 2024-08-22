@@ -36,6 +36,7 @@
     "express-ws": "^5.0.2",
     "glob": "^10.3.16",
     "gpt-tokenizer": "^2.1.2",
+    "lodash": "^4.17.21",
     "multer": "^1.4.5-lts.1",
     "openai": "^4.52.0",
     "puppeteer-core": "^21.6.1",

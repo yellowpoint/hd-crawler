@@ -38,7 +38,7 @@ export const crawlStart = async (config) => {
 
       maxRequestsPerCrawl: config.maxRequestsPerCrawl, // 这个是最多发出多少个请求
       maxConcurrency: isDev ? undefined : 1, // 最大并发数
-      // headless: false
+      // headless: false,
       launchContext: {
         launcher: puppeteer,
         launchOptions,

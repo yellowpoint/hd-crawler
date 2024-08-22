@@ -6,6 +6,7 @@ import express from 'express';
 import expressWs from 'express-ws';
 
 import { crawlStart } from './lib/crawlerSetup.js';
+import { goolgeImg } from './lib/google.js';
 import { write, savePageScreenshot } from './lib/utils.js';
 
 const prisma = new PrismaClient();
@@ -26,7 +27,9 @@ export const getRelatedSearchesAndAlsoAsks = async (page, keyword) => {
   });
 
   await page.click('textarea');
-  await page.waitForSelector('#Alh6id');
+  await page.waitForSelector('#Alh6id', { timeout: 10000 });
+  await page.waitForTimeout(300);
+
   let presentation = await page.evaluate(async () => {
     const elementHandle = document.querySelectorAll(
       '#Alh6id li.PZPZlf .wM6W7d',
@@ -56,7 +59,13 @@ export const getRelatedSearchesAndAlsoAsks = async (page, keyword) => {
   };
 };
 
-const googleCrawler = async (keyword, level = 1, ws, parentKeyword) => {
+const googleCrawler = async (
+  keyword,
+  level = 1,
+  ws,
+  parentKeyword,
+  needMore,
+) => {
   const requestHandler = async ({ request, sendRequest, log, page }) => {
     const { url } = request;
 
@@ -83,7 +92,7 @@ const googleCrawler = async (keyword, level = 1, ws, parentKeyword) => {
       logAndWsSend(keyword + '，存储失败：' + error, ws);
     }
 
-    if (level < 2) {
+    if (level < 2 && needMore) {
       // 添加通配符搜索
       const keywordAndxing = ['*' + keyword, keyword + '*'];
       logAndWsSend(
@@ -213,6 +222,28 @@ router.post('/add', async (req, res) => {
   // const dbres = await getDataAll();
   return res.send({ data: outputFileContent, code: 0 });
 });
+router.post('/addImg', async (req, res) => {
+  const requestHandler = async ({ request, sendRequest, log, page }) => {
+    const { url } = request;
+
+    const data = await goolgeImg(page);
+  };
+  await crawlStart({
+    url: ['https://images.google.com'],
+    requestHandler,
+  });
+  const outputFileName = await write(config);
+
+  console.log('outputFileName', outputFileName);
+  let outputFileContent = await readFile(outputFileName, 'utf-8');
+  outputFileContent = JSON.parse(outputFileContent);
+  outputFileContent.reverse();
+  const isExists = await addData(keyword, JSON.stringify(outputFileContent));
+  // console.log('outputFileContent', outputFileContent);
+
+  return res.send({ data: outputFileContent, code: 0 });
+});
+
 router.ws('/addws', async (ws, req) => {
   ws.on('message', async (msg) => {
     logAndWsSend(`收到客户端的消息为：${msg}`, ws);
