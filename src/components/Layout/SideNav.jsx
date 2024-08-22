@@ -29,6 +29,10 @@ const items = [
         key: '/ailist',
         label: 'AI分析历史',
       },
+      {
+        key: '/input',
+        label: '用户输入',
+      },
     ],
   },
   {
