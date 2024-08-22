@@ -223,10 +223,12 @@ router.post('/add', async (req, res) => {
   return res.send({ data: outputFileContent, code: 0 });
 });
 router.post('/addImg', async (req, res) => {
+  let config = req.body;
   const requestHandler = async ({ request, sendRequest, log, page }) => {
     const { url } = request;
 
-    const data = await goolgeImg(page);
+    const result = await goolgeImg(page);
+    Dataset.pushData(result);
   };
   await crawlStart({
     url: ['https://images.google.com'],
@@ -238,7 +240,7 @@ router.post('/addImg', async (req, res) => {
   let outputFileContent = await readFile(outputFileName, 'utf-8');
   outputFileContent = JSON.parse(outputFileContent);
   outputFileContent.reverse();
-  const isExists = await addData(keyword, JSON.stringify(outputFileContent));
+  // const isExists = await addData(keyword, JSON.stringify(outputFileContent));
   // console.log('outputFileContent', outputFileContent);
 
   return res.send({ data: outputFileContent, code: 0 });
