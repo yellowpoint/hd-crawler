@@ -224,10 +224,12 @@ router.post('/add', async (req, res) => {
 });
 router.post('/addImg', async (req, res) => {
   let config = req.body;
+  const { url } = config;
+  if (!url) {
+    return res.send({ message: 'url is required', code: 1 });
+  }
   const requestHandler = async ({ request, sendRequest, log, page }) => {
-    const { url } = request;
-
-    const result = await goolgeImg(page);
+    const result = await goolgeImg({ page, imgUrl: url });
     Dataset.pushData(result);
   };
   await crawlStart({

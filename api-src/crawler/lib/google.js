@@ -1,14 +1,13 @@
-export const goolgeImg = async (page) => {
+export const goolgeImg = async ({ page, imgUrl }) => {
   // await page.waitForNavigation();
   // await page.waitForSelector('.nDcEnd');
 
   await page.click('div[aria-label="Search by image"]');
-  await page.evaluate(() => {
-    const imgUrl =
-      'https://play-lh.googleusercontent.com/_OSB1gXiLCDa8Wj1HPBvDuMuUmrs_sB_3GZ5RdgbU7Diuz905jQx1HB9tDZMj62A0xQ=w480-h960-rw';
+  await page.evaluate((imgUrl) => {
+    console.log('获取到图片地址为：', imgUrl);
     document.querySelector('.cB9M7').value = imgUrl;
     document.querySelector('.Qwbd3').click();
-  });
+  }, imgUrl);
 
   // todo 用这个没有的元素卡住，才能弹出来，page.click都不行额,
   // await page.waitForSelector('a[aria-label="Upload an image"]');

@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Image, Upload, message } from 'antd';
 
-import { baseURL } from '@/lib/api/axios';
+import API from '@/lib/api';
+import { baseImgURL, baseURL } from '@/lib/api/axios';
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -12,7 +13,7 @@ const getBase64 = (file) =>
     reader.onload = () => resolve(reader.result);
     reader.onerror = (error) => reject(error);
   });
-const UploadImg = ({ onChange, value, disabled }) => {
+const UploadImg = ({ onChange, value, disabled, maxCount }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const defaultValue = value
@@ -34,20 +35,28 @@ const UploadImg = ({ onChange, value, disabled }) => {
   const handleChange = (info) => {
     const { file, fileList: newFileList } = info;
     setFileList(newFileList);
-    onChange(newFileList);
-    // const { status } = file;
-    // if (status === 'done') {
-    //   onChange(newFileList);
-    //   // message.success(`${info.file.name} file uploaded successfully.`);
-    // }
+    // onChange(newFileList);
 
-    // if (status === 'removed') {
-    //   onChange(newFileList);
-    // }
+    const { status } = file;
+    if (status === 'done') {
+      const res = info.file.response;
+      if (res.code !== 0) {
+        message.error(res.message);
+        return;
+      }
+      const img = baseURL + res.data.url;
+      console.log('img', img);
+      onChange(img);
+      message.success(`${info.file.name} file uploaded successfully.`);
+    }
 
-    // if (status === 'error') {
-    //   message.error(`${info.file.name} file upload failed.`);
-    // }
+    if (status === 'removed') {
+      onChange(undefined);
+    }
+
+    if (status === 'error') {
+      message.error(`${info.file.name} file upload failed.`);
+    }
   };
   const uploadButton = (
     <button
@@ -73,7 +82,7 @@ const UploadImg = ({ onChange, value, disabled }) => {
         action={baseURL + '/upload'}
         listType="picture-card"
         fileList={fileList}
-        // maxCount={1}
+        maxCount={maxCount}
         onPreview={handlePreview}
         onChange={handleChange}
         disabled={disabled}
@@ -90,7 +99,7 @@ const UploadImg = ({ onChange, value, disabled }) => {
         //   return false;
         // }}
       >
-        {uploadButton}
+        {fileList.length < maxCount && uploadButton}
       </Upload>
       {previewImage && (
         <Image

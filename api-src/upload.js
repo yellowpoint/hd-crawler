@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
     const ext = path.extname(file.originalname);
     // 防止文件名重复，使用日期+时间+随机数
     const timestamp = dayjs().format('YYYYMMDDHHmmss');
-    const newName = `${timestamp}-${Math.floor(Math.random() * 100000)}`;
+    const newName = `${timestamp}-${Math.floor(Math.random() * 100000)}${ext}`;
     cb(null, newName);
   },
 });
