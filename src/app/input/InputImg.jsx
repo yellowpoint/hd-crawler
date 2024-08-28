@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button, Form } from 'antd';
+import { Button, Form, Table } from 'antd';
 
 import UploadImg from '@/components/UploadImg';
 import API from '@/lib/api';
@@ -16,8 +16,9 @@ const InputImg = () => {
         console.log('image', image);
         setLoading(true);
         const { data } = await API.googleAddImg({
-          url: 'https://play-lh.googleusercontent.com/_OSB1gXiLCDa8Wj1HPBvDuMuUmrs_sB_3GZ5RdgbU7Diuz905jQx1HB9tDZMj62A0xQ=w480-h960-rw',
+          url: image,
         }).finally(() => setLoading(false));
+
         setData(data);
       }}
       form={form}
@@ -32,7 +33,22 @@ const InputImg = () => {
       <Button type="primary" htmlType="submit" loading={loading}>
         搜索
       </Button>
-      {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
+      {data && (
+        <Table
+          dataSource={data}
+          rowKey={'link'}
+          columns={[
+            {
+              title: 'label',
+              dataIndex: 'label',
+            },
+            {
+              title: 'link',
+              dataIndex: 'link',
+            },
+          ]}
+        />
+      )}
     </Form>
   );
 };
