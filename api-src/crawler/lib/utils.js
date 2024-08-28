@@ -8,8 +8,9 @@ import { isWithinTokenLimit } from 'gpt-tokenizer';
 
 configDotenv();
 const isDev = process.env.NODE_ENV === 'development';
-export const TempDir = isDev ? './storage' : '/tmp/storage';
-
+// '/tmp/storage 在vercel上用这个地址
+export const TempDir = isDev ? './storage' : './storage';
+console.log('TempDir', process.env.NODE_ENV, TempDir);
 export function getPageHtmlBase(page, selector = 'body') {
   return page.evaluate((selector) => {
     // Check if the selector is an XPath
@@ -69,7 +70,9 @@ export async function write(config) {
     absolute: true,
   });
 
-  console.log(`Found ${jsonFiles.length} files to combine...`);
+  console.log(
+    `${TempDir}/datasets/default/*.json,Found ${jsonFiles.length} files to combine...`,
+  );
 
   let currentResults = [];
   let currentSize = 0;

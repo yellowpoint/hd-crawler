@@ -15,10 +15,10 @@ const InputImg = () => {
         const { image } = values;
         console.log('image', image);
         setLoading(true);
-        const { data } = await API.googleAddImg({
+        const data = await API.googleAddImg({
           url: image,
         }).finally(() => setLoading(false));
-
+        console.log('InputImg', data);
         setData(data);
       }}
       form={form}

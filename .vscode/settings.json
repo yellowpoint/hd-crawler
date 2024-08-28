@@ -18,7 +18,7 @@
   },
   "eslint.nodeEnv": "development",
   "[nginx]": {
-    "editor.defaultFormatter": "raynigon.nginx-formatter",
+    "editor.defaultFormatter": "ahmadalli.vscode-nginx-conf",
     "editor.formatOnSave": true
   },
   "editor.quickSuggestions": {
