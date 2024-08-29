@@ -16,6 +16,7 @@ const InputImg = () => {
         console.log('image', image);
         setLoading(true);
         const data = await API.googleAddImg({
+          // url: 'https://120.27.141.74/api/uploads/20240829174505-17159.png',
           url: image,
         }).finally(() => setLoading(false));
         console.log('InputImg', data);
@@ -30,25 +31,36 @@ const InputImg = () => {
       >
         <UploadImg maxCount={1} />
       </Form.Item>
-      <Button type="primary" htmlType="submit" loading={loading}>
+      <Button
+        type="primary"
+        htmlType="submit"
+        loading={loading}
+        className="mb-16"
+      >
         搜索
       </Button>
-      {data && (
-        <Table
-          dataSource={data}
-          rowKey={'link'}
-          columns={[
-            {
-              title: 'label',
-              dataIndex: 'label',
-            },
-            {
-              title: 'link',
-              dataIndex: 'link',
-            },
-          ]}
-        />
-      )}
+
+      <Table
+        dataSource={data}
+        rowKey={'link'}
+        columns={[
+          {
+            title: 'img',
+            dataIndex: 'img',
+            width: 200,
+            render: (img) =>
+              img && <img src={img} className="h-200 w-200 object-contain" />,
+          },
+          {
+            title: 'label',
+            dataIndex: 'label',
+          },
+          {
+            title: 'link',
+            dataIndex: 'link',
+          },
+        ]}
+      />
     </Form>
   );
 };

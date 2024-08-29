@@ -9,7 +9,7 @@ const devUrl = isTest
   ? 'https://120.27.141.74/api'
   : 'http://localhost:4000/api';
 
-export const baseURL = isDev ? proUrl : proUrl;
+export const baseURL = isDev ? devUrl : proUrl;
 export const baseImgURL = proUrl;
 
 const api = axios.create({

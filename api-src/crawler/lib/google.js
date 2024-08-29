@@ -27,11 +27,14 @@ export const goolgeImg = async ({ page, imgUrl }) => {
   // 获取并打印搜索结果链接
   const results = await page.evaluate(() => {
     const links = [];
-    document
-      .querySelectorAll('a.GZrdsf')
-      .forEach((link) =>
-        links.push({ label: link.getAttribute('aria-label'), link: link.href }),
-      );
+    document.querySelectorAll('a.GZrdsf').forEach((link) => {
+      const img = link.querySelector('img');
+      links.push({
+        label: link.getAttribute('aria-label'),
+        link: link.href,
+        img: img ? img.src : '',
+      });
+    });
     return links;
   });
   console.log('搜索结果:', results);
