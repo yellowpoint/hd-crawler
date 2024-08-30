@@ -19,16 +19,19 @@ export const crawlStart = async (config) => {
   const startUrls = config.url;
   console.log('startUrls', startUrls);
 
+  const defaultViewport = { width: 1080, height: 1080 };
   // 运行环境
   const launchOptions = isDev
     ? {
         executablePath: localExecutablePath,
+        defaultViewport,
       }
     : {
         args: chromium.args,
         // executablePath: '/tmp/chromium',
         executablePath: await chromium.executablePath(remoteExecutablePath),
         headless: true,
+        defaultViewport,
       };
   console.log('launchOptions', launchOptions.executablePath);
   const crawler = new PuppeteerCrawler(

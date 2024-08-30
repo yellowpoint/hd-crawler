@@ -241,9 +241,9 @@ router.post('/addImg', async (req, res) => {
   console.log('outputFileName', outputFileName);
   let outputFileContent = await readFile(outputFileName, 'utf-8');
   outputFileContent = JSON.parse(outputFileContent);
-  outputFileContent.reverse();
-  // const isExists = await addData(keyword, JSON.stringify(outputFileContent));
-  // console.log('outputFileContent', outputFileContent);
+  // outputFileContent.reverse();
+  const isExists = await addData(url, JSON.stringify(outputFileContent), 1);
+  console.log('bd isExists', isExists);
 
   return res.send({ data: outputFileContent, code: 0 });
 });
