@@ -17,7 +17,7 @@ export const goolgeImg = async ({ page, imgUrl }) => {
   console.log('等待结果页面加载并获取结果');
 
   // 等待结果页面加载并获取结果
-  await page.waitForNavigation();
+  await page.waitForNavigation({ timeout: 90000 });
   console.log('获取并打印搜索结果链接');
   // 获取并打印搜索结果链接
   const results = await page.evaluate(() => {
