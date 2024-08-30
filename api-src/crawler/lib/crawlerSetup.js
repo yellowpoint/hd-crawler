@@ -19,7 +19,7 @@ export const crawlStart = async (config) => {
   const startUrls = config.url;
   console.log('startUrls', startUrls);
 
-  const defaultViewport = { width: 1080, height: 1080 };
+  const defaultViewport = { width: 1920, height: 1080 };
   // 运行环境
   const launchOptions = isDev
     ? {
@@ -41,7 +41,7 @@ export const crawlStart = async (config) => {
 
       maxRequestsPerCrawl: config.maxRequestsPerCrawl, // 这个是最多发出多少个请求
       maxConcurrency: isDev ? undefined : 1, // 最大并发数
-      // headless: false,
+      headless: false,
       launchContext: {
         launcher: puppeteer,
         launchOptions,
