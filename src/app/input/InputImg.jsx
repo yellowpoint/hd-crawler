@@ -59,8 +59,8 @@ const InputImg = () => {
         console.log('image', image);
         setLoading(true);
         const data = await API.googleAddImg({
-          url: 'https://120.27.141.74/api/uploads/20240829174505-17159.png',
-          // url: image,
+          // url: 'https://120.27.141.74/api/uploads/20240829174505-17159.png',
+          url: image,
         }).finally(() => setLoading(false));
         console.log('InputImg', data);
         handleSearch(data);
