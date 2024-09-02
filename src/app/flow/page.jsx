@@ -58,6 +58,7 @@ export const flowDataDemo = {
     },
   ],
 };
+// console.log('flowDataDemo', JSON.stringify(flowDataDemo, null, 2));
 // init loading success error
 export default function Flow() {
   let { id: flowId } = useParams();

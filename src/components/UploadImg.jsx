@@ -13,7 +13,13 @@ const getBase64 = (file) =>
     reader.onload = () => resolve(reader.result);
     reader.onerror = (error) => reject(error);
   });
-const UploadImg = ({ onChange, value, disabled, maxCount }) => {
+const UploadImg = ({
+  onChange,
+  value,
+  disabled,
+  maxCount = 10,
+  isBlob = false,
+}) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const defaultValue = value
@@ -35,7 +41,10 @@ const UploadImg = ({ onChange, value, disabled, maxCount }) => {
   const handleChange = (info) => {
     const { file, fileList: newFileList } = info;
     setFileList(newFileList);
-    // onChange(newFileList);
+    if (isBlob) {
+      onChange(newFileList);
+      return;
+    }
 
     const { status } = file;
     if (status === 'done') {

@@ -12,7 +12,6 @@ export default function Node(props) {
   const [loading, setLoading] = useState(false);
 
   const { readonly = false } = props;
-
   if (readonly) {
     return (
       <NodeBase {...props}>
@@ -37,7 +36,10 @@ export default function Node(props) {
               const { image } = values;
               console.log('image', image);
               // setLoading(true);
-              setData({ value: image, status: 'success' });
+              setData({
+                value: Array.isArray(image) ? image : [image],
+                status: 'success',
+              });
               next?.();
             }}
             form={form}
@@ -48,7 +50,8 @@ export default function Node(props) {
               rules={[{ required: true, message: '请先上传图片' }]}
             >
               <UploadImg
-                value={item.value}
+                isBlob
+                // value={item.value}
                 // onChange={(fileList) => setData(fileList)}
               />
             </Form.Item>

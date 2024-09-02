@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button, Form, Select } from 'antd';
+import { Button, Form, Select, message } from 'antd';
 
 import { main, llm } from '@/app/ai/gemini';
 import { EllipsisFlex } from '@/components';
@@ -32,10 +32,16 @@ export default function Node(props) {
             layout="vertical"
             onFinish={async (values) => {
               const { prompt } = values;
-              console.log('prompt', prevValue);
               setLoading(true);
               const image = prevValue.value;
-              const res = await main({ prompt, image });
+              console.log('prompt', prevValue, image, prompt);
+
+              const res = await main({ prompt, image }).catch((e) => {
+                message.error('请求失败');
+                setLoading(false);
+                console.error(e);
+                throw new Error('请求失败');
+              });
               console.log('res', res);
               setData({ value: res, status: 'success' });
 

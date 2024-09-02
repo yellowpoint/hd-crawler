@@ -2,6 +2,8 @@ import { useState } from 'react';
 
 import { Button, Form, Input, Switch, Table } from 'antd';
 
+import { main } from '@/app/ai/gemini';
+import { Ecommerce } from '@/app/ai/prompt';
 import { copyText } from '@/components';
 import UploadImg from '@/components/UploadImg';
 import API from '@/lib/api';
@@ -18,7 +20,7 @@ const InputImg = () => {
   const [filteredData, setFilteredData] = useState();
   const [filter, setFilter] = useState(true);
   const [reg, setReg] = useState(
-    /(amazon|taobao|jd\.com|ebay|walmart|shopee|aliexpress)/i,
+    /(amazon|taobao|jd\.com|ebay|walmart|shopee|aliexpress|alibaba|1688)/i,
   );
 
   const handleFilterChange = (checked) => {
@@ -51,6 +53,20 @@ const InputImg = () => {
     } else {
       setFilteredData(data);
     }
+  };
+  const handleFilterByAI = async () => {
+    if (!data) return;
+    setLoading(true);
+    const res = await main({
+      prompt: Ecommerce,
+      text: 'JSON.stringify(data)',
+    });
+    console.log('res', res);
+    const filteredData = data.filter((item) =>
+      res.split('\n').includes(item.link),
+    );
+    setFilteredData(filteredData);
+    setLoading(false);
   };
   return (
     <Form
@@ -109,6 +125,9 @@ const InputImg = () => {
           onChange={handleRegChange}
           placeholder="请输入正则表达式"
         />
+        {/* <Button type="primary" onClick={handleFilterByAI}>
+          使用AI过滤
+        </Button> */}
         {filteredData && (
           <div className="flex-none">
             {filteredData?.length}/{data?.length}

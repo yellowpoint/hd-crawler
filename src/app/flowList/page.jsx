@@ -113,7 +113,7 @@ const Page = () => {
   ];
 
   const handleFinish = async (values) => {
-    const { id } = values;
+    const { id, template, ...params } = values;
     console.log('values', values);
     // const content = JSON.stringify(values.);
     const res = id
@@ -121,12 +121,12 @@ const Page = () => {
           model: dbModel,
           operation: 'update',
           id,
-          data: { ...values },
+          data: { ...params },
         })
       : await API.crud({
           model: dbModel,
           operation: 'create',
-          data: { ...values },
+          data: { ...params },
         });
     message.success(id ? '更新成功' : '添加成功');
     setShowModal(false);

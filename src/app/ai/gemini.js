@@ -46,6 +46,8 @@ export async function gemini({ prompt, text: input, image }) {
   if (input) {
     allInput.push(input);
   }
+
+  console.log('allInput', allInput);
   const result = await chat.sendMessage(allInput);
   const response = await result.response;
   console.log('response', response);
