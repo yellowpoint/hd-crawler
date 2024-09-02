@@ -10,6 +10,7 @@
     "api-prod": "npx prisma generate && cross-env NODE_ENV=production node api/index.js",
     "testdb": "nodemon api/testdb.js",
     "dev": "vite",
+    "devapi": "cross-env VITE_ENV_API=dev vite",
     "build": "vite build",
     "preview": "vite preview",
     "prisma": "npx prisma migrate dev --name update",
