@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { Button, Form, Input, Switch, Table } from 'antd';
 
@@ -12,7 +12,7 @@ import testData from './testData.json';
 const filterEcommerces = (data, reg) =>
   data.filter((item) => item.link && reg.test(item.link));
 
-const InputImg = () => {
+const InputImg = ({ onChange }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState();
@@ -21,6 +21,10 @@ const InputImg = () => {
   const [reg, setReg] = useState(
     /(amazon|taobao|jd\.com|ebay|walmart|shopee|aliexpress|alibaba|1688)/i,
   );
+
+  useEffect(() => {
+    onChange?.(filteredData?.map?.((i) => i.label));
+  }, [filteredData]);
 
   const handleFilterChange = (checked) => {
     setFilter(checked);
@@ -111,7 +115,6 @@ const InputImg = () => {
           使用测试数据
         </Button>
       </div>
-
       <div className="mb-8 flex items-center justify-center gap-8">
         <div className="flex-none">是否过滤</div>
         <Switch
@@ -136,6 +139,9 @@ const InputImg = () => {
       <Table
         dataSource={filteredData || data}
         rowKey={'link'}
+        pagination={{
+          pageSize: 2,
+        }}
         columns={[
           {
             title: 'img',
@@ -154,6 +160,12 @@ const InputImg = () => {
           },
         ]}
       />
+      {filteredData?.length && (
+        <div>
+          输出为：
+          <span>{JSON.stringify(filteredData.map((i) => i.label))}</span>
+        </div>
+      )}
     </Form>
   );
 };

@@ -23,23 +23,10 @@ function searchNodes(nodes, keyword) {
   return results;
 }
 
-const Options = ({ searchValue, suggestions }) => {
-  const options = suggestions.map((suggestion) => (
-    <AutoComplete.Option key={suggestion.name} value={suggestion.name}>
-      {suggestion.name}
-    </AutoComplete.Option>
-  ));
-
-  return (
-    <AutoComplete.OptGroup key="options" label="Options">
-      {options}
-    </AutoComplete.OptGroup>
-  );
-};
-
-const Page = () => {
+const Page = ({ onChange }) => {
   const [searchValue, setSearchValue] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+  const [showResult, setShowResult] = useState(false);
 
   const debouncedOnChange = debounce((value) => {
     const names = new Set();
@@ -50,23 +37,33 @@ const Page = () => {
       }));
 
     setSuggestions(results);
-    console.log('suggestions:', results);
+    setShowResult(false);
   }, 500);
 
-  // const onChange = (value) => {
-  //   setSearchValue(value);
-  //   debouncedOnChange(value);
-  // };
+  const handleSearch = () => {
+    setShowResult(true);
+    onChange(suggestions.map((item) => item.value));
+  };
 
   return (
     <div>
       <AutoComplete
         options={suggestions}
-        onSearch={debouncedOnChange}
         // value={searchValue}
+        onChange={debouncedOnChange}
+        // onSelect={(value) => handleChange(value)}
       >
-        <Input.Search placeholder="input here" />
+        <Input.Search
+          placeholder="input here"
+          enterButton
+          onSearch={handleSearch}
+        />
       </AutoComplete>
+      {showResult && (
+        <div className="mt-8">
+          结果为：{JSON.stringify(suggestions.map((item) => item.value))}
+        </div>
+      )}
     </div>
   );
 };
