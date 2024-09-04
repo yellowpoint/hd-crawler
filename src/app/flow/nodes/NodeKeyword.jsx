@@ -2,8 +2,7 @@ import { useState } from 'react';
 
 import { Button, Form, Select, message } from 'antd';
 
-import { main, llm } from '@/app/ai/gemini';
-import { EllipsisFlex } from '@/components';
+import { EllipsisFlex, ai } from '@/components';
 import API from '@/lib/api';
 
 import NodeBase from './NodeBase';
@@ -36,7 +35,7 @@ export default function Node(props) {
               const image = prevValue.value;
               console.log('prompt', prevValue, image, prompt);
 
-              const res = await main({ prompt, image }).catch((e) => {
+              const res = await ai.main({ prompt, image }).catch((e) => {
                 message.error('请求失败');
                 setLoading(false);
                 console.error(e);
@@ -52,7 +51,7 @@ export default function Node(props) {
                   prompt,
                   input: `${image && '图片文件,\n'}`,
                   output: res,
-                  llm,
+                  llm: ai.llm,
                 },
               });
               setLoading(false);

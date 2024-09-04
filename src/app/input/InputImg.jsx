@@ -2,9 +2,8 @@ import { useState } from 'react';
 
 import { Button, Form, Input, Switch, Table } from 'antd';
 
-import { main } from '@/app/ai/gemini';
-import { Ecommerce } from '@/app/ai/prompt';
-import { copyText } from '@/components';
+import { copyText, ai } from '@/components';
+import { Ecommerce } from '@/components/ai/prompt';
 import UploadImg from '@/components/UploadImg';
 import API from '@/lib/api';
 
@@ -57,7 +56,7 @@ const InputImg = () => {
   const handleFilterByAI = async () => {
     if (!data) return;
     setLoading(true);
-    const res = await main({
+    const res = await ai.main({
       prompt: Ecommerce,
       text: 'JSON.stringify(data)',
     });

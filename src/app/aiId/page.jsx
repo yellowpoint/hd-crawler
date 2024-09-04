@@ -4,9 +4,8 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useRequest } from 'ahooks';
 import { Form, Input, Button, Card, message, Spin } from 'antd';
 
+import { ai } from '@/components';
 import API from '@/lib/api';
-
-import { main } from '../ai/kimi';
 
 const Ai = () => {
   const { id } = useParams();
@@ -32,7 +31,7 @@ const Ai = () => {
 
     setLoading(true);
     try {
-      const res = await main({ prompt, text: content });
+      const res = await ai.main({ prompt, text: content });
 
       setOutput(res);
       await API.crud({

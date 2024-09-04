@@ -2,8 +2,7 @@ import { useState } from 'react';
 
 import { Button, Form, Select } from 'antd';
 
-import { main, llm } from '@/app/ai/gemini';
-import { EllipsisFlex } from '@/components';
+import { EllipsisFlex, ai } from '@/components';
 import API from '@/lib/api';
 
 import NodeBase from './NodeBase';
@@ -35,7 +34,7 @@ export default function Node(props) {
               console.log('prompt', prevValue);
               setLoading(true);
               const text = prevValue.value;
-              const res = await main({ prompt, text });
+              const res = await ai.main({ prompt, text });
               console.log('res', res);
               setData({ value: res, status: 'success' });
 
@@ -46,7 +45,7 @@ export default function Node(props) {
                   prompt,
                   input: text,
                   output: res,
-                  llm,
+                  llm: ai.llm,
                 },
               });
               setLoading(false);

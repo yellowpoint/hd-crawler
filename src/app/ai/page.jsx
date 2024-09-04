@@ -5,10 +5,8 @@ import { InboxOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import { Form, Input, Button, Card, message, Select, Upload } from 'antd';
 
+import { ai } from '@/components';
 import API from '@/lib/api';
-
-// import { main, llm } from './kimi';
-import { main, llm } from './gemini';
 
 const { Option } = Select;
 
@@ -30,7 +28,7 @@ const Ai = () => {
     const { promptId, content, prompt, image } = values;
     setLoading(true);
     try {
-      const res = await main({ prompt, text: content, image });
+      const res = await ai.main({ prompt, text: content, image });
       setOutput(res);
       await API.crud({
         model: 'ai',
@@ -39,7 +37,7 @@ const Ai = () => {
           prompt,
           input: `${image && '图片文件,\n'}${content}`,
           output: res,
-          llm,
+          llm: ai.llm,
         },
       });
     } catch (error) {
@@ -199,7 +197,7 @@ const Ai = () => {
         >
           分析
         </Button>
-        <div className="mb-8 text-xs text-gray-500">使用{llm}大模型</div>
+        <div className="mb-8 text-xs text-gray-500">使用{ai.llm}大模型</div>
         {/* {loading && <Spin className="mt-4" />} */}
         <Card bordered={false}>
           <pre style={{ whiteSpace: 'pre-wrap' }}>{output}</pre>
