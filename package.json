@@ -14,7 +14,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "prisma": "npx prisma migrate dev --name update",
-    "studio": "npx prisma studio"
+    "studio": "npx prisma studio",
+    "icon": "node ./scripts/svgToIcon.js"
   },
   "dependencies": {
     "@ant-design/cssinjs": "^1.21.0",
@@ -47,6 +48,9 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@iconify/react": "^5.0.2",
+    "@iconify/tailwind": "^1.1.3",
+    "@iconify/tools": "^4.0.6",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@vitejs/plugin-legacy": "^5.2.0",

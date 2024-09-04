@@ -4,7 +4,7 @@ import axios from 'axios';
 const isDev = process.env.NODE_ENV === 'development';
 const isDevApi = import.meta.env.VITE_ENV_API === 'dev';
 const proUrl = 'https://120.27.141.74/api';
-
+// console.log('process.env', process.env.NODE_ENV);
 const devUrl = isDevApi
   ? 'http://localhost:4000/api'
   : 'https://120.27.141.74/api';

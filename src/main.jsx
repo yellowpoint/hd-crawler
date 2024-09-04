@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
+import '@/lib/iconify';
 import { message } from 'antd';
 import ReactDOM from 'react-dom/client';
 
