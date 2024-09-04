@@ -44,16 +44,6 @@ export default function Node(props) {
               console.log('res', res);
               setData({ value: res, status: 'success' });
 
-              await API.crud({
-                model: 'ai',
-                operation: 'create',
-                data: {
-                  prompt,
-                  input: `${image && '图片文件,\n'}`,
-                  output: res,
-                  llm: ai.llm,
-                },
-              });
               setLoading(false);
               next?.();
             }}

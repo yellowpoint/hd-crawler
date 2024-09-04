@@ -34,11 +34,6 @@ const Ai = () => {
       const res = await ai.main({ prompt, text: content });
 
       setOutput(res);
-      await API.crud({
-        model: 'ai',
-        operation: 'create',
-        data: { prompt, input: content, output: res, llm: 'kimi' },
-      });
     } catch (error) {
       message.error('生成文本失败');
       console.error('Error generating text:', error);

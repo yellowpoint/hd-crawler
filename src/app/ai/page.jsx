@@ -30,16 +30,6 @@ const Ai = () => {
     try {
       const res = await ai.main({ prompt, text: content, image });
       setOutput(res);
-      await API.crud({
-        model: 'ai',
-        operation: 'create',
-        data: {
-          prompt,
-          input: `${image && '图片文件,\n'}${content}`,
-          output: res,
-          llm: ai.llm,
-        },
-      });
     } catch (error) {
       message.error('生成文本失败');
       console.error('Error generating text:', error);
