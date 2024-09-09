@@ -1,19 +1,22 @@
 import { readFile } from 'fs/promises';
 
-import { createPlaywrightRouter, Dataset, KeyValueStore } from 'crawlee';
+import { createPlaywrightRouter, Dataset, KeyValueStore, sleep } from 'crawlee';
 
 import { crawlStart } from './crawlerSetup.js';
 import { getPageHtmlBase, write } from './utils.js';
 
 let pageCounter = 0;
 const getRequestHandler = (config) => {
+  const { getPage } = config;
+  const getPageHtml = getPage || getPageHtmlBase;
   const router = createPlaywrightRouter();
 
   const saveData = async (props) => {
     const { request, page, log, pushData } = props;
 
     const title = await page.title();
-    const html = await getPageHtmlBase(page, config?.selector);
+    const html = await getPageHtml(page, config?.selector);
+
     const url = request.loadedUrl;
     log.info(`${title}`, { url });
     // if (!title ) return;
@@ -30,23 +33,23 @@ const getRequestHandler = (config) => {
   router.addDefaultHandler(async (props) => {
     const { enqueueLinks, log, page, request } = props;
     pageCounter++;
-    log.info(
-      `Crawling: Page ${pageCounter} / ${config.maxRequestsPerCrawl} - URL: ${request.loadedUrl}...`,
-    );
-
+    log.info(`Crawling: Page ${pageCounter} - URL: ${request.loadedUrl}...`);
     await saveData(props);
 
-    // 这个就是自动继续爬取a标签，匹配与过滤
-    await enqueueLinks(
-      {
-        globs: typeof config.match === 'string' ? [config.match] : config.match,
-        exclude:
-          typeof config.exclude === 'string'
-            ? [config.exclude]
-            : config.exclude ?? [],
-      },
-      // label: 'detail',
-    );
+    if (config.match) {
+      // 这个就是自动继续爬取a标签，匹配与过滤
+      await enqueueLinks(
+        {
+          globs:
+            typeof config.match === 'string' ? [config.match] : config.match,
+          exclude:
+            typeof config.exclude === 'string'
+              ? [config.exclude]
+              : config.exclude ?? [],
+        },
+        // label: 'detail',
+      );
+    }
   });
   // 处理上面的label
   router.addHandler('detail', async (props) => {
@@ -57,12 +60,10 @@ const getRequestHandler = (config) => {
 
 export const crawlerBase = async (config) => {
   const requestHandler = getRequestHandler(config);
-
   const crawlConfig = {
     ...config,
     requestHandler,
   };
-
   await crawlStart(crawlConfig);
   const outputFileName = await write(config);
   let outputFileContent = await readFile(outputFileName, 'utf-8');

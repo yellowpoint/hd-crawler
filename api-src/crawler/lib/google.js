@@ -1,3 +1,5 @@
+import { sleep } from 'crawlee';
+
 export const goolgeImg = async ({ page, imgUrl }) => {
   // await page.waitForNavigation();
   // await page.waitForSelector('.nDcEnd');
@@ -13,7 +15,7 @@ export const goolgeImg = async ({ page, imgUrl }) => {
   console.log('上传图片完成');
   // todo 用这个没有的元素卡住，才能弹出来，page.click都不行额,
   // await page.waitForSelector('a[aria-label="Upload an image"]');
-  await page.waitForTimeout(3000);
+  await sleep(3000);
   console.log('等待结果页面加载并获取结果');
 
   // 等待结果页面加载并获取结果

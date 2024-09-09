@@ -1,7 +1,7 @@
 import { readFile } from 'fs/promises';
 
 import { PrismaClient } from '@prisma/client';
-import { BasicCrawler, Dataset } from 'crawlee';
+import { BasicCrawler, Dataset, sleep } from 'crawlee';
 import express from 'express';
 import expressWs from 'express-ws';
 
@@ -28,7 +28,7 @@ export const getRelatedSearchesAndAlsoAsks = async (page, keyword) => {
 
   await page.click('textarea');
   await page.waitForSelector('#Alh6id', { timeout: 10000 });
-  await page.waitForTimeout(300);
+  await sleep(300);
 
   let presentation = await page.evaluate(async () => {
     const elementHandle = document.querySelectorAll(

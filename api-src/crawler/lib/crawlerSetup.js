@@ -37,7 +37,7 @@ export const crawlStart = async (config) => {
       requestHandler: config.requestHandler,
       maxRequestsPerCrawl: config.maxRequestsPerCrawl, // 这个是最多发出多少个请求
       maxConcurrency: isDev ? undefined : config.maxConcurrency || 1, // 最大并发数
-      // headless: false, // flase 则显示浏览器
+      headless: config.headless, // false 则显示浏览器
       launchContext: launchContext,
     },
     new Configuration({
