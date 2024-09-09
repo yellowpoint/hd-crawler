@@ -1,82 +1,70 @@
 import { readFile } from 'fs/promises';
 
-import axios from 'axios';
 import { createPlaywrightRouter, Dataset, KeyValueStore } from 'crawlee';
 
 import { crawlStart } from './crawlerSetup.js';
 import { getPageHtmlBase, write } from './utils.js';
 
-export const defaultConfig = {
-  url: ['https://www.browsenodes.com/amazon.com/browseNodeLookup/468240.html'],
-  match: ['https://www.browsenodes.com/amazon.com/**'],
-  // maxRequestsPerCrawl: 3,
-  outputFileName: 'Tools&HomeImprovement.json',
-};
+let pageCounter = 0;
+const getRequestHandler = (config) => {
+  const router = createPlaywrightRouter();
 
-export const router = createPlaywrightRouter();
+  const saveData = async (props) => {
+    const { request, page, log, pushData } = props;
 
-const saveData = async (props) => {
-  const { request, page, log, pushData, urls } = props;
+    const title = await page.title();
+    const html = await getPageHtmlBase(page, config?.selector);
+    const url = request.loadedUrl;
+    log.info(`${title}`, { url });
+    // if (!title ) return;
+    const results = {
+      url,
+      title,
+      content: html,
+    };
 
-  const title = await page.title();
-  const html = await getPageHtmlBase(page, defaultConfig?.selector);
-  const url = request.loadedUrl;
-  log.info(`${title}`, { url });
-  if (!title || !html) return;
-  const results = {
-    url,
-    title,
-    content: html,
-    urlsCount: urls?.length,
-    // urls,
+    await pushData(results); // 有这个下面才有数据
+    // await Dataset.exportToJSON('OUTPUT');
   };
 
-  await pushData(results); // 有这个下面才有数据
-  // await Dataset.exportToJSON('OUTPUT');
+  router.addDefaultHandler(async (props) => {
+    const { enqueueLinks, log, page, request } = props;
+    pageCounter++;
+    log.info(
+      `Crawling: Page ${pageCounter} / ${config.maxRequestsPerCrawl} - URL: ${request.loadedUrl}...`,
+    );
+
+    await saveData(props);
+
+    // 这个就是自动继续爬取a标签，匹配与过滤
+    await enqueueLinks(
+      {
+        globs: typeof config.match === 'string' ? [config.match] : config.match,
+        exclude:
+          typeof config.exclude === 'string'
+            ? [config.exclude]
+            : config.exclude ?? [],
+      },
+      // label: 'detail',
+    );
+  });
+  // 处理上面的label
+  router.addHandler('detail', async (props) => {
+    await saveData(props);
+  });
+  return router;
 };
 
-router.addDefaultHandler(async (props) => {
-  const { enqueueLinks, log, page, crawler } = props;
-
-  log.info(`开始获取`);
-
-  // let urls = await getAhref(page);
-  // console.log('urls', urls);
-  await saveData({ ...props });
-
-  // urls = urls.map((url) => ({
-  //   url: url.href,
-  //   userData: {
-  //     label: 'detail',
-  //   },
-  // }));
-
-  // await crawler.addRequests(urls);
-
-  await enqueueLinks({
-    globs: defaultConfig.match,
-    // label: 'detail',
-  });
-});
-
-router.addHandler('detail', async (props) => {
-  const { request, page, log, pushData } = props;
-  await saveData(props);
-});
-
-export const crawlerBase = async (req) => {
-  let config = req.body;
-  config = config?.url ? config : defaultConfig;
-  console.log('config', config);
+export const crawlerBase = async (config) => {
+  const requestHandler = getRequestHandler(config);
 
   const crawlConfig = {
     ...config,
-    requestHandler: router,
+    requestHandler,
   };
 
   await crawlStart(crawlConfig);
   const outputFileName = await write(config);
-  console.log('outputFileName', outputFileName);
   let outputFileContent = await readFile(outputFileName, 'utf-8');
   outputFileContent = JSON.parse(outputFileContent);
   return outputFileContent;

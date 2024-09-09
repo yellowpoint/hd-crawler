@@ -114,7 +114,7 @@ export const crawlerBase = async (req) => {
 };
 
 api.post('/add', async (req, res) => {
-  const outputFileContent = await crawlerBase(req);
+  const outputFileContent = await crawlerBase(req.body);
   // const dbres = await getDataAll();
   return res.send({ data: outputFileContent, code: 0 });
 });

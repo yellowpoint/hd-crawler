@@ -1,13 +1,10 @@
 import { crawlerBase } from './lib/base.js';
 
-export const defaultConfig = {
-  url: [
-    'https://www.browsenodes.com/amazon.com/browseNodeLookup/2617942011.html',
-  ],
+const defaultConfig = {
+  url: 'https://www.browsenodes.com/amazon.com/browseNodeLookup/2617942011.html',
   match: ['https://www.browsenodes.com/amazon.com/**'],
-  // maxRequestsPerCrawl: 3,
-  outputFileName: 'Arts,Crafts&Sewing.json',
+  maxRequestsPerCrawl: 3,
+  outputFileName: 'Arts&Crafts&Sewing.json',
 };
-crawlerBase({
-  body: defaultConfig,
-});
+
+crawlerBase(defaultConfig);

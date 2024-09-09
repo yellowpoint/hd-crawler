@@ -1,51 +1,44 @@
 // For more information, see https://crawlee.dev/
 import chromium from '@sparticuz/chromium-min';
-import { PuppeteerCrawler, Configuration, PlaywrightCrawler } from 'crawlee';
-import { configDotenv } from 'dotenv';
+import { PuppeteerCrawler, Configuration } from 'crawlee';
 import puppeteer from 'puppeteer-core';
-// 本地 Chrome 执行包路径
-export const localExecutablePath =
-  'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
-// 远程执行包
-export const remoteExecutablePath =
-  '/www/wwwroot/hd-crawler/chromium-v119.0.2-pack';
 
-configDotenv();
+import 'dotenv/config';
+
 const isDev = process.env.NODE_ENV === 'development';
 
-export const crawlStart = async (config) => {
-  // console.log('CRAWLEE_STORAGE_DIR', process.env.CRAWLEE_STORAGE_DIR);
-
-  const startUrls = config.url;
-  console.log('startUrls', startUrls);
-
-  const defaultViewport = { width: 1920, height: 1080 };
-  // 运行环境
-  const launchOptions = isDev
-    ? {
-        executablePath: localExecutablePath,
-        defaultViewport,
-      }
-    : {
-        args: chromium.args,
-        // executablePath: '/tmp/chromium',
-        executablePath: await chromium.executablePath(remoteExecutablePath),
-        headless: true,
-        defaultViewport,
-      };
+let launchContext = undefined;
+if (!isDev) {
+  // 远程执行包，主要用于 vercel,因为其运行环境需要用更小的浏览器包
+  const remoteExecutablePath = '/www/wwwroot/hd-crawler/chromium-v119.0.2-pack';
+  launchContext = {
+    launcher: puppeteer,
+    launchOptions: {
+      args: chromium.args,
+      executablePath: await chromium.executablePath(remoteExecutablePath),
+      headless: true,
+    },
+  };
   console.log('launchOptions', launchOptions.executablePath);
+  // 默认存储目录，vercel需要配置此变量到 tmp
+  console.log('CRAWLEE_STORAGE_DIR', process.env.CRAWLEE_STORAGE_DIR);
+}
+
+export const crawlStart = async (config) => {
+  let startUrls = config.url;
+  startUrls = typeof startUrls === 'string' ? [startUrls] : startUrls;
+  if (!Array.isArray(startUrls) || startUrls.length === 0) {
+    throw new Error('没有传入爬取的 url');
+  }
+  console.log('爬取任务开始', startUrls);
+
   const crawler = new PuppeteerCrawler(
     {
-      // proxyConfiguration: new ProxyConfiguration({ proxyUrls: ['...'] }),
       requestHandler: config.requestHandler,
-
       maxRequestsPerCrawl: config.maxRequestsPerCrawl, // 这个是最多发出多少个请求
-      maxConcurrency: isDev ? undefined : 1, // 最大并发数
-      headless: false,
-      launchContext: {
-        launcher: puppeteer,
-        launchOptions,
-      },
+      maxConcurrency: isDev ? undefined : config.maxConcurrency || 1, // 最大并发数
+      // headless: false, // flase 则显示浏览器
+      launchContext: launchContext,
     },
     new Configuration({
       // 启动时清除所有之前会话的数据，加上这个就导致输出的json不全，不加的话新的请求又不发起爬取
@@ -55,8 +48,7 @@ export const crawlStart = async (config) => {
   );
 
   // 使用 run 方法时，无法获取到 requestHandler 返回的值，所以需要使用 addRequests 和 run 的组合方式。
-  await crawler.addRequests(startUrls);
-  const res = await crawler.run();
+  await crawler.run(startUrls);
 
-  console.log('结束了', startUrls);
+  console.log('爬取任务结束', startUrls);
 };

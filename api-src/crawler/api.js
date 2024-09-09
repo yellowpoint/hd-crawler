@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 const router = express.Router();
 
 router.post('/base', async (req, res) => {
-  const outputFileContent = await crawlerBase(req);
+  const outputFileContent = await crawlerBase(req.body);
   res.json({
     code: 0,
     data: outputFileContent,

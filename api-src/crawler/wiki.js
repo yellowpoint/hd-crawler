@@ -4,7 +4,7 @@ import axios from 'axios';
 import { createPlaywrightRouter, Dataset, KeyValueStore } from 'crawlee';
 
 import { crawlStart } from './lib/crawlerSetup.js';
-import { getPageHtml, write } from './lib/utils.js';
+import { getPageHtmlWiki, write } from './lib/utils.js';
 
 export const defaultConfig = {
   url: ['https://en.wikipedia.org/wiki/Yellow'],
@@ -53,7 +53,7 @@ const saveData = async (props) => {
   const { request, page, log, pushData, urls } = props;
 
   const title = await page.title();
-  const html = await getPageHtml(page, defaultConfig?.selector);
+  const html = await getPageHtmlWiki(page, defaultConfig?.selector);
   const url = request.loadedUrl;
   log.info(`${title}`, { url });
   if (!title || !html) return;

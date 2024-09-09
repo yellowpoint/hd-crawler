@@ -1,4 +1,4 @@
-// 引入依赖
+// 测试vercel上运行
 import chromium from '@sparticuz/chromium-min';
 import { configDotenv } from 'dotenv';
 import puppeteer from 'puppeteer-core';
