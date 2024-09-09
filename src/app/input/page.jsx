@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useSetState } from 'ahooks';
 import { Button, Form, Input } from 'antd';
 
 import { ai } from '@/components';
@@ -9,6 +10,14 @@ import InputImg from './InputImg';
 import InputTree from './InputTree';
 
 const Page = () => {
+  const [state, setState] = useSetState({
+    prompt: '',
+    input: {
+      amazon: '',
+      google: '',
+    },
+    output: '',
+  });
   const [output, setOutput] = useState();
   const [form] = Form.useForm();
   const style_title = 'flex items-center gap-8 text-36';
@@ -20,9 +29,6 @@ const Page = () => {
     });
     console.log('res', res);
     setOutput(res);
-    // form.setFieldsValue({
-    //   ai: res,
-    // });
   };
 
   return (
@@ -37,10 +43,6 @@ const Page = () => {
           <Form.Item name="amazon" rules={[{ required: true }]}>
             <InputBase />
           </Form.Item>
-          {/*
-        <Form.Item name="tree">
-          <InputTree />
-        </Form.Item> */}
         </div>
         <div>
           <h1 className={style_title}>

@@ -1,7 +1,25 @@
 // 页面路由
 import { lazy } from 'react';
 
-const lazyLoad = (page) => lazy(() => import(`@/app/${page}/page.jsx`));
+const lazyLoad = (page) => {
+  // https://github.com/vitejs/vite/issues/4945
+  // 多级目录不能直接导入
+  const splitName = page.split('/');
+  if (splitName.length === 1) {
+    return lazy(() => import(`@/app/${splitName[0]}/page.jsx`));
+  }
+  if (splitName.length === 2) {
+    return lazy(() => import(`@/app/${splitName[0]}/${splitName[1]}/page.jsx`));
+  }
+  if (splitName.length === 3) {
+    return lazy(
+      () =>
+        import(
+          `@/app/${splitName[0]}/${splitName[1]}/${splitName[2]}/page.jsx`
+        ),
+    );
+  }
+};
 
 // 有side则出现在侧边栏
 export const routerList = [
@@ -56,19 +74,19 @@ export const routerList = [
   {
     path: '/ai',
     notNeedLogin: true,
-    component: lazyLoad('ai'),
+    component: lazyLoad('(ai)/ai'),
     // side: 'ai',
   },
   {
     path: '/ailist',
     notNeedLogin: true,
-    component: lazyLoad('aiList'),
+    component: lazyLoad('(ai)/aiList'),
     // side: 'ai',
   },
   {
     path: '/ai/:id',
     notNeedLogin: true,
-    component: lazyLoad('aiId'),
+    component: lazyLoad('(ai)/aiId'),
   },
   {
     path: '*',
