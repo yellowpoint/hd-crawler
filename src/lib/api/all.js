@@ -2,6 +2,7 @@ import axios, { baseImgURL, baseURL } from './axios';
 // import { default as post } from './fetchApi';
 
 const post = axios.post;
+export const POST = (...e) => post(...e);
 
 export { axios, baseImgURL, baseURL };
 export const wiki = (e) => post(`/wiki`, e);
@@ -12,6 +13,5 @@ export const googleGet = (e) => post(`/google/get`, e);
 export const googleAddImg = (e) => post(`/google/addImg`, e);
 
 export const baseAll = (e) => post(`/crawler/all`, e);
-export const baseAdd = (e) => post(`/crawler/add`, e);
 
 export const crud = (e) => post(`/crud`, e);

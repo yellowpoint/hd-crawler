@@ -33,6 +33,10 @@ const items = [
         key: '/input',
         label: '用户输入',
       },
+      {
+        key: '/crawler',
+        label: '页面爬取',
+      },
     ],
   },
   {

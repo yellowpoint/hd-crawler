@@ -23,7 +23,7 @@ const getRequestHandler = (config) => {
     const results = {
       url,
       title,
-      html,
+      html: JSON.stringify(html),
     };
 
     await pushData(results); // 有这个下面才有数据

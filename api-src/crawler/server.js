@@ -30,8 +30,21 @@ api.post('/get', async (req, res) => {
 });
 
 api.post('/all', async (req, res) => {
-  const dbres = await db.findMany({ orderBy: { id: 'desc' } });
-  return res.send({ data: dbres, code: 0 });
+  const { page = 1, pageSize = 10 } = req.body;
+  const dbres = await db.findMany({
+    orderBy: { id: 'desc' },
+    skip: (page - 1) * pageSize,
+    take: pageSize,
+  });
+
+  const total = await db.count();
+  return res.send({
+    data: {
+      total,
+      list: dbres,
+    },
+    code: 0,
+  });
 });
 
 api.post('/update', async (req, res) => {

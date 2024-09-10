@@ -59,7 +59,7 @@ const GoogleSuggest = () => {
   ];
 
   return (
-    <div className="p-24">
+    <div className="">
       <div className="flex items-center gap-16">
         <Input
           className="w-300"

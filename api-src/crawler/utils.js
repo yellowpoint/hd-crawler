@@ -27,8 +27,13 @@ export function getPageHtmlBase(page, selector = 'body') {
       return result ? result.textContent || '' : '';
     }
     // Handle as a CSS selector
-    const el = document.querySelector(selector);
-    return el?.innerText || '';
+    const results = document.querySelectorAll(selector);
+    if (results.length) {
+      return Array.from(results).map(
+        (el) => el?.innerText || el?.innerHtml || '',
+      );
+    }
+    return '未匹配到元素：' + selector;
   }, selector);
 }
 
