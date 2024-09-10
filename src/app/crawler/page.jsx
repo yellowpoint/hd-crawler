@@ -20,7 +20,7 @@ export default function BaseCrawler() {
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
   const [htmlData, setHtmlData] = useState('');
-  const { tableProps, runAsync } = useAntdTable(
+  const { tableProps, refreshAsync } = useAntdTable(
     async (params) => {
       const { current, pageSize, sorter } = params;
       const res = await POST('/crawler/all', {
@@ -49,7 +49,7 @@ export default function BaseCrawler() {
       setVisible(false);
       setLoading(true);
       await POST('/crawler/create', data);
-      await runAsync();
+      await refreshAsync();
       setLoading(false);
       message.success('添加成功');
     } catch (error) {
@@ -62,7 +62,7 @@ export default function BaseCrawler() {
     try {
       setLoading(true);
       await POST(`/crawler/delete`, { id });
-      await runAsync();
+      await refreshAsync();
       setLoading(false);
       message.success('删除成功');
     } catch (error) {
@@ -93,8 +93,8 @@ export default function BaseCrawler() {
     {
       title: 'html',
       dataIndex: 'html',
-      width: 50,
-
+      width: 30,
+      align: 'right',
       render: (html) => (
         <Button
           type="link"
@@ -116,7 +116,8 @@ export default function BaseCrawler() {
     },
     {
       title: '操作',
-      width: 50,
+      align: 'right',
+      width: 30,
       render: (data) => (
         <Popconfirm
           title="确定删除吗?"
@@ -176,7 +177,6 @@ export default function BaseCrawler() {
 
       <Table
         {...tableProps}
-        loading={loading}
         rowKey="id"
         columns={columns}
         style={{ marginTop: '16px' }}
