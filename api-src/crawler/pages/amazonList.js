@@ -1,6 +1,6 @@
 import { sleep } from 'crawlee';
 
-import { crawlerBase } from './lib/base.js';
+import { crawlerBase } from '../base.js/index.js';
 
 const config = {
   url: [

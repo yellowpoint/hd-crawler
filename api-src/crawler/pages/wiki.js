@@ -3,8 +3,8 @@ import { readFile } from 'fs/promises';
 import axios from 'axios';
 import { createPlaywrightRouter, Dataset, KeyValueStore } from 'crawlee';
 
-import { crawlStart } from './lib/crawlerSetup.js';
-import { getPageHtmlWiki, write } from './lib/utils.js';
+import { crawlStart } from '../run.js';
+import { getPageHtmlWiki, write } from '../utils.js';
 
 export const defaultConfig = {
   url: ['https://en.wikipedia.org/wiki/Yellow'],

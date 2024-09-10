@@ -1,4 +1,4 @@
-import { crawlerBase } from './lib/base.js';
+import { crawlerBase } from '../base.js/index.js';
 
 const config = {
   url: 'https://www.browsenodes.com/amazon.com/browseNodeLookup/2617942011.html',

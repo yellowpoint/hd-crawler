@@ -2,7 +2,7 @@ import { readFile } from 'fs/promises';
 
 import { createPlaywrightRouter, Dataset, KeyValueStore, sleep } from 'crawlee';
 
-import { crawlStart } from './crawlerSetup.js';
+import { crawlStart } from './run.js';
 import { getPageHtmlBase, write } from './utils.js';
 
 let pageCounter = 0;

@@ -5,9 +5,10 @@ import { BasicCrawler, Dataset, sleep } from 'crawlee';
 import express from 'express';
 import expressWs from 'express-ws';
 
-import { crawlStart } from './lib/crawlerSetup.js';
-import { goolgeImg } from './lib/google.js';
-import { write, savePageScreenshot } from './lib/utils.js';
+import { goolgeImg } from './googleUtils.js';
+
+import { crawlStart } from '../run.js';
+import { write, savePageScreenshot } from '../utils.js';
 
 const prisma = new PrismaClient();
 const router = express.Router();

@@ -1,6 +1,6 @@
 import { sleep } from 'crawlee';
 
-import { crawlerBase } from './lib/base.js';
+import { crawlerBase } from '../base.js';
 
 const config = {
   url: ['https://www.tmbbs.com/forum-xinwenbaoliao-1.html'],
