@@ -19,7 +19,7 @@ if (!isDev) {
       headless: true,
     },
   };
-  console.log('launchOptions', launchOptions.executablePath);
+  console.log('launchContext', launchContext.launchOptions.executablePath);
   // 默认存储目录，vercel需要配置此变量到 tmp
   console.log('CRAWLEE_STORAGE_DIR', process.env.CRAWLEE_STORAGE_DIR);
 }

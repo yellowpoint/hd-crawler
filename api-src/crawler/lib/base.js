@@ -23,7 +23,7 @@ const getRequestHandler = (config) => {
     const results = {
       url,
       title,
-      content: html,
+      html,
     };
 
     await pushData(results); // 有这个下面才有数据
@@ -52,9 +52,9 @@ const getRequestHandler = (config) => {
     }
   });
   // 处理上面的label
-  router.addHandler('detail', async (props) => {
-    await saveData(props);
-  });
+  // router.addHandler('detail', async (props) => {
+  //   await saveData(props);
+  // });
   return router;
 };
 
