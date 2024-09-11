@@ -8,7 +8,7 @@ import 'dotenv/config';
 const isDev = process.env.NODE_ENV === 'development';
 const isVercel = false;
 let launchContext = undefined;
-if (!isDev && isVercel) {
+if (!isDev) {
   // 远程执行包，主要用于 vercel,因为其运行环境需要用更小的浏览器包
   const remoteExecutablePath = '/www/wwwroot/hd-crawler/chromium-v119.0.2-pack';
   launchContext = {
@@ -32,7 +32,7 @@ export const crawlStart = async (config) => {
   }
   console.log('爬取任务开始', startUrls);
 
-  const crawler = new PlaywrightCrawler(
+  const crawler = new (isDev ? PlaywrightCrawler : PuppeteerCrawler)(
     {
       requestHandler: config.requestHandler,
       maxRequestsPerCrawl: config.maxRequestsPerCrawl, // 这个是最多发出多少个请求
