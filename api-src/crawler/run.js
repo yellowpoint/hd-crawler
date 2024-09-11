@@ -1,14 +1,14 @@
 // For more information, see https://crawlee.dev/
 import chromium from '@sparticuz/chromium-min';
-import { PuppeteerCrawler, Configuration } from 'crawlee';
+import { PuppeteerCrawler, Configuration, PlaywrightCrawler } from 'crawlee';
 import puppeteer from 'puppeteer-core';
 
 import 'dotenv/config';
 
 const isDev = process.env.NODE_ENV === 'development';
-
+const isVercel = false;
 let launchContext = undefined;
-if (!isDev) {
+if (!isDev && isVercel) {
   // 远程执行包，主要用于 vercel,因为其运行环境需要用更小的浏览器包
   const remoteExecutablePath = '/www/wwwroot/hd-crawler/chromium-v119.0.2-pack';
   launchContext = {
@@ -32,13 +32,34 @@ export const crawlStart = async (config) => {
   }
   console.log('爬取任务开始', startUrls);
 
-  const crawler = new PuppeteerCrawler(
+  const crawler = new PlaywrightCrawler(
     {
       requestHandler: config.requestHandler,
       maxRequestsPerCrawl: config.maxRequestsPerCrawl, // 这个是最多发出多少个请求
       maxConcurrency: isDev ? undefined : config.maxConcurrency || 1, // 最大并发数
       headless: config.headless, // false 则显示浏览器
       launchContext: launchContext,
+      preNavigationHooks: [
+        async ({ request, page, log, Session }) => {
+          // console.log('page', page);
+          console.log('cookie', request);
+
+          if (config.cookie) {
+            const cookies = (
+              Array.isArray(config.cookie) ? config.cookie : [config.cookie]
+            ).map((cookie) => {
+              return {
+                name: cookie.name,
+                value: cookie.value,
+                domain: cookie.domain,
+                path: cookie.path,
+                url: request.loadedUrl || request.url,
+              };
+            });
+            await page.context().addCookies(cookies);
+          }
+        },
+      ],
     },
     new Configuration({
       // 启动时清除所有之前会话的数据，加上这个就导致输出的json不全，不加的话新的请求又不发起爬取
