@@ -10,6 +10,7 @@ import {
   message,
   Drawer,
   Popconfirm,
+  Select,
 } from 'antd';
 import dayjs from 'dayjs';
 
@@ -45,6 +46,7 @@ export default function BaseCrawler() {
       const data = {
         url: values.url,
         selector: values.selector,
+        type: values.type,
       };
       setVisible(false);
       setLoading(true);
@@ -114,6 +116,12 @@ export default function BaseCrawler() {
       ellipsis: true,
       render: (data) => dayjs(data).format('YYYY-MM-DD HH:mm:ss'),
     },
+    // {
+    //   title: 'type',
+    //   dataIndex: 'type',
+    //   width: 50,
+    //   ellipsis: true,
+    // },
     {
       title: '操作',
       align: 'right',
@@ -160,6 +168,11 @@ export default function BaseCrawler() {
             rules={[{ required: true, message: '请输入selector' }]}
           >
             <Input />
+          </Form.Item>
+          <Form.Item label="type" name="type">
+            <Select>
+              <Select.Option value="googleTop10">googleTop10</Select.Option>
+            </Select>
           </Form.Item>
         </Form>
       </Modal>

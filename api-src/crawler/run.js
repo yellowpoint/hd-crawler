@@ -41,9 +41,6 @@ export const crawlStart = async (config) => {
       launchContext: launchContext,
       preNavigationHooks: [
         async ({ request, page, log, Session }) => {
-          // console.log('page', page);
-          console.log('cookie', request);
-
           if (config.cookie) {
             const cookies = (
               Array.isArray(config.cookie) ? config.cookie : [config.cookie]
@@ -56,6 +53,7 @@ export const crawlStart = async (config) => {
                 url: request.loadedUrl || request.url,
               };
             });
+            // PlaywrightCrawler 才能用
             await page.context().addCookies(cookies);
           }
         },

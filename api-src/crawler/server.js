@@ -7,20 +7,43 @@ const prisma = new PrismaClient();
 const db = prisma.crawler;
 const api = express.Router();
 
-const createData = async (data) => {
+const createDb = async (data) => {
   return await prisma.crawler.create({
     data,
   });
 };
 
-api.post('/create', async (req, res) => {
-  const config = req.body;
-  const { url } = config;
+export const create = async (config) => {
+  const { url, type } = config;
+  let typeConfig;
+  if (type) {
+    const typePath = `./pages/${type}.js`;
+    try {
+      typeConfig = (await import(typePath)).default;
+      console.log('typeConfig', typeConfig);
+    } catch (error) {
+      console.log('typePath', typePath);
+      console.log('typeConfig error', error);
+    }
+  }
+  if (typeof typeConfig === 'function') {
+    typeConfig = typeConfig({ url });
+  }
+  if (typeConfig) {
+    config = { ...config, ...typeConfig };
+  }
   let crawlerRes = await crawlerBase(config);
   crawlerRes = Array.isArray(crawlerRes) ? crawlerRes : [crawlerRes];
   console.log('开始存入数据库', url);
-  const promises = crawlerRes.map((item) => createData(item));
+  const promises = crawlerRes.map((item) => createDb(item));
   await Promise.all(promises);
+
+  return crawlerRes;
+};
+
+api.post('/create', async (req, res) => {
+  let config = req.body;
+  const crawlerRes = await create(config);
   return res.send({ data: crawlerRes, code: 0 });
 });
 
