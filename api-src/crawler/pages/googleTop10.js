@@ -28,7 +28,7 @@ const config = (props) => ({
         },
       );
       const res = [...results_ad, ...results];
-      return { html: res, subPages: res.slice(0, 10) };
+      return { html: res, subPages: res.slice(0, props?.subPagesMax ?? 5) };
     }, selector);
 
     // await sleep(100000);
