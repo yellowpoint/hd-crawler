@@ -37,6 +37,9 @@ export default function BaseCrawler() {
       if (type === 'googleTop10') {
         url = `https://www.google.com/search?q=${encodeURIComponent(keyword)}`;
       }
+      if (type === 'amazonSearch') {
+        url = keyword;
+      }
       const data = {
         type,
         url,
@@ -82,10 +85,11 @@ export default function BaseCrawler() {
               options={[
                 { value: '', label: '默认' },
                 { value: 'googleTop10', label: 'googleTop10' },
+                { value: 'amazonSearch', label: 'amazonSearch' },
               ]}
             />
           </Form.Item>
-          {type === 'googleTop10' ? (
+          {['googleTop10', 'amazonSearch'].includes(type) ? (
             <Form.Item
               label="关键词"
               name="keyword"
@@ -94,23 +98,24 @@ export default function BaseCrawler() {
               <Input />
             </Form.Item>
           ) : (
-            <>
-              <Form.Item
-                label="url"
-                name="url"
-                rules={[{ required: true, message: '请输入url' }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                label="selector"
-                name="selector"
-                initialValue="body"
-                rules={[{ required: true, message: '请输入selector' }]}
-              >
-                <Input />
-              </Form.Item>
-            </>
+            <Form.Item
+              label="url"
+              name="url"
+              rules={[{ required: true, message: '请输入url' }]}
+            >
+              <Input />
+            </Form.Item>
+          )}
+
+          {!['googleTop10', 'amazonSearch'].includes(type) && (
+            <Form.Item
+              label="selector"
+              name="selector"
+              initialValue="body"
+              rules={[{ required: true, message: '请输入selector' }]}
+            >
+              <Input />
+            </Form.Item>
           )}
         </Form>
       </Modal>

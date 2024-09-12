@@ -52,14 +52,13 @@ const TableCrawler = ({ tableProps, isSub }) => {
       dataIndex: 'html',
       width: 60,
       align: 'right',
-      render: (html, { id, type, error }) => {
-        const isDetail = type && type !== 'default';
+      render: (html, { id, type, error, subPages }) => {
         if (error) return <EllipsisFlex>{error}</EllipsisFlex>;
         return (
           <Button
             type="link"
             onClick={() => {
-              if (isDetail) {
+              if (subPages) {
                 navigate(`/crawler/${id}`);
                 return;
               }
@@ -67,7 +66,7 @@ const TableCrawler = ({ tableProps, isSub }) => {
               setHtmlData(html);
             }}
           >
-            {isDetail ? '详情页' : '内容'}
+            {subPages ? '详情页' : '内容'}
           </Button>
         );
       },
@@ -110,7 +109,20 @@ const TableCrawler = ({ tableProps, isSub }) => {
   return (
     <>
       <Drawer
-        title="html"
+        title={
+          <div className="flex items-center justify-between">
+            html
+            <Button
+              type="primary"
+              onClick={() => {
+                navigator.clipboard.writeText(htmlData);
+                message.success('复制成功');
+              }}
+            >
+              复制
+            </Button>
+          </div>
+        }
         placement="right"
         closable={false}
         onClose={() => setDrawerVisible(false)}

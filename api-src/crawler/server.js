@@ -14,10 +14,11 @@ const createDb = async (data) => {
 };
 
 export const create = async (config) => {
-  const { url, type } = config;
+  const { url, type, keyword } = config;
   let typeConfig;
   if (type) {
     const typePath = `./pages/${type}.js`;
+    console.log(typePath + ' 获取成功');
     try {
       typeConfig = (await import(typePath)).default;
       // console.log('typeConfig', typeConfig);
@@ -26,7 +27,7 @@ export const create = async (config) => {
     }
   }
   if (typeof typeConfig === 'function') {
-    typeConfig = typeConfig({ url });
+    typeConfig = typeConfig(keyword ?? { url });
   }
   if (typeConfig) {
     config = { ...config, ...typeConfig };
