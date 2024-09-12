@@ -207,3 +207,14 @@ export const copyText = (text) => {
   copy(text);
   message.success('Copy success!');
 };
+
+export const renderCopyableText = (text) => (
+  <Typography.Paragraph
+    copyable
+    ellipsis={{ tooltip: false }}
+    className="!mb-0"
+    title={text}
+  >
+    {text}
+  </Typography.Paragraph>
+);

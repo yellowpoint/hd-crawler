@@ -69,7 +69,11 @@ export const routerList = [
     path: '/crawler',
     notNeedLogin: true,
     component: lazyLoad('crawler'),
-    // side: '基础爬取',
+  },
+  {
+    path: '/crawler/:id',
+    notNeedLogin: true,
+    component: lazyLoad('crawler/[id]'),
   },
   {
     path: '/ai',

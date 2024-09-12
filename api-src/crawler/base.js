@@ -7,13 +7,16 @@ import { getPageHtmlBase, write } from './utils.js';
 
 let pageCounter = 0;
 const getRequestHandler = (config) => {
-  const { getPage } = config;
+  let { getPage, type } = config;
   const router = createPlaywrightRouter();
 
   const saveData = async (props) => {
     const { request, page, log, pushData, isSub } = props;
     let getPageHtml = getPage || getPageHtmlBase;
-    if (isSub) getPageHtml = getPageHtmlBase;
+    if (isSub) {
+      getPageHtml = getPageHtmlBase;
+      type = '';
+    }
     const title = await page.title();
     // 可能返回字符串或对象
     const htmlRes = await getPageHtml(page, config?.selector, props);
@@ -30,6 +33,9 @@ const getRequestHandler = (config) => {
     };
     if (subPages) {
       results.subPages = JSON.stringify(subPages);
+    }
+    if (type) {
+      results.type = type;
     }
 
     await pushData(results); // 有这个下面才有数据

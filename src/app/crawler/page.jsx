@@ -1,26 +1,18 @@
 import React, { useState } from 'react';
 
 import { useRequest, useAntdTable } from 'ahooks';
-import {
-  Button,
-  Input,
-  Table,
-  Modal,
-  Form,
-  message,
-  Drawer,
-  Popconfirm,
-  Select,
-} from 'antd';
-import dayjs from 'dayjs';
+import { Button, Input, Modal, Form, message, Select } from 'antd';
 
 import { POST } from '@/lib/api';
+
+import TableCrawler from './TableCrawler';
 
 export default function BaseCrawler() {
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
-  const [htmlData, setHtmlData] = useState('');
+
+  const [type, setType] = useState('default');
   const { tableProps, refreshAsync } = useAntdTable(
     async (params) => {
       const { current, pageSize, sorter } = params;
@@ -34,7 +26,6 @@ export default function BaseCrawler() {
       defaultPageSize: 10,
     },
   );
-  const [drawerVisible, setDrawerVisible] = useState(false);
 
   const handleAdd = () => {
     setVisible(true);
@@ -42,11 +33,14 @@ export default function BaseCrawler() {
 
   const handleOk = async () => {
     try {
-      const values = await form.validateFields();
+      let { keyword, url, selector } = await form.validateFields();
+      if (type === 'googleTop10') {
+        url = `https://www.google.com/search?q=${encodeURIComponent(keyword)}`;
+      }
       const data = {
-        url: values.url,
-        selector: values.selector,
-        type: values.type,
+        type,
+        url,
+        selector,
       };
       setVisible(false);
       setLoading(true);
@@ -59,85 +53,6 @@ export default function BaseCrawler() {
       console.log('error', error);
     }
   };
-
-  const handleDelete = async (id) => {
-    try {
-      setLoading(true);
-      await POST(`/crawler/delete`, { id });
-      await refreshAsync();
-      setLoading(false);
-      message.success('删除成功');
-    } catch (error) {
-      setLoading(false);
-      console.log('error', error);
-    }
-  };
-
-  const columns = [
-    {
-      title: 'id',
-      dataIndex: 'id',
-      width: 20,
-      ellipsis: true,
-    },
-    {
-      title: 'url',
-      dataIndex: 'url',
-      width: 50,
-      ellipsis: true,
-    },
-    {
-      title: 'title',
-      dataIndex: 'title',
-      width: 100,
-      ellipsis: true,
-    },
-    {
-      title: 'html',
-      dataIndex: 'html',
-      width: 30,
-      align: 'right',
-      render: (html) => (
-        <Button
-          type="link"
-          onClick={() => {
-            setDrawerVisible(true);
-            setHtmlData(html);
-          }}
-        >
-          查看
-        </Button>
-      ),
-    },
-    {
-      title: 'createdAt',
-      dataIndex: 'createdAt',
-      width: 50,
-      ellipsis: true,
-      render: (data) => dayjs(data).format('YYYY-MM-DD HH:mm:ss'),
-    },
-    // {
-    //   title: 'type',
-    //   dataIndex: 'type',
-    //   width: 50,
-    //   ellipsis: true,
-    // },
-    {
-      title: '操作',
-      align: 'right',
-      width: 30,
-      render: (data) => (
-        <Popconfirm
-          title="确定删除吗?"
-          onConfirm={() => handleDelete(data.id)}
-          okText="确定"
-          cancelText="取消"
-        >
-          <Button type="link">删除</Button>
-        </Popconfirm>
-      ),
-    },
-  ];
 
   return (
     <div className="">
@@ -155,12 +70,40 @@ export default function BaseCrawler() {
       >
         <Form form={form} layout="vertical">
           <Form.Item
-            label="url"
-            name="url"
-            rules={[{ required: true, message: '请输入url' }]}
+            label="type"
+            name="type"
+            initialValue={type}
+            rules={[{ required: true, message: '请选择类型' }]}
           >
-            <Input />
+            <Select
+              onChange={(val) => {
+                console.log('val', val);
+                setType(val);
+              }}
+              options={[
+                { value: 'default', label: '默认' },
+                { value: 'googleTop10', label: 'googleTop10' },
+              ]}
+            />
           </Form.Item>
+          {type === 'googleTop10' ? (
+            <Form.Item
+              label="关键词"
+              name="keyword"
+              rules={[{ required: true, message: '请输入关键词' }]}
+            >
+              <Input />
+            </Form.Item>
+          ) : (
+            <Form.Item
+              label="url"
+              name="url"
+              rules={[{ required: true, message: '请输入url' }]}
+            >
+              <Input />
+            </Form.Item>
+          )}
+
           <Form.Item
             label="selector"
             name="selector"
@@ -169,31 +112,10 @@ export default function BaseCrawler() {
           >
             <Input />
           </Form.Item>
-          <Form.Item label="type" name="type">
-            <Select>
-              <Select.Option value="googleTop10">googleTop10</Select.Option>
-            </Select>
-          </Form.Item>
         </Form>
       </Modal>
 
-      <Drawer
-        title="html"
-        placement="right"
-        closable={false}
-        onClose={() => setDrawerVisible(false)}
-        open={drawerVisible}
-        width={500}
-      >
-        <pre style={{ whiteSpace: 'pre-wrap' }}>{htmlData}</pre>
-      </Drawer>
-
-      <Table
-        {...tableProps}
-        rowKey="id"
-        columns={columns}
-        style={{ marginTop: '16px' }}
-      />
+      <TableCrawler tableProps={tableProps} />
     </div>
   );
 }

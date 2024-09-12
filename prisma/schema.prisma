@@ -23,6 +23,7 @@ model Crawler {
   url       String
   title     String?
   html      String?
+  type      String?
   subPages  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

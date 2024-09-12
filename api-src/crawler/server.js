@@ -20,10 +20,9 @@ export const create = async (config) => {
     const typePath = `./pages/${type}.js`;
     try {
       typeConfig = (await import(typePath)).default;
-      console.log('typeConfig', typeConfig);
+      // console.log('typeConfig', typeConfig);
     } catch (error) {
-      console.log('typePath', typePath);
-      console.log('typeConfig error', error);
+      throw new Error("type doesn't exist:" + type);
     }
   }
   if (typeof typeConfig === 'function') {
@@ -42,13 +41,36 @@ export const create = async (config) => {
 };
 
 api.post('/create', async (req, res) => {
-  let config = req.body;
-  const crawlerRes = await create(config);
-  return res.send({ data: crawlerRes, code: 0 });
+  try {
+    let config = req.body;
+    const crawlerRes = await create(config);
+    return res.send({ data: crawlerRes, code: 0 });
+  } catch (error) {
+    console.log('error', error);
+    res.send({ data: error.message, code: 1 });
+  }
 });
 
 api.post('/get', async (req, res) => {
   const dbres = await db.findUnique({ where: req.body });
+  if (dbres?.subPages) {
+    const subPages = JSON.parse(dbres.subPages);
+    const promises = subPages.map((item) =>
+      db.findFirst({
+        where: { url: item.url },
+        orderBy: { id: 'desc' },
+        take: 1,
+      }),
+    );
+    const results = await Promise.all(promises);
+    return res.send({
+      data: {
+        ...dbres,
+        subPagesData: results,
+      },
+      code: 0,
+    });
+  }
   return res.send({ data: dbres, code: 0 });
 });
 

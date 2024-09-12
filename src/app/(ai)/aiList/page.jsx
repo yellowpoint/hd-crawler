@@ -3,18 +3,8 @@ import { Link } from 'react-router-dom';
 import { useRequest, useAntdTable } from 'ahooks';
 import { Table, Tooltip, Typography } from 'antd';
 
+import { renderCopyableText } from '@/components';
 import API from '@/lib/api';
-
-const renderCopyableText = (text) => (
-  <Typography.Paragraph
-    copyable
-    ellipsis={{ tooltip: false }}
-    className="!mb-0"
-    title={text}
-  >
-    {text}
-  </Typography.Paragraph>
-);
 
 const AiList = () => {
   const { tableProps, search } = useAntdTable(
