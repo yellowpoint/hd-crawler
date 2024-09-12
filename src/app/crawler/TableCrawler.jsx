@@ -46,13 +46,14 @@ const TableCrawler = ({ tableProps, isSub }) => {
     {
       title: 'html',
       dataIndex: 'html',
-      width: 30,
+      width: 40,
       align: 'right',
       render: (html, { id, type }) => (
         <Button
           type="link"
           onClick={() => {
-            if (type && type !== 'default') {
+            const isDetail = type && type !== 'default';
+            if (isDetail) {
               navigate(`/crawler/${id}`);
               return;
             }
@@ -60,7 +61,7 @@ const TableCrawler = ({ tableProps, isSub }) => {
             setHtmlData(html);
           }}
         >
-          查看
+          {type ? '详情页' : '内容'}
         </Button>
       ),
     },

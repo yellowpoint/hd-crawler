@@ -12,7 +12,7 @@ export default function BaseCrawler() {
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
 
-  const [type, setType] = useState('default');
+  const [type, setType] = useState('');
   const { tableProps, refreshAsync } = useAntdTable(
     async (params) => {
       const { current, pageSize, sorter } = params;
@@ -73,15 +73,14 @@ export default function BaseCrawler() {
             label="type"
             name="type"
             initialValue={type}
-            rules={[{ required: true, message: '请选择类型' }]}
+            // rules={[{ required: true, message: '请选择类型' }]}
           >
             <Select
               onChange={(val) => {
-                console.log('val', val);
                 setType(val);
               }}
               options={[
-                { value: 'default', label: '默认' },
+                { value: '', label: '默认' },
                 { value: 'googleTop10', label: 'googleTop10' },
               ]}
             />
@@ -95,23 +94,24 @@ export default function BaseCrawler() {
               <Input />
             </Form.Item>
           ) : (
-            <Form.Item
-              label="url"
-              name="url"
-              rules={[{ required: true, message: '请输入url' }]}
-            >
-              <Input />
-            </Form.Item>
+            <>
+              <Form.Item
+                label="url"
+                name="url"
+                rules={[{ required: true, message: '请输入url' }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label="selector"
+                name="selector"
+                initialValue="body"
+                rules={[{ required: true, message: '请输入selector' }]}
+              >
+                <Input />
+              </Form.Item>
+            </>
           )}
-
-          <Form.Item
-            label="selector"
-            name="selector"
-            initialValue="body"
-            rules={[{ required: true, message: '请输入selector' }]}
-          >
-            <Input />
-          </Form.Item>
         </Form>
       </Modal>
 
