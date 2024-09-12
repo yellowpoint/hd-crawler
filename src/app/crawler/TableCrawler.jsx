@@ -35,7 +35,11 @@ const TableCrawler = ({ tableProps, isSub }) => {
       title: 'url',
       dataIndex: 'url',
       width: 50,
-      render: (text) => <EllipsisFlex>{text}</EllipsisFlex>,
+      render: (text) => (
+        <a href={text} target="_blank" rel="noreferrer">
+          <EllipsisFlex>{text}</EllipsisFlex>
+        </a>
+      ),
     },
     {
       title: 'title',
@@ -46,32 +50,38 @@ const TableCrawler = ({ tableProps, isSub }) => {
     {
       title: 'html',
       dataIndex: 'html',
-      width: 40,
+      width: 60,
       align: 'right',
-      render: (html, { id, type }) => (
-        <Button
-          type="link"
-          onClick={() => {
-            const isDetail = type && type !== 'default';
-            if (isDetail) {
-              navigate(`/crawler/${id}`);
-              return;
-            }
-            setDrawerVisible(true);
-            setHtmlData(html);
-          }}
-        >
-          {type ? '详情页' : '内容'}
-        </Button>
-      ),
+      render: (html, { id, type, error }) => {
+        const isDetail = type && type !== 'default';
+        if (error) return <EllipsisFlex>{error}</EllipsisFlex>;
+        return (
+          <Button
+            type="link"
+            onClick={() => {
+              if (isDetail) {
+                navigate(`/crawler/${id}`);
+                return;
+              }
+              setDrawerVisible(true);
+              setHtmlData(html);
+            }}
+          >
+            {isDetail ? '详情页' : '内容'}
+          </Button>
+        );
+      },
     },
     {
       title: 'createdAt',
       dataIndex: 'createdAt',
       width: 50,
-      render: (text) => (
-        <EllipsisFlex>{dayjs(text).format('YYYY-MM-DD HH:mm:ss')}</EllipsisFlex>
-      ),
+      render: (text) =>
+        text && (
+          <EllipsisFlex>
+            {dayjs(text).format('YYYY-MM-DD HH:mm:ss')}
+          </EllipsisFlex>
+        ),
     },
     {
       title: 'type',
@@ -110,10 +120,10 @@ const TableCrawler = ({ tableProps, isSub }) => {
         <pre style={{ whiteSpace: 'pre-wrap' }}>{htmlData}</pre>
       </Drawer>
       <Table
-        {...tableProps}
         rowKey="id"
         columns={columns}
         style={{ marginTop: '16px' }}
+        {...tableProps}
       />
     </>
   );

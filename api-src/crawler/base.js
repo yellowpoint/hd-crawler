@@ -15,7 +15,7 @@ const getRequestHandler = (config) => {
     let getPageHtml = getPage || getPageHtmlBase;
     if (isSub) {
       getPageHtml = getPageHtmlBase;
-      type = '';
+      type = 'subPage';
     }
     const title = await page.title();
     // 可能返回字符串或对象
@@ -50,10 +50,7 @@ const getRequestHandler = (config) => {
     log.info(`Crawling: Page ${pageCounter} - URL: ${request.loadedUrl}...`);
     const subPages = await saveData(props);
     if (subPages) {
-      let urls = subPages
-        .slice(0, 3)
-        ?.map?.(({ url }) => url)
-        ?.filter((url) => url !== null && url !== undefined && url !== '');
+      let urls = subPages?.map?.(({ url }) => url)?.filter(Boolean);
 
       urls = urls.map((url) => ({
         url: url,

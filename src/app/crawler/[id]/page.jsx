@@ -41,7 +41,7 @@ const Page = ({ params }) => {
           进行分析
         </Button>
       </div>
-      <TableCrawler tableProps={{ dataSource }} isSub />
+      <TableCrawler tableProps={{ dataSource, rowKey: 'url' }} isSub />
     </div>
   );
 };

@@ -28,16 +28,9 @@ const config = (props) => ({
         },
       );
       const res = [...results_ad, ...results];
-      return { html: res, subPages: res };
+      return { html: res, subPages: res.slice(0, 10) };
     }, selector);
-    // const urls = res?.subPages.slice(0, 3)?.map?.(({ url }) => url);
-    // console.log('urls', urls);
-    // await enqueueLinks({
-    //   urls,
-    // });
 
-    // console.log('getPage', res);
-    // res?.subPages?.slice(0, 3).map?.(({ url }) => url && create({ url }));
     // await sleep(100000);
     return res;
   },

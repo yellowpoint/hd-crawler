@@ -55,18 +55,28 @@ api.post('/get', async (req, res) => {
   const dbres = await db.findUnique({ where: req.body });
   if (dbres?.subPages) {
     const subPages = JSON.parse(dbres.subPages);
-    const promises = subPages.map((item) =>
-      db.findFirst({
+    const promises = subPages.map(async (item) => {
+      if (!item.url) {
+        return;
+      }
+      const r = await db.findFirst({
         where: { url: item.url },
         orderBy: { id: 'desc' },
         take: 1,
-      }),
-    );
+      });
+      if (r) {
+        return r;
+      } else {
+        return { ...item, error: '数据库无数据' };
+      }
+    });
     const results = await Promise.all(promises);
+    const resultsFilter = results.filter(Boolean);
+
     return res.send({
       data: {
         ...dbres,
-        subPagesData: results,
+        subPagesData: resultsFilter,
       },
       code: 0,
     });
@@ -75,14 +85,20 @@ api.post('/get', async (req, res) => {
 });
 
 api.post('/all', async (req, res) => {
-  const { page = 1, pageSize = 10 } = req.body;
+  const { page = 1, pageSize = 10, filterSubPage = true } = req.body;
+  const dbWhere = filterSubPage
+    ? {
+        OR: [{ type: { not: 'subPage' } }, { type: null }],
+      }
+    : undefined;
   const dbres = await db.findMany({
     orderBy: { id: 'desc' },
     skip: (page - 1) * pageSize,
     take: pageSize,
+    where: dbWhere,
   });
 
-  const total = await db.count();
+  const total = await db.count({ where: dbWhere });
   return res.send({
     data: {
       total,
@@ -91,7 +107,6 @@ api.post('/all', async (req, res) => {
     code: 0,
   });
 });
-
 api.post('/update', async (req, res) => {
   const { id, data } = req.body;
   if (!id) return res.send({ code: 1, message: 'id is required' });
