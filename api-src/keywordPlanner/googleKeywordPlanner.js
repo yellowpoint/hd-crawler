@@ -1,16 +1,14 @@
 import { GoogleAdsApi } from 'google-ads-api';
 
 const client = new GoogleAdsApi({
-  client_id:
-    '12955740908-gr0nbhm6gfhmdeuti0h53pi1i4e78n9q.apps.googleusercontent.com',
-  client_secret: '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',
-  developer_token: 'tE_jQ--5iockvUjYqCYe_w',
+  client_id: process.env.GOOGLE_ADS_CLIENT_ID,
+  client_secret: process.env.GOOGLE_ADS_CLIENT_SECRET,
+  developer_token: process.env.GOOGLE_ADS_DEVELOPER_TOKEN,
 });
 
 const customer = client.Customer({
-  customer_id: '2507699917',
-  refresh_token:
-    '1//0gPXs-DAtWRMICgYIARAAGBASNwF-L9IrIcuuAl1WR-T40QwlR__WPQvDmtPyBRtTET2i4wdtiirIETE6CRvj5WygCa8sATH1V_o', // 替换为新获取的 refresh_token
+  customer_id: process.env.GOOGLE_ADS_CUSTOMER_ID,
+  refresh_token: process.env.GOOGLE_ADS_REFRESH_TOKEN,
 });
 
 async function getKeywordPlannerData(keyword) {
