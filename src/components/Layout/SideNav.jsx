@@ -37,6 +37,10 @@ const items = [
         key: '/crawler',
         label: '页面爬取',
       },
+      {
+        key: '/gkp',
+        label: 'GKP',
+      },
     ],
   },
   {

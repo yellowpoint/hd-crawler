@@ -21,7 +21,7 @@ const lazyLoad = (page) => {
   }
 };
 
-// 有side则出现在侧边栏
+// 侧边栏需要在 Layout/SideNav 中配置
 export const routerList = [
   {
     path: '/',
@@ -33,6 +33,11 @@ export const routerList = [
     notNeedLogin: true,
     component: lazyLoad('seo'),
     side: 'SEO',
+  },
+  {
+    path: '/gkp',
+    notNeedLogin: true,
+    component: lazyLoad('gkp'),
   },
   {
     path: '/flow',

@@ -15,3 +15,4 @@ export const googleAddImg = (e) => post(`/google/addImg`, e);
 export const baseAll = (e) => post(`/crawler/all`, e);
 
 export const crud = (e) => post(`/crud`, e);
+export const gkp = (e) => post(`/gkp`, e);
