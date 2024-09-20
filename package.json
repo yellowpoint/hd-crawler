@@ -1,6 +1,10 @@
 {
   "name": "crawler-aws",
   "type": "module",
+  "scripts": {
+    "reinstall": "rimraf node_modules && cnpm install",
+    "api": "cross-env NODE_ENV=development nodemon --watch api --watch api-src --ext js api/index.js"
+  },
   "dependencies": {
     "@sparticuz/chromium": "^127.0.0",
     "crawlee": "^3.11.3",
