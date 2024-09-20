@@ -1,7 +1,4 @@
-import { sleep } from 'crawlee';
-
 import { crawlerBase } from '../base.js';
-import { create } from '../server.js';
 
 const config = (props) => ({
   ...props,
@@ -31,7 +28,6 @@ const config = (props) => ({
       return { html: res, subPages: res.slice(0, props?.subPagesMax ?? 5) };
     }, selector);
 
-    // await sleep(100000);
     return res;
   },
 });

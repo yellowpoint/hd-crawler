@@ -1,12 +1,9 @@
-import { readFile } from 'fs/promises';
-
 import { createPlaywrightRouter, Dataset, KeyValueStore, sleep } from 'crawlee';
 
-import { crawlStart } from './run.js';
-import { getPageHtmlBase, write } from './utils.js';
+import { getPageHtmlBase } from './utils.js';
 
 let pageCounter = 0;
-const getRequestHandler = (config) => {
+export const getRequestHandler = (config) => {
   let { getPage, type } = config;
   const router = createPlaywrightRouter();
 
@@ -74,7 +71,7 @@ const getRequestHandler = (config) => {
           exclude:
             typeof config.exclude === 'string'
               ? [config.exclude]
-              : config.exclude ?? [],
+              : (config.exclude ?? []),
         },
         // label: 'detail',
       );
@@ -85,18 +82,4 @@ const getRequestHandler = (config) => {
     await saveData({ ...props, isSub: true });
   });
   return router;
-};
-
-export const crawlerBase = async (config) => {
-  const requestHandler = getRequestHandler(config);
-  const crawlConfig = {
-    ...config,
-    requestHandler,
-  };
-
-  await crawlStart(crawlConfig);
-  const outputFileName = await write(config);
-  let outputFileContent = await readFile(outputFileName, 'utf-8');
-  outputFileContent = JSON.parse(outputFileContent);
-  return outputFileContent;
 };

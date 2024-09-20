@@ -3,7 +3,8 @@
   "type": "module",
   "scripts": {
     "reinstall": "rimraf node_modules && cnpm install",
-    "api": "cross-env NODE_ENV=development nodemon --watch api --watch api-src --ext js api/index.js"
+    "api": "cross-env NODE_ENV=development nodemon --watch api --watch api-src --ext js api/index.js",
+    "zip": "7z a code.zip ./api-src/crawler"
   },
   "dependencies": {
     "@sparticuz/chromium": "^127.0.0",
