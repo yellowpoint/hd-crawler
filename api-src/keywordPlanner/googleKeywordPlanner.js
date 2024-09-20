@@ -1,4 +1,5 @@
-import { GoogleAdsApi } from 'google-ads-api';
+import { GoogleAdsApi, enums, parse } from 'google-ads-api';
+import 'dotenv/config';
 
 const client = new GoogleAdsApi({
   client_id: process.env.GOOGLE_ADS_CLIENT_ID,
@@ -6,44 +7,38 @@ const client = new GoogleAdsApi({
   developer_token: process.env.GOOGLE_ADS_DEVELOPER_TOKEN,
 });
 
+const refreshToken = process.env.GOOGLE_ADS_REFRESH_TOKEN;
+
 const customer = client.Customer({
   customer_id: process.env.GOOGLE_ADS_CUSTOMER_ID,
+  login_customer_id: process.env.GOOGLE_ADS_CUSTOMER_ID,
   refresh_token: process.env.GOOGLE_ADS_REFRESH_TOKEN,
 });
 
-async function getKeywordPlannerData(keyword) {
-  try {
-    const response = await customer.report({
-      entity: 'keyword_view',
-      attributes: [
-        'keyword_view.resource_name',
-        'keyword_view.keyword.text',
-        'keyword_plan_keyword.keyword',
-      ],
-      metrics: [
-        'keyword_view.average_cpc',
-        'keyword_view.search_volume',
-        'keyword_view.competition',
-      ],
-      constraints: {
-        'keyword_view.keyword.text': keyword,
-      },
-    });
+const reportOptions = {
+  entity: 'ad_group_criterion',
+  attributes: ['ad_group_criterion.keyword.text', 'ad_group_criterion.status'],
+  constraints: {
+    'ad_group_criterion.type': enums.CriterionType.KEYWORD,
+  },
+};
 
-    console.log('API Response:', JSON.stringify(response, null, 2));
+const stream = await customer.reportStreamRaw(reportOptions);
+// console.log('stream', stream);
+// Rows are streamed in 10,000 row chunks
+stream.on('data', (chunk) => {
+  console.log('chunk', chunk);
+  const parsedResults = parse({
+    results: chunk.results,
+    reportOptions,
+  });
+  console.log('parsedResults', parsedResults);
+});
 
-    const ideas = response.map((idea) => ({
-      keyword: idea.keyword_view.keyword.text,
-      searchVolume: idea.metrics.search_volume,
-      competition: idea.keyword_view.competition,
-      avgCPC: idea.metrics.average_cpc / 1000000, // Convert micros to actual currency
-    }));
+stream.on('error', (error) => {
+  throw new Error(error);
+});
 
-    return ideas;
-  } catch (error) {
-    console.error('获取关键词规划器数据时出错:', error);
-    throw error;
-  }
-}
-
-export { getKeywordPlannerData };
+stream.on('end', () => {
+  console.log('stream has finished');
+});

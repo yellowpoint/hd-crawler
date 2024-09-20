@@ -7,6 +7,7 @@ import 'dotenv/config';
 
 const isDev = process.env.NODE_ENV === 'development';
 const isVercel = false;
+const isAliyun = false;
 let launchContext = undefined;
 if (!isDev) {
   // 远程执行包，主要用于 vercel,因为其运行环境需要用更小的浏览器包
