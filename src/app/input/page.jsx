@@ -39,6 +39,7 @@ const Page = () => {
             <span className="icon-[devicon--amazonwebservices-wordmark]"></span>
             Amazon类目
           </h1>
+          <a href="/amazon/Home&Kitchen.json">下载</a>
 
           <Form.Item name="amazon" rules={[{ required: true }]}>
             <InputBase />
