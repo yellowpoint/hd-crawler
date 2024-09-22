@@ -49,3 +49,5 @@ next-env.d.ts
 **/*.db
 **/dev.db-journal
 /uploads
+
+**/*.zip
