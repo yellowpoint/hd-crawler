@@ -3,6 +3,7 @@ import {
   createPlaywrightRouter,
   Configuration,
   PlaywrightCrawler,
+  Dataset
 } from 'crawlee';
 
 import { getPageHtmlBase } from './utils.js';
@@ -40,8 +41,14 @@ export const getRequestHandler = (config) => {
       results.type = type;
     }
 
-    await pushData(results); // 有这个下面才有数据
-    // await Dataset.exportToJSON('OUTPUT');
+    // await pushData(results); // 有这个下面才有数据
+    // // await Dataset.exportToJSON('OUTPUT');
+
+    await Dataset.pushData(results);
+
+    // Export the entirety of the dataset to a single file in
+    // the default key-value store under the key "OUTPUT"
+    // await Dataset.exportToCSV('OUTPUT');
 
     return subPages;
   };
@@ -93,11 +100,7 @@ const isDev = process.env.NODE_ENV === 'development';
 console.log('isDev', isDev);
 export const crawlerRun = async (req) => {
   let config = req?.queryStringParameters ?? req;
-  let startUrls = config.url;
-  startUrls = typeof startUrls === 'string' ? [startUrls] : startUrls;
-  if (!Array.isArray(startUrls) || startUrls.length === 0) {
-    throw new Error('没有传入爬取的 url');
-  }
+  
   const { type, keyword, url } = config;
   let typeConfig;
   if (type) {
@@ -111,17 +114,17 @@ export const crawlerRun = async (req) => {
     }
   }
   if (typeof typeConfig === 'function') {
-    typeConfig = typeConfig(keyword ?? { url });
+    typeConfig = typeConfig(config);
   }
   if (typeConfig) {
     config = { ...config, ...typeConfig };
   }
-
-  console.log('爬取任务开始', startUrls);
+  console.log('爬取任务开始', config);
+  // return
   const crawler = new PlaywrightCrawler(
     {
       requestHandler: getRequestHandler(config),
-      launchContext: isDev?undefined:{
+      launchContext: isDev ? undefined : {
         launchOptions: {
           executablePath: await aws_chromium.executablePath(),
           args: aws_chromium.args,
@@ -134,6 +137,13 @@ export const crawlerRun = async (req) => {
     }),
   );
 
+  let startUrls = config.url;
+  startUrls = typeof startUrls === 'string' ? [startUrls] : startUrls;
+  if (!Array.isArray(startUrls) || startUrls.length === 0) {
+    throw new Error('没有传入爬取的 url');
+  }
+
   await crawler.run(startUrls);
-  return crawler.getData();
+  const data = await crawler.getData();
+  return data?.items;
 };

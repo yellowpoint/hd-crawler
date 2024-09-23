@@ -1,9 +1,9 @@
 
-export const config = (props) => ({
-  ...props,
+export const config = ({keyword}) => ({
   // maxRequestsPerCrawl: 3,
-  outputFileName: 'googleTop10.json',
+  // outputFileName: 'googleTop10.json',
   // headless: false,
+  url: 'https://www.google.com/search?q=' + encodeURIComponent(keyword),
   getPage: async (page, selector = 'body', { enqueueLinks }) => {
     const res = await page.evaluate((selector) => {
       const results_ad = Array.from(document.querySelectorAll('.uEierd'))?.map(

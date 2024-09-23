@@ -1,12 +1,10 @@
 
 
-export const config = ({ url: keyword }) => ({
-  url:
-    'https://www.amazon.com/s?crid=3RY1E18CCW2MS&sprefix=so%27f%2Caps%2C469&ref=nb_sb_noss&k=' +
-    encodeURIComponent(keyword),
-  outputFileName: 'amazonSearch.json',
+export const config = ({keyword}) => ({
+  url: `https://www.amazon.com/s?k=${keyword}&__mk_zh_CN=%E4%BA%9A%E9%A9%AC%E9%80%8A%E7%BD%91%E7%AB%99&ref=nb_sb_noss`,
+  // outputFileName: 'amazonSearch.json',
   // headless: false,
-  selector: '[data-component-type="s-search-result"]',
+  // selector: '[data-component-type="s-search-result"]',
   // getPage: async (page, selector = 'body') => {
   //   const res = await page.evaluate((selector) => {
   //     const results = document.querySelectorAll(
