@@ -104,7 +104,7 @@ export const crawlerRun = async (req) => {
     const typePath = `./pages/${type}.js`;
     console.log('typePath', typePath);
     try {
-      typeConfig = (await import(typePath)).default;
+      typeConfig = (await import(typePath)).config;
       console.log(typePath + ' 获取成功');
     } catch (error) {
       throw new Error("type doesn't exist:" + typePath);

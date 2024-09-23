@@ -1,8 +1,6 @@
-import { sleep } from 'crawlee';
 
-import { crawlerBase } from '../base.js';
 
-const config = ({ url: keyword }) => ({
+export const config = ({ url: keyword }) => ({
   url:
     'https://www.amazon.com/s?crid=3RY1E18CCW2MS&sprefix=so%27f%2Caps%2C469&ref=nb_sb_noss&k=' +
     encodeURIComponent(keyword),
@@ -25,6 +23,4 @@ const config = ({ url: keyword }) => ({
   // },
 });
 
-// crawlerBase(config({url:'sofa'}));
 
-export default config;

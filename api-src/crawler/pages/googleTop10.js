@@ -1,6 +1,5 @@
-// import { crawlerBase } from '../base.js';
 
-const config = (props) => ({
+export const config = (props) => ({
   ...props,
   // maxRequestsPerCrawl: 3,
   outputFileName: 'googleTop10.json',
@@ -38,4 +37,3 @@ const config = (props) => ({
 //   }),
 // );
 
-export default config;
