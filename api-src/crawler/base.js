@@ -3,7 +3,7 @@ import {
   createPlaywrightRouter,
   Configuration,
   PlaywrightCrawler,
-  Dataset
+  Dataset,
 } from 'crawlee';
 
 import { getPageHtmlBase } from './utils.js';
@@ -14,21 +14,19 @@ export const getRequestHandler = (config) => {
   const router = createPlaywrightRouter();
 
   const saveData = async (props) => {
-    const { request, page, log, pushData, isSub } = props;
+    const { request, page, log, isSub } = props;
     let getPageHtml = getPage || getPageHtmlBase;
     if (isSub) {
       getPageHtml = getPageHtmlBase;
       type = 'subPage';
     }
     const title = await page.title();
-    // 可能返回字符串或对象
     const htmlRes = await getPageHtml(page, config?.selector, props);
     const html = htmlRes?.html ?? htmlRes;
     const subPages = htmlRes?.subPages;
 
     const url = request.loadedUrl;
     log.info(`${title}`, { url });
-    // if (!title ) return;
     const results = {
       url,
       title,
@@ -41,14 +39,7 @@ export const getRequestHandler = (config) => {
       results.type = type;
     }
 
-    // await pushData(results); // 有这个下面才有数据
-    // // await Dataset.exportToJSON('OUTPUT');
-
     await Dataset.pushData(results);
-
-    // Export the entirety of the dataset to a single file in
-    // the default key-value store under the key "OUTPUT"
-    // await Dataset.exportToCSV('OUTPUT');
 
     return subPages;
   };
@@ -121,9 +112,12 @@ export const crawlerRun = async (req) => {
   }
   console.log('爬取任务开始', config);
   // return
+  // 修改云函数环境变量 CRAWLEE_STORAGE_DIR 为 /tmp
+  const storageDir = isDev ? './storage' : '/tmp/storage';
+
   const crawler = new PlaywrightCrawler(
     {
-      requestHandler: getRequestHandler(config),
+      requestHandler: config?.requestHandler ?? getRequestHandler(config),
       launchContext: isDev ? undefined : {
         launchOptions: {
           executablePath: await aws_chromium.executablePath(),
@@ -144,6 +138,17 @@ export const crawlerRun = async (req) => {
   }
 
   await crawler.run(startUrls);
-  const data = await crawler.getData();
-  return data?.items;
+  
+  let result;
+
+  if (config.exportCSV) {
+    // 如果配置了导出CSV，则导出并返回CSV内容
+    await Dataset.exportToCSV('OUTPUT');
+    result = await Dataset.exportToString('OUTPUT', 'csv');
+  } else {
+    // 否则返回爬取的数据项
+    result = await crawler.getData();
+  }
+
+  return result?.items;
 };

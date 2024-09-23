@@ -15,5 +15,6 @@ import { crawlerRun } from './base.js';
 const res = await crawlerRun({
   keyword: 'sofa',
   type: 'amazonSearch',
+  maxPages: 2,
 });
 console.log('res', res);
