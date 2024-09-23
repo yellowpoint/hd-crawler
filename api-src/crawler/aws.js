@@ -2,8 +2,19 @@ import { crawlerRun } from './base.js';
 
 export const handler = async (req) => {
   console.log('handler参数：', req);
+  const method = req?.requestContext?.http?.method;
+  // 统一处理GET和POST请求的参数
+  let params;
+  if (method === 'GET') {
+    params = req.queryStringParameters;
+  } else if (method === 'POST') {
+    params = req.body ? JSON.parse(req.body) : {};
+  } else {
+    params = req;
+  }
+
   try {
-    const res = await crawlerRun(req);
+    const res = await crawlerRun(params);
     // 返回成功结果
     return {
       statusCode: 200,

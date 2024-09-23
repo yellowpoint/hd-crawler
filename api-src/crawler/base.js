@@ -89,9 +89,8 @@ export const getRequestHandler = (config) => {
 
 const isDev = process.env.NODE_ENV === 'development';
 console.log('isDev', isDev);
-export const crawlerRun = async (req) => {
-  let config = req?.queryStringParameters ?? req;
-  
+export const crawlerRun = async (config) => {
+
   const { type, keyword, url } = config;
   let typeConfig;
   if (type) {
@@ -138,7 +137,7 @@ export const crawlerRun = async (req) => {
   }
 
   await crawler.run(startUrls);
-  
+
   let result;
 
   if (config.exportCSV) {
