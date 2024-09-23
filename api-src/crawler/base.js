@@ -1,4 +1,9 @@
-import { createPlaywrightRouter, Dataset, KeyValueStore, sleep } from 'crawlee';
+import aws_chromium from '@sparticuz/chromium';
+import {
+  createPlaywrightRouter,
+  Configuration,
+  PlaywrightCrawler,
+} from 'crawlee';
 
 import { getPageHtmlBase } from './utils.js';
 
@@ -82,4 +87,53 @@ export const getRequestHandler = (config) => {
     await saveData({ ...props, isSub: true });
   });
   return router;
+};
+
+const isDev = process.env.NODE_ENV === 'development';
+console.log('isDev', isDev);
+export const crawlerRun = async (req) => {
+  let config = req?.queryStringParameters ?? req;
+  let startUrls = config.url;
+  startUrls = typeof startUrls === 'string' ? [startUrls] : startUrls;
+  if (!Array.isArray(startUrls) || startUrls.length === 0) {
+    throw new Error('没有传入爬取的 url');
+  }
+  const { type, keyword, url } = config;
+  let typeConfig;
+  if (type) {
+    const typePath = `./pages/${type}.js`;
+    console.log('typePath', typePath);
+    try {
+      typeConfig = (await import(typePath)).default;
+      console.log(typePath + ' 获取成功');
+    } catch (error) {
+      throw new Error("type doesn't exist:" + typePath);
+    }
+  }
+  if (typeof typeConfig === 'function') {
+    typeConfig = typeConfig(keyword ?? { url });
+  }
+  if (typeConfig) {
+    config = { ...config, ...typeConfig };
+  }
+
+  console.log('爬取任务开始', startUrls);
+  const crawler = new PlaywrightCrawler(
+    {
+      requestHandler: getRequestHandler(config),
+      launchContext: isDev?undefined:{
+        launchOptions: {
+          executablePath: await aws_chromium.executablePath(),
+          args: aws_chromium.args,
+          headless: true,
+        },
+      },
+    },
+    new Configuration({
+      persistStorage: false,
+    }),
+  );
+
+  await crawler.run(startUrls);
+  return crawler.getData();
 };

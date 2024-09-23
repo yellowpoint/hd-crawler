@@ -1,4 +1,4 @@
-import { crawlerBase } from '../base.js';
+// import { crawlerBase } from '../base.js';
 
 const config = (props) => ({
   ...props,
@@ -25,7 +25,7 @@ const config = (props) => ({
         },
       );
       const res = [...results_ad, ...results];
-      return { html: res, subPages: res.slice(0, props?.subPagesMax ?? 5) };
+      return { html: res, subPages: res.slice(0, 5) };
     }, selector);
 
     return res;

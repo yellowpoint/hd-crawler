@@ -2,14 +2,18 @@
   "name": "crawler-aws",
   "type": "module",
   "scripts": {
-    "reinstall": "rimraf node_modules && cnpm install",
+    "reinstall": "rimraf node_modules && npm install",
     "api": "cross-env NODE_ENV=development nodemon --watch api --watch api-src --ext js api/index.js",
-    "zip": "rimraf code.zip && 7z a code.zip ./api-src/crawler/*"
+    "zip": "rimraf code.zip && 7z a code.zip ./api-src/crawler/*",
+    "test": "cross-env NODE_ENV=development node ./api-src/crawler/test.js"
   },
   "dependencies": {
     "@sparticuz/chromium": "^127.0.0",
     "crawlee": "^3.11.3",
     "playwright": "^1.47.1",
     "playwright-core": "^1.47.1"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
   }
 }
