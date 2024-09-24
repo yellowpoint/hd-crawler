@@ -6,8 +6,8 @@ export const config = ({ keyword, maxPages = 1 }) => ({
   requestHandler: async ({ page, request, enqueueLinks, log }) => {
     let allResults = [];
     let currentPage = 1;
-
-    while (currentPage <= maxPages) {
+    console.log('maxPages',maxPages);
+    while (currentPage <= (maxPages||1)) {
       log.info(`正在处理第 ${currentPage} 页`);
 
       await page.waitForSelector('[data-component-type="s-search-result"]', { timeout: 30000 });

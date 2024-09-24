@@ -142,14 +142,21 @@ export const crawlerRun = async (config) => {
 
   let result;
 
-  if (config.exportCSV) {
-    // 如果配置了导出CSV，则导出并返回CSV内容
-    await Dataset.exportToCSV('OUTPUT');
-    result = await Dataset.exportToString('OUTPUT', 'csv');
-  } else {
-    // 否则返回爬取的数据项
-    result = await crawler.getData();
-  }
+  // if (config.exportCSV) {
+  //   // 如果配置了导出CSV，则导出并返回CSV内容
+  //   await Dataset.exportToCSV('OUTPUT');
+  //   result = await Dataset.exportToString('OUTPUT', 'csv');
+  // } else {
+
+  //   // 否则返回爬取的数据项
+  //   result = await crawler.getData();
+  // }
+
+
+
+  
+  result = await crawler.getData()
+
 
   return result?.items;
 };
