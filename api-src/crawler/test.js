@@ -9,12 +9,12 @@ import { crawlerRun } from './base.js';
 const res = await crawlerRun({
   // url: 'https://www.google.com/search?q=' + encodeURIComponent('sofa'),
   keyword: 'sofa',
-  type: 'googleSearchResult',
+  type: 'googlesearchresult',
 });
 
 // const res = await crawlerRun({
 //   keyword: 'sofa',
-//   type: 'amazonSearch',
+//   type: 'amazonproduct',
 //   maxPages: 2,
 // });
 console.log('res', res);

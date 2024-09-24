@@ -91,9 +91,11 @@ const isDev = process.env.NODE_ENV === 'development';
 console.log('isDev', isDev);
 export const crawlerRun = async (config) => {
 
-  const { type, keyword, url } = config;
+  let { type } = config;
   let typeConfig;
   if (type) {
+    type = type.toLowerCase();
+
     const typePath = `./pages/${type}.js`;
     console.log('typePath', typePath);
     try {
