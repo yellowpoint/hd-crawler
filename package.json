@@ -5,11 +5,15 @@
     "reinstall": "rimraf node_modules && npm install",
     "api": "cross-env NODE_ENV=development nodemon --watch api --watch api-src --ext js api/index.js",
     "zip": "rimraf code.zip && 7z a code.zip ./api-src/crawler/*",
-    "test": "cross-env NODE_ENV=development node ./api-src/crawler/test.js"
+    "test": "cross-env NODE_ENV=development node ./api-src/crawler/test.js",
+    "modclean": "modclean --run"
   },
   "dependencies": {
     "@sparticuz/chromium": "^127.0.0",
+    "aws-sdk": "^2.1691.0",
+    "axios": "^1.7.7",
     "crawlee": "^3.11.3",
+    "jmespath": "^0.16.0",
     "playwright": "^1.47.1",
     "playwright-core": "^1.47.1"
   },

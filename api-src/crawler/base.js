@@ -89,7 +89,7 @@ export const getRequestHandler = (config) => {
 
 const isDev = process.env.NODE_ENV === 'development';
 console.log('isDev', isDev);
-export const crawlerRun = async (config) => {
+export const crawlerRun = async (config = {}) => {
 
   let { type } = config;
   let typeConfig;
@@ -154,7 +154,7 @@ export const crawlerRun = async (config) => {
 
 
 
-  
+
   result = await crawler.getData()
 
 
