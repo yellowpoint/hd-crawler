@@ -72,7 +72,7 @@ export const handler = async (req) => {
     }
 
     if (cbUrl) {
-      await callCallbackUrl(cbUrl, { status: 'fail', taskId, req: params, res: error });
+      await callCallbackUrl(cbUrl, { status: 'fail', taskId, req: params, res: { error: JSON.stringify(error.message) } });
     }
 
     // 返回错误结果
