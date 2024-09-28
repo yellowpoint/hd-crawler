@@ -6,8 +6,8 @@ export const config = ({ keyword, maxPages = 1 }) => ({
   requestHandler: async ({ page, request, enqueueLinks, log }) => {
     let allResults = [];
     let currentPage = 1;
-    console.log('maxPages',maxPages);
-    while (currentPage <= (maxPages||1)) {
+    console.log('maxPages', maxPages);
+    while (currentPage <= (maxPages || 1)) {
       log.info(`正在处理第 ${currentPage} 页`);
 
       await page.waitForSelector('[data-component-type="s-search-result"]', { timeout: 30000 });
@@ -100,6 +100,7 @@ export const config = ({ keyword, maxPages = 1 }) => ({
       log.info(`第 ${currentPage} 页结果数量: ${pageResults.length}`);
 
       // 使用Dataset API存储数据
+      await Dataset.pushData({ type: 'amazonproduct', keyword, page: currentPage, listCount: pageResults.length, list: pageResults });
 
       // 同时将结果添加到allResults数组
       allResults = allResults.concat(pageResults);
@@ -116,7 +117,8 @@ export const config = ({ keyword, maxPages = 1 }) => ({
       await page.click('.s-pagination-next');
       currentPage++;
     }
-    await Dataset.pushData({ type: 'amazonSearch', keyword, lastPage: currentPage, listCount: allResults.length, list: allResults });
+    // 最后一次性pushData可能会出错
+    // await Dataset.pushData({ type: 'amazonproduct', keyword, lastPage: currentPage, listCount: allResults.length, list: allResults });
 
     log.info('所有结果:', allResults);
     return allResults;
