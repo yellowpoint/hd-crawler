@@ -1,8 +1,9 @@
 {
   "name": "crawler-aws",
   "type": "module",
+  "git": "https://github.com/yellowpoint/hd-crawler.git",
   "scripts": {
-    "reinstall": "rimraf node_modules && npm install",
+    "reinstall": "rimraf node_modules && cnpm install",
     "api": "cross-env NODE_ENV=development nodemon --watch api --watch api-src --ext js api/index.js",
     "zip": "rimraf code.zip && 7z a code.zip ./api-src/crawler/*",
     "test": "cross-env NODE_ENV=development node ./api-src/crawler/test.js",
@@ -10,14 +11,18 @@
   },
   "dependencies": {
     "@sparticuz/chromium": "^127.0.0",
-    "aws-sdk": "^2.1691.0",
     "axios": "^1.7.7",
-    "crawlee": "^3.11.3",
-    "jmespath": "^0.16.0",
+    "cors": "^2.8.5",
+    "crawlee": "latest",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "express-async-errors": "^3.1.1",
+    "express-ws": "^5.0.2",
+    "glob": "^11.0.0",
+    "gpt-tokenizer": "^2.4.0",
+    "nodemon": "^3.1.7",
     "playwright": "^1.47.1",
     "playwright-core": "^1.47.1"
-  },
-  "devDependencies": {
-    "cross-env": "^7.0.3"
   }
 }

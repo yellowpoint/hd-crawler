@@ -5,8 +5,8 @@ import {
   PlaywrightCrawler,
   Dataset,
 } from 'crawlee';
-
-import { getPageHtmlBase } from './utils.js';
+import { readFile } from 'fs/promises';
+import { getPageHtmlBase, write } from './utils.js';
 
 let pageCounter = 0;
 export const getRequestHandler = (config) => {
@@ -112,9 +112,6 @@ export const crawlerRun = async (config = {}) => {
     config = { ...config, ...typeConfig };
   }
   console.log('爬取任务开始', config);
-  // return
-  // 修改云函数环境变量 CRAWLEE_STORAGE_DIR 为 /tmp
-  const storageDir = isDev ? './storage' : '/tmp/storage';
 
   const crawler = new PlaywrightCrawler(
     {
@@ -128,7 +125,8 @@ export const crawlerRun = async (config = {}) => {
       },
     },
     new Configuration({
-      persistStorage: false,
+      purgeOnStart: true,
+      // persistStorage: false,
     }),
   );
 
@@ -142,21 +140,14 @@ export const crawlerRun = async (config = {}) => {
 
   let result;
 
-  // if (config.exportCSV) {
-  //   // 如果配置了导出CSV，则导出并返回CSV内容
-  //   await Dataset.exportToCSV('OUTPUT');
-  //   result = await Dataset.exportToString('OUTPUT', 'csv');
-  // } else {
+  try {
+    const outputFileName = await write(config);
+    result = await readFile(outputFileName, 'utf-8');
+    result = JSON.parse(result);
+    console.log('爬取结果:', result);
+  } catch (error) {
+    throw error;
+  }
 
-  //   // 否则返回爬取的数据项
-  //   result = await crawler.getData();
-  // }
-
-
-
-
-  result = await crawler.getData()
-
-
-  return result?.items;
+  return result;
 };
