@@ -7,7 +7,6 @@ import { crawlerRun } from './base.js';
 
 
 const res = await crawlerRun({
-  // url: 'https://www.google.com/search?q=' + encodeURIComponent('sofa'),
   keyword: 'sofa',
   type: 'googlesearchresult',
 });
@@ -17,4 +16,16 @@ const res = await crawlerRun({
 //   type: 'amazonproduct',
 //   maxPages: 2,
 // });
-console.log('res', res);
+
+
+// const res = await crawlerRun({
+//   url: 'https://www.thinkwithgoogle.com/',
+//   maxRequestsPerCrawl: 5,
+//   maxDepth: 2,
+//   maxPagesPerDepth: 2,
+//   returnTreeStructure: true,
+//   match: 'https://www.thinkwithgoogle.com/**',
+//   exclude: ['https://www.thinkwithgoogle.com/intl/**', 'https://www.thinkwithgoogle.com/_qs/**'],
+// });
+
+// console.log('res', res);
